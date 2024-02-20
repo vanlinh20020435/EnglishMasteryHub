@@ -1,0 +1,39 @@
+version: '3.4'
+
+services:
+  emv:
+    container_name: emc-springboot
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: english-mastery-hub
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysqld:
+        condition: service_healthy
+    networks:
+      - java-app
+  mysqld:
+    container_name: emc-mysql
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=EnglishMasteryHub
+      - MYSQL_ROOT_PASSWORD=P4ssword!
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3306"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - java-app
+volumes:
+  db_data:
+networks:
+  java-app:
+    name: java-app
