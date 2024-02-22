@@ -4,20 +4,18 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import java.util.Set;
 
 
 @Entity
-@Table(name = "\"Admin\"")
 @Getter
 @Setter
-public class Admin {
+public class User {
 
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer adminId;
+    private Integer userId;
 
     @Column(nullable = false, length = 16)
     private String username;
@@ -32,22 +30,18 @@ public class Admin {
     private String name;
 
     @Column(nullable = false)
-    private OffsetDateTime lastLogin;
-
-    @Column(nullable = false)
-    private Integer gender;
-
-    @Column(nullable = false)
     private Integer status;
 
-    @Column
-    private String avatar;
+    @Column(nullable = false, name = "\"role\"", length = 50)
+    private String role;
 
-    @Column(nullable = false)
-    private LocalDate birthday;
+    @OneToMany(mappedBy = "user")
+    private Set<Admin> userAdmins;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @OneToMany(mappedBy = "user")
+    private Set<Teacher> userTeachers;
+
+    @OneToMany(mappedBy = "user")
+    private Set<Student> userStudents;
 
 }

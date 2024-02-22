@@ -10,19 +10,21 @@ import java.time.OffsetDateTime;
 @Entity
 @Getter
 @Setter
-public class QuestOfTest {
+public class Scores {
 
     @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(nullable = false, updatable = false, length = 10)
+    private String scoreNumber;
 
-    @Column(nullable = false)
-    private OffsetDateTime timest;
+    @Column(nullable = false, length = 50)
+    private String scoreDetail;
+
+    @Column
+    private OffsetDateTime completionTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id", nullable = false)
-    private Questions question;
+    @JoinColumn(name = "student_id", nullable = false)
+    private Student student;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "test_code_id", nullable = false)

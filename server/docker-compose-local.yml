@@ -3,14 +3,17 @@ version: '3.4'
 services:
   emh:
     container_name: emh-springboot
-    image: linhnv2002/englishmasteryhub
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: english-mastery-hub
     ports:
       - "8080:8080"
+    volumes:
+      - ./log:/app/log
     depends_on:
       mysqld:
         condition: service_healthy
-    volumes:
-      - ./log:/app/log
     networks:
       - java-app
   mysqld:
@@ -35,3 +38,4 @@ volumes:
   db_data:
 networks:
   java-app:
+    name: java-app

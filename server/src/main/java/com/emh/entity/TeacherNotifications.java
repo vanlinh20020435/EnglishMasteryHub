@@ -4,28 +4,23 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.OffsetDateTime;
-
 
 @Entity
 @Getter
 @Setter
-public class QuestOfTest {
+public class TeacherNotifications {
 
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
-    private OffsetDateTime timest;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id", nullable = false)
-    private Questions question;
+    @JoinColumn(name = "notification_id", nullable = false)
+    private Notifications notification;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "test_code_id", nullable = false)
-    private Tests testCode;
+    @JoinColumn(name = "teacher_id", nullable = false)
+    private Teacher teacher;
 
 }

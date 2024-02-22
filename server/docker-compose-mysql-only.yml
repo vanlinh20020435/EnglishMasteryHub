@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  mysqld:
+    container_name: emh-mysql
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=EnglishMasteryHub
+      - MYSQL_ROOT_PASSWORD=P4ssword!
+volumes:
+  db_data:
