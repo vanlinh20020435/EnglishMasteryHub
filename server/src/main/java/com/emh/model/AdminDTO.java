@@ -22,30 +22,24 @@ public class AdminDTO {
     @Size(max = 50)
     private String email;
 
-    @NotNull
-    @Size(max = 32)
+    @Size
     private String password;
 
     @NotNull
     @Size(max = 50)
     private String name;
 
-    @NotNull
     private OffsetDateTime lastLogin;
 
-    @NotNull
     private Integer gender;
 
-    @NotNull
     private Integer status;
 
     @Size(max = 255)
     private String avatar;
 
-    @NotNull
     private LocalDate birthday;
 
-    @NotNull
     private Integer user;
 
 }

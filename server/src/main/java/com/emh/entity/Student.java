@@ -25,13 +25,13 @@ public class Student {
     @Column(length = 50)
     private String email;
 
-    @Column(nullable = false, length = 32)
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false, length = 50)
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private OffsetDateTime lastLogin;
 
     @Column(nullable = false)
@@ -43,7 +43,7 @@ public class Student {
     @Column
     private String avatar;
 
-    @Column(nullable = false)
+    @Column
     private LocalDate birthday;
 
     @Column

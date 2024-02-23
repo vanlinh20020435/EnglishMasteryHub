@@ -1,11 +1,14 @@
 package com.emh.service;
 
 import com.emh.entity.*;
+import com.emh.model.Role;
 import com.emh.model.StudentDTO;
 import com.emh.repos.*;
+import com.emh.util.MapperUtils;
 import com.emh.util.NotFoundException;
 import com.emh.util.ReferencedWarning;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,19 +49,28 @@ public class StudentService {
 
     public Integer create(final StudentDTO studentDTO) {
         final Student student = new Student();
-        mapToEntity(studentDTO, student);
+        studentDTO.setPassword(new BCryptPasswordEncoder().encode(studentDTO.getPassword()));
+        User user = MapperUtils.map(studentDTO, User.class);
+        user.setRole(Role.STUDENT.toString());
+        user = userRepository.save(user);
+        mapToEntity(studentDTO, student, user);
         return studentRepository.save(student).getStudentId();
     }
 
     public void update(final Integer studentId, final StudentDTO studentDTO) {
         final Student student = studentRepository.findById(studentId)
                 .orElseThrow(NotFoundException::new);
-        mapToEntity(studentDTO, student);
+        User user = MapperUtils.map(studentDTO, User.class);
+        user = userRepository.save(user);
+        mapToEntity(studentDTO, student, user);
         studentRepository.save(student);
     }
 
     public void delete(final Integer studentId) {
+        final Student student = studentRepository.findById(studentId)
+                .orElseThrow(NotFoundException::new);
         studentRepository.deleteById(studentId);
+        userRepository.delete(student.getUser());
     }
 
     private StudentDTO mapToDTO(final Student student, final StudentDTO studentDTO) {
@@ -98,6 +110,26 @@ public class StudentService {
         student.setClasss(classs);
         final User user = studentDTO.getUser() == null ? null : userRepository.findById(studentDTO.getUser())
                 .orElseThrow(() -> new NotFoundException("user not found"));
+        student.setUser(user);
+        return student;
+    }
+
+    private Student mapToEntity(final StudentDTO studentDTO, final Student student, final User user) {
+        student.setUsername(studentDTO.getUsername());
+        student.setEmail(studentDTO.getEmail());
+        student.setPassword(studentDTO.getPassword());
+        student.setName(studentDTO.getName());
+        student.setLastLogin(studentDTO.getLastLogin());
+        student.setGender(studentDTO.getGender());
+        student.setStatus(studentDTO.getStatus());
+        student.setAvatar(studentDTO.getAvatar());
+        student.setBirthday(studentDTO.getBirthday());
+        student.setDoingExam(studentDTO.getDoingExam());
+        student.setStartingTime(studentDTO.getStartingTime());
+        student.setTimeRemaining(studentDTO.getTimeRemaining());
+        final Classes classs = studentDTO.getClasss() == null ? null : classesRepository.findById(studentDTO.getClasss())
+                .orElseThrow(() -> new NotFoundException("classs not found"));
+        student.setClasss(classs);
         student.setUser(user);
         return student;
     }

@@ -26,7 +26,5 @@ error:
     log-levels:
       5xx: ERROR
 app:
-  jwtSecret: emh
+  jwtSecret: UUY+YA4e6vDzHgfhxype+S5J9AwQKC8P0NXGLK9gV+OUB4a9g2liqCvruzMUrSYe
   jwtExpirationMs: 1800000
-  jwtRefreshExpirationMs: 2592000000
-  pageSize: 15

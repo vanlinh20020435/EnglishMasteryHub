@@ -3,10 +3,14 @@ package com.emh.service;
 import com.emh.entity.Admin;
 import com.emh.entity.User;
 import com.emh.model.AdminDTO;
+import com.emh.model.Role;
+import com.emh.model.UserDTO;
 import com.emh.repos.AdminRepository;
 import com.emh.repos.UserRepository;
+import com.emh.util.MapperUtils;
 import com.emh.util.NotFoundException;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,19 +43,28 @@ public class AdminService {
 
     public Integer create(final AdminDTO adminDTO) {
         final Admin admin = new Admin();
-        mapToEntity(adminDTO, admin);
+        adminDTO.setPassword(new BCryptPasswordEncoder().encode(adminDTO.getPassword()));
+        User user = MapperUtils.map(adminDTO, User.class);
+        user.setRole(Role.ADMIN.toString());
+        user = userRepository.save(user);
+        mapToEntity(adminDTO, admin, user);
         return adminRepository.save(admin).getAdminId();
     }
 
     public void update(final Integer adminId, final AdminDTO adminDTO) {
         final Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(NotFoundException::new);
-        mapToEntity(adminDTO, admin);
+        User user = MapperUtils.map(adminDTO, User.class);
+        user = userRepository.save(user);
+        mapToEntity(adminDTO, admin, user);
         adminRepository.save(admin);
     }
 
     public void delete(final Integer adminId) {
+        final Admin admin = adminRepository.findById(adminId)
+                .orElseThrow(NotFoundException::new);
         adminRepository.deleteById(adminId);
+        userRepository.delete(admin.getUser());
     }
 
     private AdminDTO mapToDTO(final Admin admin, final AdminDTO adminDTO) {
@@ -81,6 +94,20 @@ public class AdminService {
         admin.setBirthday(adminDTO.getBirthday());
         final User user = adminDTO.getUser() == null ? null : userRepository.findById(adminDTO.getUser())
                 .orElseThrow(() -> new NotFoundException("user not found"));
+        admin.setUser(user);
+        return admin;
+    }
+
+    private Admin mapToEntity(final AdminDTO adminDTO, final Admin admin, final User user) {
+        admin.setUsername(adminDTO.getUsername());
+        admin.setEmail(adminDTO.getEmail());
+        admin.setPassword(adminDTO.getPassword());
+        admin.setName(adminDTO.getName());
+        admin.setLastLogin(adminDTO.getLastLogin());
+        admin.setGender(adminDTO.getGender());
+        admin.setStatus(adminDTO.getStatus());
+        admin.setAvatar(adminDTO.getAvatar());
+        admin.setBirthday(adminDTO.getBirthday());
         admin.setUser(user);
         return admin;
     }

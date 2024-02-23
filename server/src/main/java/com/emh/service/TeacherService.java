@@ -4,14 +4,17 @@ import com.emh.entity.Classes;
 import com.emh.entity.Teacher;
 import com.emh.entity.TeacherNotifications;
 import com.emh.entity.User;
+import com.emh.model.Role;
 import com.emh.model.TeacherDTO;
 import com.emh.repos.ClassesRepository;
 import com.emh.repos.TeacherNotificationsRepository;
 import com.emh.repos.TeacherRepository;
 import com.emh.repos.UserRepository;
+import com.emh.util.MapperUtils;
 import com.emh.util.NotFoundException;
 import com.emh.util.ReferencedWarning;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,19 +52,28 @@ public class TeacherService {
 
     public Integer create(final TeacherDTO teacherDTO) {
         final Teacher teacher = new Teacher();
-        mapToEntity(teacherDTO, teacher);
+        teacherDTO.setPassword(new BCryptPasswordEncoder().encode(teacherDTO.getPassword()));
+        User user = MapperUtils.map(teacherDTO, User.class);
+        user.setRole(Role.TEACHER.toString());
+        user = userRepository.save(user);
+        mapToEntity(teacherDTO, teacher, user);
         return teacherRepository.save(teacher).getTeacherId();
     }
 
     public void update(final Integer teacherId, final TeacherDTO teacherDTO) {
         final Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(NotFoundException::new);
-        mapToEntity(teacherDTO, teacher);
+        User user = MapperUtils.map(teacherDTO, User.class);
+        user = userRepository.save(user);
+        mapToEntity(teacherDTO, teacher, user);
         teacherRepository.save(teacher);
     }
 
     public void delete(final Integer teacherId) {
+        final Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(NotFoundException::new);
         teacherRepository.deleteById(teacherId);
+        userRepository.delete(teacher.getUser());
     }
 
     private TeacherDTO mapToDTO(final Teacher teacher, final TeacherDTO teacherDTO) {
@@ -91,6 +103,20 @@ public class TeacherService {
         teacher.setBirthday(teacherDTO.getBirthday());
         final User user = teacherDTO.getUser() == null ? null : userRepository.findById(teacherDTO.getUser())
                 .orElseThrow(() -> new NotFoundException("user not found"));
+        teacher.setUser(user);
+        return teacher;
+    }
+
+    private Teacher mapToEntity(final TeacherDTO teacherDTO, final Teacher teacher, final User user) {
+        teacher.setUsername(teacherDTO.getUsername());
+        teacher.setEmail(teacherDTO.getEmail());
+        teacher.setPassword(teacherDTO.getPassword());
+        teacher.setName(teacherDTO.getName());
+        teacher.setLastLogin(teacherDTO.getLastLogin());
+        teacher.setGender(teacherDTO.getGender());
+        teacher.setStatus(teacherDTO.getStatus());
+        teacher.setAvatar(teacherDTO.getAvatar());
+        teacher.setBirthday(teacherDTO.getBirthday());
         teacher.setUser(user);
         return teacher;
     }

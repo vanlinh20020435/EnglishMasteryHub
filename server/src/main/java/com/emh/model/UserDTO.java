@@ -19,15 +19,13 @@ public class UserDTO {
     @Size(max = 50)
     private String email;
 
-    @NotNull
-    @Size(max = 32)
+    @Size
     private String password;
 
     @NotNull
     @Size(max = 50)
     private String name;
 
-    @NotNull
     private Integer status;
 
     @NotNull
