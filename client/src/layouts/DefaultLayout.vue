@@ -9,10 +9,8 @@
         <v-btn variant="tonal">click</v-btn>
       </template>
     </v-app-bar>
-    <DefaultSidebar :drawer="drawer" />
-    <v-main
-      class="d-flex align-center justify-center"
-      style="min-height: 300px">
+    <DefaultSidebar :drawer="drawer" :menu="menu" />
+    <v-main class="d-flex align-center justify-center" style="min-height: 300px">
       <router-view />
     </v-main>
   </v-layout>
@@ -24,26 +22,11 @@ export default {
   components: {
     DefaultSidebar,
   },
+  props: {
+    menu: Array
+  },
   data: () => ({
-    items: [
-      {
-        title: 'Foo',
-        value: 'foo',
-      },
-      {
-        title: 'Bar',
-        value: 'bar',
-      },
-      {
-        title: 'Fizz',
-        value: 'fizz',
-      },
-      {
-        title: 'Buzz',
-        value: 'buzz',
-      },
-    ],
-    drawer: false,
+    drawer: true,
   }),
 };
 </script>
