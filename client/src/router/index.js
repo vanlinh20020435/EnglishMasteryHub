@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import AboutView from '../views/AboutView.vue'
-import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import Teacher from '@/views/Teacher/index.vue'
+import Manager from '@/views/Teacher/Manager.vue'
+import Admin from '@/views/Admin/index.vue'
+import User from '@/views/Admin/User/index.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,10 +18,50 @@ const router = createRouter({
     },
     {
       path: '/teacher',
-      component: HomeView,
+      component: Teacher,
       children: [
         {
+          path: '',
+          component: Manager,
+        },
+        {
           path: 'manager',
+          component: Manager,
+        }
+      ]
+    },
+    {
+      path: '/admin',
+      component: Admin,
+      children: [
+        {
+          path: 'user',
+          children: [
+            {
+              path: '',
+              component: User
+            },
+            {
+              path: 'student',
+              component: HomeView
+            },
+            {
+              path: 'teacher',
+              component: HomeView
+            },
+          ]
+        },
+        {
+          path: 'class',
+          component: HomeView
+        },
+        {
+          path: 'event',
+          component: HomeView
+        },
+        {
+          path: '/:pathMatch(.*)*',
+          redirect: 'user'
         }
       ]
     },
@@ -31,8 +73,13 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const isLoggedIn = true;
-  console.log(111111, to.fullPath);
+  var isLoggedIn = false;
+  const path = to.fullPath
+  // check path
+  if (path) {
+    isLoggedIn = true
+  }
+  isLoggedIn = true
   if (!isLoggedIn) {
     next('/login');
   } else {

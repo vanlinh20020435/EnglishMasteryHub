@@ -1,5 +1,5 @@
 <template>
-  <v-layout class="rounded rounded-md">
+  <v-layout>
     <v-app-bar :order="0" color="grey-lighten-2" flat title="Application bar">
       <template v-slot:prepend>
         <v-btn variant="text" icon="mdi-menu" @click="drawer = !drawer"></v-btn>
@@ -10,8 +10,8 @@
       </template>
     </v-app-bar>
     <DefaultSidebar :drawer="drawer" :menu="menu" />
-    <v-main class="d-flex align-center justify-center" style="min-height: 300px">
-      <router-view />
+    <v-main class="d-flex justify-center" style="width: 100vw; height: 100vh;">
+      <slot />
     </v-main>
   </v-layout>
 </template>
