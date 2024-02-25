@@ -5,6 +5,7 @@ import Manager from "@/views/Teacher/Manager.vue";
 import Admin from "@/views/Admin/index.vue";
 import User from "@/views/Admin/User/index.vue";
 import { ManageClass, ManageExam, ManageCurriculum } from "@/views/Teacher";
+import { authenticationRole } from "@/stores";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -72,10 +73,6 @@ const router = createRouter({
           path: "event",
           component: HomeView,
         },
-        {
-          path: "/:pathMatch(.*)*",
-          redirect: "user",
-        },
       ],
     },
     {
@@ -88,15 +85,20 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   var isLoggedIn = false;
   const path = to.fullPath;
+  const authenticationStore = authenticationRole();
+  const { authentication } = authenticationStore;
   // check path
-  if (path) {
+  const pathSplitted = path.split('/')
+  if (authentication.role) {
     isLoggedIn = true;
+    if (pathSplitted.length && pathSplitted[1] === authentication.role) {
+      next();
+    } else {
+      next('/' + authentication.role);
+    }
   }
-  isLoggedIn = true;
   if (!isLoggedIn) {
     next("/login");
-  } else {
-    next();
   }
 });
 
