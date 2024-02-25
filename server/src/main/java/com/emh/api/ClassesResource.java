@@ -1,6 +1,7 @@
 package com.emh.api;
 
-import com.emh.model.ClassesDTO;
+import com.emh.payload.request.ClassesRequest;
+import com.emh.payload.response.ClassesResponse;
 import com.emh.service.ClassesService;
 import com.emh.util.ReferencedException;
 import com.emh.util.ReferencedWarning;
@@ -16,50 +17,58 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/classess", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ClassesResource {
+public class ClassesResource
+{
 
-    private final ClassesService classesService;
+	private final ClassesService classesService;
 
-    public ClassesResource(final ClassesService classesService) {
-        this.classesService = classesService;
-    }
+	public ClassesResource(final ClassesService classesService)
+	{
+		this.classesService = classesService;
+	}
 
-    @GetMapping
-    public ResponseEntity<List<ClassesDTO>> getAllClassess() {
-        return ResponseEntity.ok(classesService.findAll());
-    }
+	@GetMapping
+	public ResponseEntity<List<ClassesResponse>> getAllClassess()
+	{
+		return ResponseEntity.ok(classesService.findAll());
+	}
 
-    @GetMapping("/{classId}")
-    public ResponseEntity<ClassesDTO> getClasses(
-            @PathVariable(name = "classId") final Integer classId) {
-        return ResponseEntity.ok(classesService.get(classId));
-    }
+	@GetMapping("/{classId}")
+	public ResponseEntity<ClassesResponse> getClasses(
+			@PathVariable(name = "classId") final Integer classId)
+	{
+		return ResponseEntity.ok(classesService.get(classId));
+	}
 
-    @PostMapping
-    @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createClasses(@RequestBody @Valid final ClassesDTO classesDTO) {
-        final Integer createdClassId = classesService.create(classesDTO);
-        return new ResponseEntity<>(createdClassId, HttpStatus.CREATED);
-    }
+	@PostMapping
+	@ApiResponse(responseCode = "201")
+	public ResponseEntity<Integer> createClasses(@RequestBody @Valid final ClassesRequest classesRequest)
+	{
+		final Integer createdClassId = classesService.create(classesRequest);
+		return new ResponseEntity<>(createdClassId, HttpStatus.CREATED);
+	}
 
-    @PutMapping("/{classId}")
-    public ResponseEntity<Integer> updateClasses(
-            @PathVariable(name = "classId") final Integer classId,
-            @RequestBody @Valid final ClassesDTO classesDTO) {
-        classesService.update(classId, classesDTO);
-        return ResponseEntity.ok(classId);
-    }
+	@PutMapping("/{classId}")
+	public ResponseEntity<Integer> updateClasses(
+			@PathVariable(name = "classId") final Integer classId,
+			@RequestBody @Valid final ClassesRequest classesRequest)
+	{
+		classesService.update(classId, classesRequest);
+		return ResponseEntity.ok(classId);
+	}
 
-    @DeleteMapping("/{classId}")
-    @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteClasses(
-            @PathVariable(name = "classId") final Integer classId) {
-        final ReferencedWarning referencedWarning = classesService.getReferencedWarning(classId);
-        if (referencedWarning != null) {
-            throw new ReferencedException(referencedWarning);
-        }
-        classesService.delete(classId);
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping("/{classId}")
+	@ApiResponse(responseCode = "204")
+	public ResponseEntity<Void> deleteClasses(
+			@PathVariable(name = "classId") final Integer classId)
+	{
+		final ReferencedWarning referencedWarning = classesService.getReferencedWarning(classId);
+		if (referencedWarning != null)
+		{
+			throw new ReferencedException(referencedWarning);
+		}
+		classesService.delete(classId);
+		return ResponseEntity.noContent().build();
+	}
 
 }

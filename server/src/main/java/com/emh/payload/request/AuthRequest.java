@@ -1,5 +1,6 @@
 package com.emh.payload.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,8 +8,9 @@ import lombok.Setter;
 @Setter
 public class AuthRequest
 {
-	private long id;
+	@NotNull
 	private String username;
+
+	@NotNull
 	private String password;
-	private String role;
 }

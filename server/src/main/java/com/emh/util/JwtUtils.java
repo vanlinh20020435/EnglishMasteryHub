@@ -67,7 +67,8 @@ public class JwtUtils
 		return false;
 	}
 
-	private Key getSigningKey() {
+	private Key getSigningKey()
+	{
 		byte[] keyBytes = Decoders.BASE64.decode(PropertyController.JWT_SECRET);
 		return Keys.hmacShaKeyFor(keyBytes);
 	}

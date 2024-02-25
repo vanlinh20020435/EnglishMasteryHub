@@ -49,7 +49,8 @@ public class AuthTokenFilter extends OncePerRequestFilter
 		try
 		{
 			final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-			if (isEmpty(header) || !header.startsWith("Bearer ")) {
+			if (isEmpty(header) || !header.startsWith("Bearer "))
+			{
 				chain.doFilter(request, response);
 				return;
 			}

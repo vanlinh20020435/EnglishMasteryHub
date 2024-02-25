@@ -12,42 +12,40 @@ import java.time.OffsetDateTime;
 @Table(name = "\"Admin\"")
 @Getter
 @Setter
-public class Admin {
+public class Admin extends BaseEntity
+{
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer adminId;
+	@Id
+	@Column(nullable = false, updatable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer adminId;
 
-    @Column(nullable = false, length = 16)
-    private String username;
+	@Column(nullable = false, length = 16)
+	private String username;
 
-    @Column(length = 50)
-    private String email;
+	@Column(length = 50)
+	private String email;
 
-    @Column(nullable = false)
-    private String password;
+	@Column(nullable = false)
+	private String password;
 
-    @Column(nullable = false, length = 50)
-    private String name;
+	@Column(nullable = false, length = 50)
+	private String name;
 
-    @Column
-    private OffsetDateTime lastLogin;
+	@Column(nullable = false)
+	private Integer gender;
 
-    @Column(nullable = false)
-    private Integer gender;
+	@Column(nullable = false)
+	private Integer status;
 
-    @Column(nullable = false)
-    private Integer status;
+	@Column
+	private String avatar;
 
-    @Column
-    private String avatar;
+	@Column
+	private LocalDate birthday;
 
-    @Column
-    private LocalDate birthday;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 
 }

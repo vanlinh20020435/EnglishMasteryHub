@@ -14,19 +14,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
-    @Autowired
-    private UserRepository userRepository;
+public class CustomUserDetailsService implements UserDetailsService
+{
+	@Autowired
+	private UserRepository userRepository;
 
-    @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        User user = userRepository.findOneByUsername(name);
-        String role = "ROLE_";
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(role + user.getRole()));
-        return UserDetailsImpl.build(user);
-    }
+	@Override
+	public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException
+	{
+		User user = userRepository.findOneByUsername(name);
+		String role = "ROLE_";
+		if (user == null)
+		{
+			throw new UsernameNotFoundException("User not found");
+		}
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		authorities.add(new SimpleGrantedAuthority(role + user.getRole()));
+		return UserDetailsImpl.build(user);
+	}
 }
