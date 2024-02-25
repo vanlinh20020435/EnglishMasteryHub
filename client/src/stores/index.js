@@ -1,0 +1,1 @@
+export {authenticationRole} from './authentication';

@@ -1,11 +1,12 @@
 <script>
-import { RouterView } from 'vue-router'
+import { RouterView } from "vue-router";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   components: {
-    RouterView
-  }
-}
+    RouterView,
+  },
+});
 </script>
 
 <template>
