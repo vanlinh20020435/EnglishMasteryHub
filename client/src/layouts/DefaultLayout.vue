@@ -11,7 +11,10 @@
     </v-app-bar>
     <DefaultSidebar :drawer="drawer" :menu="menu" />
     <v-main class="d-flex justify-center" style="width: 100vw; height: 100vh;">
-      <slot />
+      <v-container>
+        <h2>ghigigi</h2>
+        <slot />
+      </v-container>
     </v-main>
   </v-layout>
 </template>
