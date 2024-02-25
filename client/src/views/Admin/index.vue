@@ -31,12 +31,12 @@ export default {
             },
             {
                 title: 'Quản lí lớp học',
-                value: 'class',
+                value: '/admin/class',
                 icon: 'mdi-google-classroom',
             },
             {
                 title: 'Quản lí sự kiện',
-                value: 'event',
+                value: '/admin/event',
                 icon: 'mdi-calendar-star',
             },
         ],
@@ -46,6 +46,6 @@ export default {
 
 <template>
     <DefaultLayout :menu="menu">
-        <v-container><router-view /></v-container>
+        <router-view />
     </DefaultLayout>
 </template>
