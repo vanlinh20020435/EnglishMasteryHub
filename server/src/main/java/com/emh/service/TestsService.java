@@ -10,6 +10,7 @@ import com.emh.util.ReferencedWarning;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -29,9 +30,9 @@ public class TestsService
 						final QuestionsRepository questionsRepository,
 						final ScoresRepository scoresRepository,
 						final StudentTestDetailRepository studentTestDetailRepository,
-						QuestAnswerRepository questAnswerRepository,
-						QuestOptionRepository questOptionRepository,
-						QuestFileRepository questFileRepository)
+						final QuestAnswerRepository questAnswerRepository,
+						final QuestOptionRepository questOptionRepository,
+						final QuestFileRepository questFileRepository)
 	{
 		this.testsRepository = testsRepository;
 		this.questionsRepository = questionsRepository;
@@ -57,7 +58,7 @@ public class TestsService
 				.orElseThrow(NotFoundException::new);
 	}
 
-	public Integer create(final TestsRequest testsRequest)
+	public Integer create(final TestsRequest testsRequest) throws IOException
 	{
 		Tests tests = new Tests();
 		MapperUtils.testMapToEntity(testsRequest, tests);
@@ -108,7 +109,7 @@ public class TestsService
 		return null;
 	}
 
-	private void saveQuestions(Tests tests, TestsRequest testsRequest)
+	private void saveQuestions(Tests tests, TestsRequest testsRequest) throws IOException
 	{
 		for (QuestionsRequest questionsRequest : testsRequest.getQuestions())
 		{
@@ -142,7 +143,7 @@ public class TestsService
 		}
 	}
 
-	private void saveQuestionFiles(Questions questions, QuestionsRequest questionsRequest)
+	private void saveQuestionFiles(Questions questions, QuestionsRequest questionsRequest) throws IOException
 	{
 		for (QuestFileRequest questFileRequest : questionsRequest.getFiles())
 		{
@@ -152,8 +153,10 @@ public class TestsService
 		}
 	}
 
-	private void saveSubQuestion(Questions parentQuestions, QuestionsRequest questionsRequest, Tests tests)
+	private void saveSubQuestion(Questions parentQuestions, QuestionsRequest questionsRequest, Tests tests) throws IOException
 	{
+		if(questionsRequest.getSubQuestions() == null)
+			return;
 		for (QuestionsRequest subQuestionsRequest : questionsRequest.getSubQuestions())
 		{
 			Questions questions = new Questions();

@@ -2,7 +2,9 @@ package com.emh.api;
 
 import com.emh.payload.request.ClassesRequest;
 import com.emh.payload.response.ClassesResponse;
+import com.emh.payload.response.TestsResponse;
 import com.emh.service.ClassesService;
+import com.emh.service.TestClassService;
 import com.emh.util.ReferencedException;
 import com.emh.util.ReferencedWarning;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,10 +23,13 @@ public class ClassesResource
 {
 
 	private final ClassesService classesService;
+	private final TestClassService testClassService;
 
-	public ClassesResource(final ClassesService classesService)
+	public ClassesResource(final ClassesService classesService,
+						   final TestClassService testClassService)
 	{
 		this.classesService = classesService;
+		this.testClassService = testClassService;
 	}
 
 	@GetMapping
@@ -71,4 +76,34 @@ public class ClassesResource
 		return ResponseEntity.noContent().build();
 	}
 
+	@PostMapping("/{classId}/tests/{testId}")
+	@ApiResponse(responseCode = "201")
+	public ResponseEntity<Void> addTestToClass(@PathVariable(name = "classId") final Integer classId,
+											   @PathVariable(name = "testId") final Integer testId)
+	{
+		testClassService.create(classId, testId);
+		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping("/{classId}/tests/get-all")
+	@ApiResponse(responseCode = "201")
+	public ResponseEntity<List<TestsResponse>> getAllTest(@PathVariable(name = "classId") final Integer classId)
+	{
+		return ResponseEntity.ok(testClassService.findAllByClass(classId));
+	}
+
+
+	@DeleteMapping("/{classId}/tests/{testId}")
+	@ApiResponse(responseCode = "204")
+	public ResponseEntity<Void> deleteTests(@PathVariable(name = "classId") final Integer classId,
+											@PathVariable(name = "testId") final Integer testId)
+	{
+		final ReferencedWarning referencedWarning = classesService.getReferencedWarning(classId);
+		if (referencedWarning != null)
+		{
+			throw new ReferencedException(referencedWarning);
+		}
+		testClassService.delete(classId, testId);
+		return ResponseEntity.noContent().build();
+	}
 }

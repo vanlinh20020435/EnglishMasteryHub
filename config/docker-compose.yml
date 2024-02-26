@@ -11,6 +11,8 @@ services:
         condition: service_healthy
     volumes:
       - ./log:/app/log
+      - ./content:/app/content
+      - ./uploads:/app/uploads
     networks:
       - java-app
   mysqld:

@@ -27,7 +27,7 @@ public class Auth
 	JwtUtils jwtUtils;
 
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@RequestBody AuthRequest request) throws IOException
+	public ResponseEntity<JwtResponse> authenticateUser(@RequestBody AuthRequest request) throws IOException
 	{
 		Authentication authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
@@ -38,7 +38,7 @@ public class Auth
 	}
 
 	@PostMapping("/signout")
-	public ResponseEntity<?> logoutUser()
+	public ResponseEntity<MessageResponse> logoutUser()
 	{
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		return ResponseEntity.ok(new MessageResponse("Log out successful!"));

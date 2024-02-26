@@ -41,16 +41,16 @@ public class Tests extends BaseEntity
 	@Column(nullable = false)
 	private Integer status;
 
-	@Column(nullable = false)
-	private OffsetDateTime timest;
-
-	@OneToMany(mappedBy = "tests")
+	@OneToMany(mappedBy = "tests", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	private Set<Questions> questions;
 
-	@OneToMany(mappedBy = "tests")
+	@OneToMany(mappedBy = "tests", cascade = CascadeType.REMOVE)
 	private Set<Scores> scores;
 
-	@OneToMany(mappedBy = "tests")
+	@OneToMany(mappedBy = "tests", cascade = CascadeType.REMOVE)
 	private Set<StudentTestDetail> testCodeStudentTestDetails;
+
+	@OneToMany(mappedBy = "tests", cascade = CascadeType.REMOVE)
+	private Set<TestClass> testClasses;
 
 }

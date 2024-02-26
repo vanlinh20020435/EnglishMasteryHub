@@ -44,14 +44,14 @@ public class Student extends BaseEntity
 	@Column
 	private LocalDate birthday;
 
-	@OneToMany(mappedBy = "student")
+	@OneToMany(mappedBy = "student", cascade = CascadeType.REMOVE)
 	private Set<Scores> studentScoreses;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "class_id", nullable = false)
 	private Classes classs;
 
-	@OneToMany(mappedBy = "student")
+	@OneToMany(mappedBy = "student", cascade = CascadeType.REMOVE)
 	private Set<StudentTestDetail> studentTestDetails;
 
 	@ManyToOne(fetch = FetchType.LAZY)

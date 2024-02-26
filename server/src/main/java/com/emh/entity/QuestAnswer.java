@@ -19,6 +19,9 @@ public class QuestAnswer extends BaseEntity
 	@Column(nullable = false, columnDefinition = "longtext")
 	private String answer;
 
+	@Column(nullable = false, columnDefinition = "longtext")
+	private String explanation;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "question_id", nullable = false)
 	private Questions question;

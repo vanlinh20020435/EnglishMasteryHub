@@ -4,8 +4,10 @@ import com.emh.entity.*;
 import com.emh.model.ModelMapper;
 import com.emh.payload.request.*;
 import com.emh.payload.response.*;
+import com.emh.service.FilesStorageService;
 import org.modelmapper.convention.MatchingStrategies;
 
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -148,7 +150,6 @@ public class MapperUtils
 		testsDTO.setTime(tests.getTime());
 		testsDTO.setDescription(tests.getDescription());
 		testsDTO.setStatus(tests.getStatus());
-		testsDTO.setTimest(tests.getTimest());
 		return testsDTO;
 	}
 
@@ -160,7 +161,6 @@ public class MapperUtils
 		tests.setTime(testsDTO.getTime());
 		tests.setDescription(testsDTO.getDescription());
 		tests.setStatus(testsDTO.getStatus());
-		tests.setTimest(OffsetDateTime.now());
 		return tests;
 	}
 
@@ -172,6 +172,7 @@ public class MapperUtils
 		questionsResponse.setExplanation(questions.getExplanation());
 		questionsResponse.setTime(questions.getTime());
 		questionsResponse.setType(questions.getDescription());
+		questionsResponse.setSkill(questions.getSkill());
 		return questionsResponse;
 	}
 
@@ -183,6 +184,7 @@ public class MapperUtils
 		questions.setTime(questionsRequest.getTime());
 		questions.setType(questionsRequest.getDescription());
 		questions.setTests(tests);
+		questions.setSkill(questionsRequest.getSkill());
 		return questions;
 	}
 
@@ -201,12 +203,14 @@ public class MapperUtils
 	public static QuestAnswerResponse questionAnswerMapToResponse(final QuestAnswer questAnswer, final QuestAnswerResponse questAnswerResponse)
 	{
 		questAnswerResponse.setAnswer(questAnswer.getAnswer());
+		questAnswerResponse.setExplanation(questAnswer.getExplanation());
 		return questAnswerResponse;
 	}
 
 	public static QuestAnswer questionAnswerMapToEntity(final QuestAnswerRequest questAnswerRequest, final QuestAnswer questAnswer, Questions questions)
 	{
 		questAnswer.setAnswer(questAnswerRequest.getAnswer());
+		questAnswer.setExplanation(questAnswerRequest.getExplanation());
 		questAnswer.setQuestion(questions);
 		return questAnswer;
 	}
@@ -231,10 +235,10 @@ public class MapperUtils
 		return questFileResponse;
 	}
 
-	public static QuestFile questionFileMapToEntity(final QuestFileRequest questFileRequest, final QuestFile questFile, Questions questions)
+	public static QuestFile questionFileMapToEntity(final QuestFileRequest questFileRequest, final QuestFile questFile, Questions questions) throws IOException
 	{
 		questFile.setType(questFileRequest.getType());
-		questFile.setUrl(questFileRequest.getUrl());
+		questFile.setUrl(FilesStorageService.moveFileUploadsToContent(questFileRequest.getUrl()));
 		questFile.setQuestion(questions);
 		return questFile;
 	}

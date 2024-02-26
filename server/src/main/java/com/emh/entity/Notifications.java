@@ -34,10 +34,10 @@ public class Notifications extends BaseEntity
 	@Column(nullable = false)
 	private OffsetDateTime timeSent;
 
-	@OneToMany(mappedBy = "notification")
+	@OneToMany(mappedBy = "notification", cascade = CascadeType.REMOVE)
 	private Set<StudentNotifications> studentNotificationses;
 
-	@OneToMany(mappedBy = "notification")
+	@OneToMany(mappedBy = "notification", cascade = CascadeType.REMOVE)
 	private Set<TeacherNotifications> teacherNotificationses;
 
 }

@@ -39,13 +39,13 @@ public class User extends BaseEntity
 	@Column(nullable = false, name = "\"role\"", length = 50)
 	private String role;
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
 	private Set<Admin> userAdmins;
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
 	private Set<Teacher> userTeachers;
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
 	private Set<Student> userStudents;
 
 }

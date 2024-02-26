@@ -14,6 +14,8 @@ public class PropertyController
 	public static String FILE_PATH;
 	public static String FILE_UPLOAD;
 	public static String FILE_UPLOAD_URI;
+	public static String FILE_STORAGE;
+	public static String FILE_STORAGE_URI;
 
 	@Value("${app.jwt.jwtSecret}")
 	public void setJwtSecret(String jwtSecret)
@@ -51,8 +53,8 @@ public class PropertyController
 		PropertyController.FILE_PATH = filePath;
 	}
 
-	@Value("${app.file.upload}")
-	public void setFileUpload(String fileUpload)
+	@Value("${app.file.file-upload-path}")
+	public void setFileUploadPath(String fileUpload)
 	{
 		PropertyController.FILE_UPLOAD = fileUpload;
 	}
@@ -61,5 +63,17 @@ public class PropertyController
 	public void setFileUploadUri(String fileUploadUri)
 	{
 		PropertyController.FILE_UPLOAD_URI = fileUploadUri;
+	}
+
+	@Value("${app.file.file-storage-path}")
+	public void setFileStoragePath(String fileStorage)
+	{
+		PropertyController.FILE_STORAGE = fileStorage;
+	}
+
+	@Value("${app.file.file-storage-uri}")
+	public void setFileStorageUri(String fileStorageUri)
+	{
+		PropertyController.FILE_STORAGE_URI = fileStorageUri;
 	}
 }

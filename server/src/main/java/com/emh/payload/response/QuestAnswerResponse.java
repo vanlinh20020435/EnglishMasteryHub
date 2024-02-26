@@ -11,4 +11,7 @@ public class QuestAnswerResponse
 {
 	@NotNull
 	private String answer;
+
+	@NotNull
+	private String explanation;
 }

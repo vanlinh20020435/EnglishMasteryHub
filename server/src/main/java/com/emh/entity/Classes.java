@@ -28,7 +28,9 @@ public class Classes extends BaseEntity
 	@OneToMany(mappedBy = "classs")
 	private Set<Student> classStudents;
 
-	@OneToMany(mappedBy = "classs")
+	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)
 	private Set<StudentNotifications> classStudentNotificationses;
 
+	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)
+	private Set<TestClass> testClasses;
 }

@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -40,7 +41,7 @@ public class TestsResource
 	}
 
 	@PostMapping
-	public ResponseEntity<Integer> createTests(@RequestBody @Valid final TestsRequest testsDTO)
+	public ResponseEntity<Integer> createTests(@RequestBody @Valid final TestsRequest testsDTO) throws IOException
 	{
 		final Integer createdTestCode = testsService.create(testsDTO);
 		return new ResponseEntity<>(createdTestCode, HttpStatus.CREATED);

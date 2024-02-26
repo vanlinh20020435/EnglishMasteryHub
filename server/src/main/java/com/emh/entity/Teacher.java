@@ -50,7 +50,7 @@ public class Teacher extends BaseEntity
 	@OneToMany(mappedBy = "teacher")
 	private Set<Classes> classes;
 
-	@OneToMany(mappedBy = "teacher")
+	@OneToMany(mappedBy = "teacher", cascade = CascadeType.REMOVE)
 	private Set<TeacherNotifications> teacherNotificationses;
 
 	@ManyToOne(fetch = FetchType.LAZY)

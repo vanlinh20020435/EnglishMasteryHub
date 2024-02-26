@@ -34,8 +34,5 @@ public class TestsResponse
 	private Integer status;
 
 	@NotNull
-	private OffsetDateTime timest;
-
-	@NotNull
 	private List<QuestionsResponse> questions;
 }
