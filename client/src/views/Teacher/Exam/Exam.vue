@@ -5,7 +5,7 @@
         isSearch
         isCreate
         title="Quản lý bài kiểm tra"
-        :createNew="updateAuthFunc"
+        :createNew="createNewExam"
       />
       <v-divider class="header_divider" :thickness="2"></v-divider>
       <v-row style="height: 90%" class="d-flex justify-center">
@@ -350,7 +350,7 @@ export default {
       }
       this.close();
     },
-    updateAuthFunc() {
+    createNewExam() {
       this.updateAuth({
         isLogin: true,
       });
