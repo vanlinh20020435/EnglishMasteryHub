@@ -7,6 +7,8 @@ import User from "@/views/Admin/User/index.vue";
 import { ManageClass, ManageExam, ManageCurriculum } from "@/views/Teacher";
 import { authenticationRole } from "@/stores";
 import Login from "@/views/Login.vue";
+import StudentManager from "@/views/Admin/User/Student.vue";
+import TeacherManager from "@/views/Admin/User/Teacher.vue";
 const routes = [
   {
     path: "/login",
@@ -57,11 +59,11 @@ const routes = [
           },
           {
             path: "student",
-            component: HomeView,
+            component: StudentManager,
           },
           {
             path: "teacher",
-            component: HomeView,
+            component: TeacherManager,
           },
         ],
       },
