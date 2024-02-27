@@ -1,0 +1,9 @@
+.header_title {
+  font-size: clamp(1.125rem, 2vw, 1.25rem);
+}
+
+.header_divider {
+  max-height: 100% !important;
+  flex: none !important;
+  margin-bottom: 1rem;
+}

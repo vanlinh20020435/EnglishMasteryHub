@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 
 export const authenticationRole = defineStore("authentication", () => {
   const authentication = ref({
-    role: "admin",
+    role: "teacher",
   });
   function updateAuth(newData) {
     authentication.value = newData;

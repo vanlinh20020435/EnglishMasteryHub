@@ -10,23 +10,23 @@
       </template>
     </v-app-bar>
     <DefaultSidebar :drawer="drawer" :menu="menu" />
-    <v-main class="d-flex justify-center" style="width: 100vw; height: 100vh;">
+    <v-main class="d-flex justify-center" style="width: 100vw; height: 100vh">
       <v-container>
-        <h2>ghigigi</h2>
-        <slot />
+        <!-- <h2>ghigigi</h2> -->
+        <slot></slot>
       </v-container>
     </v-main>
   </v-layout>
 </template>
 
 <script>
-import DefaultSidebar from '@/components/sidebar/DefaultSidebar.vue';
+import DefaultSidebar from "@/components/sidebar/DefaultSidebar.vue";
 export default {
   components: {
     DefaultSidebar,
   },
   props: {
-    menu: Array
+    menu: Array,
   },
   data: () => ({
     drawer: true,

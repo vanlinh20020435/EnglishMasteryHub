@@ -7,23 +7,23 @@ export default {
   },
   data: () => ({
     menu: [
-      {
-        title: "Quản lý",
-        value: "foo",
-        icon: "",
-        children: [
-          {
-            title: "Fizz",
-            value: "fizz",
-            icon: "",
-          },
-          {
-            title: "Buzz",
-            value: "buzz",
-            icon: "",
-          },
-        ],
-      },
+      // {
+      //   title: "Quản lý",
+      //   value: "foo",
+      //   icon: "",
+      //   children: [
+      //     {
+      //       title: "Fizz",
+      //       value: "fizz",
+      //       icon: "",
+      //     },
+      //     {
+      //       title: "Buzz",
+      //       value: "buzz",
+      //       icon: "",
+      //     },
+      //   ],
+      // },
       {
         title: "Quản lý lớp",
         value: "class",
@@ -46,7 +46,7 @@ export default {
 
 <template>
   <DefaultLayout :menu="menu">
-    <div style="width: 100%; height: 100%">teacher</div>
+    <!-- <div style="width: 100%; height: 100%">teacher</div> -->
     <router-view />
   </DefaultLayout>
 </template>
