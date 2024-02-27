@@ -8,7 +8,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class QuestFile extends BaseEntity
+public class ClassFile extends BaseEntity
 {
 
 	@Id
@@ -26,7 +26,7 @@ public class QuestFile extends BaseEntity
 	private String name;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "question_id", nullable = false)
-	private Questions question;
+	@JoinColumn(name = "classs_id", nullable = false)
+	private Classes classs;
 
 }

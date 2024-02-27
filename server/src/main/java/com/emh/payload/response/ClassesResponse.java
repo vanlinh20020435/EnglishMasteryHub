@@ -17,6 +17,10 @@ public class ClassesResponse
 	@Size(max = 50)
 	private String className;
 
+	private String avatar;
+
+	private String description;
+
 	@NotNull
 	private TeacherResponse teacher;
 

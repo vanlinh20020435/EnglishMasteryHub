@@ -61,6 +61,8 @@ public class TeacherService
 		teacherRequest.setPassword(new BCryptPasswordEncoder().encode(teacherRequest.getPassword()));
 		User user = MapperUtils.map(teacherRequest, User.class);
 		user.setRole(Role.TEACHER.toString());
+		user.setStatus(1);
+		teacher.setStatus(1);
 		user = userRepository.save(user);
 		MapperUtils.teacherMapToEntity(teacherRequest, teacher, user);
 		return teacherRepository.save(teacher).getTeacherId();

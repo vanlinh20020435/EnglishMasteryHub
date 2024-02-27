@@ -124,17 +124,21 @@ public class MapperUtils
 		return student;
 	}
 
-	public static ClassesResponse classMapToResponse(final Classes classes, final ClassesResponse classesDTO)
+	public static ClassesResponse classMapToResponse(final Classes classes, final ClassesResponse classesResponse)
 	{
-		classesDTO.setClassId(classes.getClassId());
-		classesDTO.setClassName(classes.getClassName());
-		classesDTO.setTeacher(classes.getTeacher() == null ? null : MapperUtils.teacherMapToResponse(classes.getTeacher(), new TeacherResponse()));
-		return classesDTO;
+		classesResponse.setClassId(classes.getClassId());
+		classesResponse.setClassName(classes.getClassName());
+		classesResponse.setTeacher(classes.getTeacher() == null ? null : MapperUtils.teacherMapToResponse(classes.getTeacher(), new TeacherResponse()));
+		classesResponse.setAvatar(classes.getAvatar());
+		classesResponse.setDescription(classes.getDescription());
+		return classesResponse;
 	}
 
-	public static Classes classMapToEntity(final ClassesRequest classesDTO, final Classes classes, final Teacher teacher)
+	public static Classes classMapToEntity(final ClassesRequest classesRequest, final Classes classes, final Teacher teacher)
 	{
-		classes.setClassName(classesDTO.getClassName());
+		classes.setClassName(classesRequest.getClassName());
+		classes.setAvatar(classesRequest.getAvatar());
+		classes.setDescription(classesRequest.getDescription());
 		if (teacher == null)
 			throw new NotFoundException("teacher not found");
 		classes.setTeacher(teacher);
@@ -232,6 +236,8 @@ public class MapperUtils
 	{
 		questFileResponse.setType(questFile.getType());
 		questFileResponse.setUrl(questFile.getUrl());
+		questFileResponse.setName(questFile.getName());
+		questFileResponse.setId(questFile.getId());
 		return questFileResponse;
 	}
 
@@ -239,6 +245,7 @@ public class MapperUtils
 	{
 		questFile.setType(questFileRequest.getType());
 		questFile.setUrl(FilesStorageService.moveFileUploadsToContent(questFileRequest.getUrl()));
+		questFile.setName(questFileRequest.getName());
 		questFile.setQuestion(questions);
 		return questFile;
 	}

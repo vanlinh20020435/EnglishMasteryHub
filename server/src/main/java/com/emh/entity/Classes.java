@@ -21,6 +21,12 @@ public class Classes extends BaseEntity
 	@Column(nullable = false, length = 50)
 	private String className;
 
+	@Column
+	private String avatar;
+
+	@Column
+	private String description;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "teacher_id", nullable = false)
 	private Teacher teacher;
@@ -33,4 +39,7 @@ public class Classes extends BaseEntity
 
 	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)
 	private Set<TestClass> testClasses;
+
+	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)
+	private Set<ClassFile> classFiles;
 }

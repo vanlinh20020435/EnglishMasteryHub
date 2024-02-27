@@ -35,5 +35,7 @@ app:
   file:
     handler: /uploads/**
     path: /uploads/
-    upload: uploads
-    file-upload-uri: http://englishmasteryhub:8080/uploads/$FILE_NAME$
+    file-upload-uri: http://englishmasteryhub.online:8080/uploads/$FILE_NAME$
+    file-upload-path: uploads/
+    file-storage-uri: http://englishmasteryhub.online:8080/uploads/$FILE_NAME$
+    file-storage-path: content/

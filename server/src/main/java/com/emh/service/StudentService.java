@@ -60,6 +60,8 @@ public class StudentService
 		studentRequest.setPassword(new BCryptPasswordEncoder().encode(studentRequest.getPassword()));
 		User user = MapperUtils.map(studentRequest, User.class);
 		user.setRole(Role.STUDENT.toString());
+		user.setStatus(1);
+		student.setStatus(1);
 		user = userRepository.save(user);
 		Classes classs = classesRepository.findById(studentRequest.getClassId())
 				.orElseThrow(NotFoundException::new);

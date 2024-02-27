@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class QuestFileResponse
+public class ClassFileResponse
 {
 	private Integer id;
 

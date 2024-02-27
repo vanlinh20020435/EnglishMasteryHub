@@ -51,6 +51,8 @@ public class AdminService
 		adminDTO.setPassword(new BCryptPasswordEncoder().encode(adminDTO.getPassword()));
 		User user = MapperUtils.map(adminDTO, User.class);
 		user.setRole(Role.ADMIN.toString());
+		user.setStatus(1);
+		admin.setStatus(1);
 		user = userRepository.save(user);
 		MapperUtils.adminMapToEntity(adminDTO, admin, user);
 		return adminRepository.save(admin).getAdminId();

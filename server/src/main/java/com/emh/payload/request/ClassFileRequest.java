@@ -1,4 +1,4 @@
-package com.emh.payload.response;
+package com.emh.payload.request;
 
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -7,10 +7,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class QuestFileResponse
+public class ClassFileRequest
 {
-	private Integer id;
-
 	@Size(max = 255)
 	private String type;
 
