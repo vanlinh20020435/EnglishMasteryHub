@@ -1,19 +1,36 @@
 <template>
-  <v-list-item v-if="!item.children" :active="active" :prepend-icon="item.icon" :title="item.title" @click="onClickItem">
+  <v-list-item
+    v-if="!item.children"
+    :active="active"
+    :prepend-icon="item.icon"
+    :title="item.title"
+    @click="onClickItem"
+  >
   </v-list-item>
   <v-list-group v-else :value="item.value">
     <template v-slot:activator="{ props }">
-      <v-list-item :active="active" :prepend-icon="item.icon" v-bind="props" :title="item.title"></v-list-item>
+      <v-list-item
+        :active="active"
+        :prepend-icon="item.icon"
+        v-bind="props"
+        :title="item.title"
+      ></v-list-item>
     </template>
-    <v-list-item v-for="({ title, icon, value }, idx) in item.children" :active="activeItem === idx && active"
-      @click="() => onClickItem(idx)" :value="value" :title="title" :prepend-icon="icon"
-      :class="(rail ? 'rail ' : '') + 'sub-sidebar-item-custom'">
+    <v-list-item
+      v-for="({ title, icon, value }, idx) in item.children"
+      :active="activeItem === idx && active"
+      @click="() => onClickItem(idx)"
+      :value="value"
+      :title="title"
+      :prepend-icon="icon"
+      :class="(rail ? 'rail ' : '') + 'sub-sidebar-item-custom'"
+    >
     </v-list-item>
   </v-list-group>
 </template>
 
 <script>
-import { mapState } from 'pinia'
+import { mapState } from "pinia";
 import { authenticationRole } from "@/stores";
 
 export default {
@@ -28,7 +45,7 @@ export default {
     isOpen: true,
   }),
   computed: {
-    ...mapState(authenticationRole, ['authentication']),
+    ...mapState(authenticationRole, ["authentication"]),
   },
   methods: {
     onClickItem(idx = null) {
@@ -39,8 +56,9 @@ export default {
       }
       this.enableActive();
       this.$router.replace(path);
-    }
-  }
+      console.log("authenticationRole ===", this.authentication);
+    },
+  },
 };
 </script>
 

@@ -117,3 +117,17 @@ body {
   background-color: var(--btn-color) !important;
   color: #484848 !important;
 }
+
+.contain_image {
+  object-fit: contain;
+}
+
+.v-data-table__exam .v-data-table__th .v-data-table-header__content span {
+  font-weight: bold;
+  border-bottom: 3px solid var(--primary-color);
+}
+
+.v-container__full {
+  width: 100% !important;
+  max-width: 100% !important;
+}

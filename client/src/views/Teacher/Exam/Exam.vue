@@ -1,45 +1,18 @@
 <template>
   <v-card class="height-100">
-    <v-container class="d-flex flex-column height-100">
-      <v-row class="align-center">
-        <v-col cols="12" md="8" class="header_title font-bold color-primary">
-          Quản lý bài kiểm tra
-        </v-col>
-        <v-col cols="12" md="4" style="padding-right: 5%">
-          <v-row class="d-flex align-center">
-            <v-autocomplete
-              :items="items"
-              auto-select-first
-              class="flex-full-width"
-              density="comfortable"
-              item-props
-              menu-icon=""
-              placeholder="Tìm kiếm tên bài kiểm tra"
-              prepend-inner-icon="mdi-magnify"
-              rounded
-              theme="light"
-              variant="solo"
-              hide-details
-              color="#00bd7e"
-            ></v-autocomplete>
-
-            <v-icon
-              color="#00bd7e"
-              size="x-large"
-              class="cursor-pointer"
-              style="padding-left: 2rem"
-            >
-              mdi-plus-circle
-            </v-icon>
-          </v-row>
-        </v-col>
-      </v-row>
+    <v-container class="d-flex flex-column height-100 v-container__full">
+      <HeaderTitle
+        isSearch
+        isCreate
+        title="Quản lý bài kiểm tra"
+        :createNew="updateAuthFunc"
+      />
       <v-divider class="header_divider" :thickness="2"></v-divider>
-      <v-row style="height: 90%">
-        <v-col class="height-100" cols="12" md="12">
+      <v-row style="height: 90%" class="d-flex justify-center">
+        <v-col class="height-100" cols="12" md="11">
           <v-data-table
             style="overflow-y: auto"
-            class="height-100 scrollbar-custom"
+            class="height-100 scrollbar-custom v-data-table__exam"
             fixed-header
             :headers="headers"
             :items="desserts"
@@ -142,7 +115,7 @@
                 mdi-pencil
               </v-icon>
               <v-icon color="red" size="default" @click="deleteItem(item)">
-                mdi-delete
+                mdi-trash-can
               </v-icon>
             </template>
             <template v-slot:no-data>
@@ -156,8 +129,16 @@
 </template>
 
 <script>
+import HeaderTitle from "@/components/header/HeaderTitle.vue";
+import { mapState } from "pinia";
+
+import { authenticationRole } from "@/stores";
+
 export default {
   name: "ManageExam",
+  components: {
+    HeaderTitle,
+  },
   data: () => ({
     selected: [],
     dialog: false,
@@ -202,6 +183,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
     },
+    ...mapState(authenticationRole, ["updateAuth"]),
   },
 
   watch: {
@@ -367,6 +349,11 @@ export default {
         this.desserts.push(this.editedItem);
       }
       this.close();
+    },
+    updateAuthFunc() {
+      this.updateAuth({
+        isLogin: true,
+      });
     },
   },
 };
