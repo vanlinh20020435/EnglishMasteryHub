@@ -10,38 +10,42 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-public class User {
+public class User extends BaseEntity
+{
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer userId;
+	@Id
+	@Column(nullable = false, updatable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer userId;
 
-    @Column(nullable = false, length = 16)
-    private String username;
+	@Column(nullable = false, length = 16)
+	private String username;
 
-    @Column(length = 50)
-    private String email;
+	@Column(length = 50)
+	private String email;
 
-    @Column(nullable = false, length = 32)
-    private String password;
+	@Column(nullable = false)
+	private String password;
 
-    @Column(nullable = false, length = 50)
-    private String name;
+	@Column(nullable = false, length = 50)
+	private String name;
 
-    @Column(nullable = false)
-    private Integer status;
+	@Column(nullable = false)
+	private Integer status;
 
-    @Column(nullable = false, name = "\"role\"", length = 50)
-    private String role;
+	@Column(nullable = false)
+	private Integer gender;
 
-    @OneToMany(mappedBy = "user")
-    private Set<Admin> userAdmins;
+	@Column(nullable = false, name = "\"role\"", length = 50)
+	private String role;
 
-    @OneToMany(mappedBy = "user")
-    private Set<Teacher> userTeachers;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	private Set<Admin> userAdmins;
 
-    @OneToMany(mappedBy = "user")
-    private Set<Student> userStudents;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	private Set<Teacher> userTeachers;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	private Set<Student> userStudents;
 
 }

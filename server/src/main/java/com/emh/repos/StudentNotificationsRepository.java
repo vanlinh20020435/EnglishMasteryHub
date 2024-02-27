@@ -5,8 +5,9 @@ import com.emh.entity.StudentNotifications;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface StudentNotificationsRepository extends JpaRepository<StudentNotifications, Integer> {
+public interface StudentNotificationsRepository extends JpaRepository<StudentNotifications, Integer>
+{
 
-    StudentNotifications findFirstByClasss(Classes classes);
+	StudentNotifications findFirstByClasss(Classes classes);
 
 }

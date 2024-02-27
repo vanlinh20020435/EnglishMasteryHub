@@ -12,22 +12,27 @@ import java.util.Optional;
 
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
-public class JpaAuditingConfig {
+public class JpaAuditingConfig
+{
 
-    @Bean
-    public AuditorAware<String> auditorProvider() {
-        return new AuditorAwareImpl();
-    }
+	@Bean
+	public AuditorAware<String> auditorProvider()
+	{
+		return new AuditorAwareImpl();
+	}
 
-    public static class AuditorAwareImpl implements AuditorAware<String> {
+	public static class AuditorAwareImpl implements AuditorAware<String>
+	{
 
-        @Override
-        public Optional<String> getCurrentAuditor() {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null) {
-                return null;
-            }
-            return Optional.ofNullable(authentication.getName());
-        }
-    }
+		@Override
+		public Optional<String> getCurrentAuditor()
+		{
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			if (authentication == null)
+			{
+				return null;
+			}
+			return Optional.ofNullable(authentication.getName());
+		}
+	}
 }

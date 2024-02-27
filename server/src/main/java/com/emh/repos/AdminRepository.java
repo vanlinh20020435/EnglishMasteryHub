@@ -5,8 +5,9 @@ import com.emh.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface AdminRepository extends JpaRepository<Admin, Integer> {
+public interface AdminRepository extends JpaRepository<Admin, Integer>
+{
 
-    Admin findFirstByUser(User user);
+	Admin findFirstByUser(User user);
 
 }

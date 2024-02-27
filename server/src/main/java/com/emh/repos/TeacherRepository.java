@@ -5,8 +5,9 @@ import com.emh.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface TeacherRepository extends JpaRepository<Teacher, Integer> {
+public interface TeacherRepository extends JpaRepository<Teacher, Integer>
+{
 
-    Teacher findFirstByUser(User user);
+	Teacher findFirstByUser(User user);
 
 }

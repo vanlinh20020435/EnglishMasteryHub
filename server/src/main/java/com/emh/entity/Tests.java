@@ -11,47 +11,46 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-public class Tests {
+public class Tests extends BaseEntity
+{
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer testCode;
+	@Id
+	@Column(nullable = false, updatable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer testId;
 
-    @Column(nullable = false)
-    private String testName;
+	@Column(nullable = false)
+	private String testName;
 
-    @Column(nullable = false, length = 32)
-    private String password;
+	@Column(length = 32)
+	private String password;
 
-    @Column
-    private Integer subjectId;
+	@Column
+	private Integer totalQuestions;
 
-    @Column(nullable = false)
-    private Integer gradeId;
+	@Column
+	private Integer time;
 
-    @Column(nullable = false)
-    private Integer totalQuestions;
+	@Column(
+			nullable = false,
+			name = "\"description\"",
+			columnDefinition = "longtext"
+	)
+	private String description;
 
-    @Column(nullable = false)
-    private Integer timeToDo;
+	@Column(nullable = false)
+	private Integer status;
 
-    @Column(nullable = false, columnDefinition = "longtext")
-    private String note;
+	@OneToMany(mappedBy = "tests", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	private Set<Questions> questions;
 
-    @Column(nullable = false)
-    private Integer status;
+	@OneToMany(mappedBy = "tests", cascade = CascadeType.REMOVE)
+	private Set<Scores> scores;
 
-    @Column(nullable = false)
-    private OffsetDateTime timest;
+	@OneToMany(mappedBy = "tests", cascade = CascadeType.REMOVE)
+	private Set<StudentTestDetail> testCodeStudentTestDetails;
 
-    @OneToMany(mappedBy = "testCode")
-    private Set<QuestOfTest> testCodeQuestOfTests;
-
-    @OneToMany(mappedBy = "testCode")
-    private Set<Scores> testCodeScoreses;
-
-    @OneToMany(mappedBy = "testCode")
-    private Set<StudentTestDetail> testCodeStudentTestDetails;
+	@OneToMany(mappedBy = "tests", cascade = CascadeType.REMOVE)
+	private Set<TestClass> testClasses;
 
 }

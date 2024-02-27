@@ -10,24 +10,36 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-public class Classes {
+public class Classes extends BaseEntity
+{
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer classId;
+	@Id
+	@Column(nullable = false, updatable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer classId;
 
-    @Column(nullable = false, length = 50)
-    private String className;
+	@Column(nullable = false, length = 50)
+	private String className;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teacher_id", nullable = false)
-    private Teacher teacher;
+	@Column
+	private String avatar;
 
-    @OneToMany(mappedBy = "classs")
-    private Set<Student> classStudents;
+	@Column
+	private String description;
 
-    @OneToMany(mappedBy = "classs")
-    private Set<StudentNotifications> classStudentNotificationses;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "teacher_id", nullable = false)
+	private Teacher teacher;
 
+	@OneToMany(mappedBy = "classs")
+	private Set<Student> classStudents;
+
+	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)
+	private Set<StudentNotifications> classStudentNotificationses;
+
+	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)
+	private Set<TestClass> testClasses;
+
+	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)
+	private Set<ClassFile> classFiles;
 }
