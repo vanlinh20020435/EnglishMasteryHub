@@ -6,98 +6,102 @@ import Admin from "@/views/Admin/index.vue";
 import User from "@/views/Admin/User/index.vue";
 import { ManageClass, ManageExam, ManageCurriculum } from "@/views/Teacher";
 import { authenticationRole } from "@/stores";
+import Login from "@/views/Login.vue";
+const routes = [
+  {
+    path: "/login",
+    component: Login,
+    public: true
+  },
+  {
+    path: "/register",
+    component: HomeView,
+    public: true
+  },
+  {
+    path: "/teacher",
+    component: Teacher,
+    children: [
+      {
+        path: "",
+        component: Manager,
+      },
+      {
+        path: "manager",
+        component: Manager,
+      },
+      {
+        path: "class",
+        component: ManageClass,
+      },
+      {
+        path: "exam",
+        component: ManageExam,
+      },
+      {
+        path: "curriculum",
+        component: ManageCurriculum,
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    component: Admin,
+    children: [
+      {
+        path: "user",
+        children: [
+          {
+            path: "",
+            component: User,
+          },
+          {
+            path: "student",
+            component: HomeView,
+          },
+          {
+            path: "teacher",
+            component: HomeView,
+          },
+        ],
+      },
+      {
+        path: "class",
+        component: HomeView,
+      },
+      {
+        path: "event",
+        component: HomeView,
+      },
+    ],
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: "/login",
+  },
+]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: "/login",
-      component: HomeView,
-    },
-    {
-      path: "/register",
-      component: HomeView,
-    },
-    {
-      path: "/teacher",
-      component: Teacher,
-      children: [
-        {
-          path: "",
-          component: Manager,
-        },
-        {
-          path: "manager",
-          component: Manager,
-        },
-        {
-          path: "class",
-          component: ManageClass,
-        },
-        {
-          path: "exam",
-          component: ManageExam,
-        },
-        {
-          path: "curriculum",
-          component: ManageCurriculum,
-        },
-      ],
-    },
-    {
-      path: "/admin",
-      component: Admin,
-      children: [
-        {
-          path: "user",
-          children: [
-            {
-              path: "",
-              component: User,
-            },
-            {
-              path: "student",
-              component: HomeView,
-            },
-            {
-              path: "teacher",
-              component: HomeView,
-            },
-          ],
-        },
-        {
-          path: "class",
-          component: HomeView,
-        },
-        {
-          path: "event",
-          component: HomeView,
-        },
-      ],
-    },
-    {
-      path: "/:pathMatch(.*)*",
-      redirect: "/login",
-    },
-  ],
+  routes,
 });
 
 router.beforeEach((to, from, next) => {
-  var isLoggedIn = false;
   const path = to.fullPath;
   const authenticationStore = authenticationRole();
   const { authentication } = authenticationStore;
-  // check path
-  const pathSplitted = path.split("/");
+  const pathSplitted = path.split('/')
+  if (routes.some(route => (route.path === path) && route.public && !to.redirectedFrom)) {
+    next()
+    return
+  }
   if (authentication.role) {
-    isLoggedIn = true;
     if (pathSplitted.length && pathSplitted[1] === authentication.role) {
       next();
     } else {
       next("/" + authentication.role);
     }
-  }
-  if (!isLoggedIn) {
+  } else {
     next("/login");
   }
 });

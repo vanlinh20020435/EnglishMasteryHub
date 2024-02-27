@@ -21,6 +21,7 @@
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
   --primary-color: #00bd7e;
   --text-color: #4d4d4d;
+  --btn-color: #efe841;
 }
 
 /* semantic color variables for this project */
@@ -110,4 +111,9 @@ body {
 /* Font */
 .font-bold {
   font-weight: bold;
+}
+
+.bg-btn {
+  background-color: var(--btn-color) !important;
+  color: #484848 !important;
 }

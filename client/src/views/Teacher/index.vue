@@ -27,7 +27,7 @@ export default {
       {
         title: "Quản lý lớp",
         value: "class",
-        icon: "mdi-google-classroom",
+        icon: "mdi-account-multiple",
       },
       {
         title: "Quản lý bài kiểm tra",

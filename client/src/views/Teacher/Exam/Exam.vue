@@ -2,26 +2,36 @@
   <v-card class="height-100">
     <v-container class="d-flex flex-column height-100">
       <v-row class="align-center">
-        <v-col cols="12" md="7" class="header_title font-bold color-text">
+        <v-col cols="12" md="8" class="header_title font-bold color-primary">
           Quản lý bài kiểm tra
         </v-col>
-        <v-col cols="12" md="1">
-          <v-icon color="#00bd7e" size="x-large" class="cursor-pointer"> mdi-plus </v-icon>
-        </v-col>
-        <v-col cols="12" md="4">
-          <v-autocomplete
-            :items="items"
-            auto-select-first
-            class="flex-full-width"
-            density="comfortable"
-            item-props
-            menu-icon=""
-            placeholder="Tìm kiếm tên bài kiểm tra"
-            prepend-inner-icon="mdi-magnify"
-            rounded
-            theme="light"
-            variant="solo"
-          ></v-autocomplete>
+        <v-col cols="12" md="4" style="padding-right: 5%">
+          <v-row class="d-flex align-center">
+            <v-autocomplete
+              :items="items"
+              auto-select-first
+              class="flex-full-width"
+              density="comfortable"
+              item-props
+              menu-icon=""
+              placeholder="Tìm kiếm tên bài kiểm tra"
+              prepend-inner-icon="mdi-magnify"
+              rounded
+              theme="light"
+              variant="solo"
+              hide-details
+              color="#00bd7e"
+            ></v-autocomplete>
+
+            <v-icon
+              color="#00bd7e"
+              size="x-large"
+              class="cursor-pointer"
+              style="padding-left: 2rem"
+            >
+              mdi-plus-circle
+            </v-icon>
+          </v-row>
         </v-col>
       </v-row>
       <v-divider class="header_divider" :thickness="2"></v-divider>
@@ -124,7 +134,7 @@
             </template>
             <template v-slot:item.actions="{ item }">
               <v-icon
-                color="blue"
+                color="#00bd7e"
                 size="default"
                 class="me-2"
                 @click="editItem(item)"
