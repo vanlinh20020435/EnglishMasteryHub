@@ -35,17 +35,45 @@
             <thead>
                 <tr>
                     <th class="text-left">
-                        Name
+                        #
                     </th>
                     <th class="text-left">
-                        Calories
+                        adminId
+                    </th>
+                    <th class="text-left">
+                        username
+                    </th>
+                    <th class="text-left">
+                        email
+                    </th>
+                    <th class="text-left">
+                        password
+                    </th>
+                    <th class="text-left">
+                        name
+                    </th>
+                    <th class="text-left">
+                        status
+                    </th>
+                    <th class="text-left">
+                        avatar
+                    </th>
+                    <th class="text-left">
+                        Actions
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="item in desserts" :key="item.name">
+                <tr v-for="(item, idx) in desserts" :key="item.name">
+                    <td>{{ idx + 1 }}</td>
+                    <td>{{ item.adminId }}</td>
+                    <td>{{ item.username }}</td>
+                    <td>{{ item.email }}</td>
+                    <td>{{ item.password }}</td>
                     <td>{{ item.name }}</td>
-                    <td>{{ item.calories }}</td>
+                    <td>{{ item.status }}</td>
+                    <td>{{ item.avatar }}</td>
+                    <td>actions</td>
                 </tr>
             </tbody>
         </v-table>
@@ -60,52 +88,49 @@ export default {
             text: `I am a multi-line snackbar.\nI can have more than one line. This is another line that is quite long.`,
             desserts: [
                 {
-                    name: 'Frozen Yogurt',
-                    calories: 159,
+                    adminId: 0,
+                    username: "string",
+                    email: "string",
+                    password: "string",
+                    name: "string",
+                    status: 0,
+                    avatar: "string",
                 },
                 {
-                    name: 'Ice cream sandwich',
-                    calories: 237,
+                    adminId: 0,
+                    username: "string",
+                    email: "string",
+                    password: "string",
+                    name: "string",
+                    status: 0,
+                    avatar: "string",
                 },
                 {
-                    name: 'Frozen Yogurt',
-                    calories: 159,
+                    adminId: 0,
+                    username: "string",
+                    email: "string",
+                    password: "string",
+                    name: "string",
+                    status: 0,
+                    avatar: "string",
                 },
                 {
-                    name: 'Ice cream sandwich',
-                    calories: 237,
+                    adminId: 0,
+                    username: "string",
+                    email: "string",
+                    password: "string",
+                    name: "string",
+                    status: 0,
+                    avatar: "string",
                 },
                 {
-                    name: 'Eclair',
-                    calories: 262,
-                },
-                {
-                    name: 'Cupcake',
-                    calories: 305,
-                },
-                {
-                    name: 'Gingerbread',
-                    calories: 356,
-                },
-                {
-                    name: 'Jelly bean',
-                    calories: 375,
-                },
-                {
-                    name: 'Lollipop',
-                    calories: 392,
-                },
-                {
-                    name: 'Honeycomb',
-                    calories: 408,
-                },
-                {
-                    name: 'Donut',
-                    calories: 452,
-                },
-                {
-                    name: 'KitKat',
-                    calories: 518,
+                    adminId: 0,
+                    username: "string",
+                    email: "string",
+                    password: "string",
+                    name: "string",
+                    status: 0,
+                    avatar: "string",
                 },
             ],
             valid: false,

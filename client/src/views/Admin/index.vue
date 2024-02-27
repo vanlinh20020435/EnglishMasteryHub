@@ -31,17 +31,17 @@ export default {
             },
             {
                 title: 'Quản lí lớp học',
-                value: '/admin/class',
+                value: 'class',
                 icon: 'mdi-google-classroom',
             },
             {
                 title: 'Quản lí sự kiện',
-                value: '/admin/event',
+                value: 'event',
                 icon: 'mdi-calendar-star',
             },
         ],
     }),
-    mounted() {
+    created() {
         this.$router.replace('/admin/user')
     }
 }
