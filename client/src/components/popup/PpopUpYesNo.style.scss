@@ -1,0 +1,60 @@
+.card-popup {
+  border-radius: 1rem !important;
+  padding: 1.5rem 0.5rem 1rem;
+
+  .v-btn--size-default {
+    height: 40px;
+  }
+
+  .popup-actions {
+    padding-top: 1rem;
+  }
+  .popup-msg {
+    font-size: clamp(0.875rem, 5vw, 1rem);
+    text-align: center;
+  }
+  .btn-default {
+    padding: 0 35px;
+    height: 40px;
+    line-height: 37px;
+    border-radius: 20px;
+    border: 2px solid #00a69c;
+    font-size: 16px;
+    color: #00a69c;
+    /* transition: 0.8s; */
+    background: #fff;
+    box-sizing: border-box;
+    max-width: 200px;
+    width: 155px;
+    font-weight: bold;
+
+    .v-btn__content {
+      line-height: normal;
+      font-weight: bold;
+      color: #00a69c;
+      font-size: clamp(0.875rem, 5vw, 1rem);
+      text-transform: initial;
+    }
+  }
+
+  .btn-gradient {
+    padding: 0 25px;
+    height: 40px;
+    border-radius: 20px;
+    border: none;
+    background-image: linear-gradient(to right, #00b9b7, #00e1a0);
+    font-size: 16px;
+    line-height: 40px;
+    color: #fff;
+
+    &:hover {
+      transition: 0s;
+      background: #00c0b4;
+      color: #ffffff;
+    }
+
+    .v-btn__content {
+      color: #fff;
+    }
+  }
+}
