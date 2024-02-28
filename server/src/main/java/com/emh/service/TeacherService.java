@@ -6,6 +6,7 @@ import com.emh.entity.TeacherNotifications;
 import com.emh.entity.User;
 import com.emh.model.Role;
 import com.emh.payload.request.TeacherRequest;
+import com.emh.payload.response.ClassesResponse;
 import com.emh.payload.response.TeacherResponse;
 import com.emh.repos.ClassesRepository;
 import com.emh.repos.TeacherNotificationsRepository;
@@ -108,4 +109,11 @@ public class TeacherService
 		return null;
 	}
 
+	public List<ClassesResponse> getAllClasss(Integer teacherId)
+	{
+		Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(NotFoundException::new);
+		return teacher.getClasses().stream()
+				.map(classs -> MapperUtils.classMapToResponse(classs, new ClassesResponse()))
+				.toList();
+	}
 }

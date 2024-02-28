@@ -4,6 +4,7 @@ import com.emh.payload.request.ClassFileRequest;
 import com.emh.payload.request.ClassesRequest;
 import com.emh.payload.response.ClassFileResponse;
 import com.emh.payload.response.ClassesResponse;
+import com.emh.payload.response.StudentResponse;
 import com.emh.payload.response.TestsResponse;
 import com.emh.service.ClassFileService;
 import com.emh.service.ClassesService;
@@ -15,11 +16,12 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+@CrossOrigin("*")
 @RestController
 @RequestMapping(value = "/api/classess", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ClassesResource
@@ -39,12 +41,14 @@ public class ClassesResource
 	}
 
 	@GetMapping
+	@Secured("ROLE_ADMIN")
 	public ResponseEntity<List<ClassesResponse>> getAllClassess()
 	{
 		return ResponseEntity.ok(classesService.findAll());
 	}
 
 	@GetMapping("/{classId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	public ResponseEntity<ClassesResponse> getClasses(
 			@PathVariable(name = "classId") final Integer classId)
 	{
@@ -52,6 +56,7 @@ public class ClassesResource
 	}
 
 	@PostMapping
+	@Secured("ROLE_ADMIN")
 	@ApiResponse(responseCode = "201")
 	public ResponseEntity<Integer> createClasses(@RequestBody @Valid final ClassesRequest classesRequest)
 	{
@@ -60,6 +65,7 @@ public class ClassesResource
 	}
 
 	@PutMapping("/{classId}")
+	@Secured("ROLE_ADMIN")
 	public ResponseEntity<Integer> updateClasses(
 			@PathVariable(name = "classId") final Integer classId,
 			@RequestBody @Valid final ClassesRequest classesRequest)
@@ -69,6 +75,7 @@ public class ClassesResource
 	}
 
 	@DeleteMapping("/{classId}")
+	@Secured("ROLE_ADMIN")
 	@ApiResponse(responseCode = "204")
 	public ResponseEntity<Void> deleteClasses(
 			@PathVariable(name = "classId") final Integer classId)
@@ -83,6 +90,7 @@ public class ClassesResource
 	}
 
 	@PostMapping("/{classId}/tests/{testId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	@ApiResponse(responseCode = "201")
 	public ResponseEntity<Void> addTestToClass(@PathVariable(name = "classId") final Integer classId,
 											   @PathVariable(name = "testId") final Integer testId)
@@ -92,6 +100,7 @@ public class ClassesResource
 	}
 
 	@GetMapping("/{classId}/tests/get-all")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	@ApiResponse(responseCode = "201")
 	public ResponseEntity<List<TestsResponse>> getAllTest(@PathVariable(name = "classId") final Integer classId)
 	{
@@ -100,6 +109,7 @@ public class ClassesResource
 
 
 	@DeleteMapping("/{classId}/tests/{testId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	@ApiResponse(responseCode = "204")
 	public ResponseEntity<Void> deleteTests(@PathVariable(name = "classId") final Integer classId,
 											@PathVariable(name = "testId") final Integer testId)
@@ -109,6 +119,7 @@ public class ClassesResource
 	}
 
 	@PostMapping("/{classId}/files")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	@ApiResponse(responseCode = "201")
 	public ResponseEntity<Integer> addFileToClass(@PathVariable(name = "classId") final Integer classId,
 											   @RequestBody @Valid final ClassFileRequest classFileRequest)
@@ -118,6 +129,7 @@ public class ClassesResource
 	}
 
 	@GetMapping("/{classId}/files/get-all")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	@ApiResponse(responseCode = "201")
 	public ResponseEntity<List<ClassFileResponse>> getAllFiles(@PathVariable(name = "classId") final Integer classId)
 	{
@@ -126,11 +138,20 @@ public class ClassesResource
 
 
 	@DeleteMapping("/{classId}/files/{fileId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	@ApiResponse(responseCode = "204")
 	public ResponseEntity<Void> deleteFile(@PathVariable(name = "classId") final Integer classId,
 											@PathVariable(name = "fileId") final Integer fileId)
 	{
 		classFileService.delete(classId, fileId);
 		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping("/{classId}/students/get-all")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
+	@ApiResponse(responseCode = "201")
+	public ResponseEntity<List<StudentResponse>> getAllStudents(@PathVariable(name = "classId") final Integer classId)
+	{
+		return ResponseEntity.ok(classesService.getAllStudents(classId));
 	}
 }

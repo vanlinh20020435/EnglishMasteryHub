@@ -5,11 +5,13 @@ import com.emh.service.UserService;
 import com.emh.util.SecurityUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+@CrossOrigin("*")
 @RestController
 @RequestMapping(value = "/api/user", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserResource
@@ -23,6 +25,7 @@ public class UserResource
 	}
 
 	@GetMapping("/userinfo")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
 	public ResponseEntity<?> getUserInfo()
 	{
 		UserDetailsImpl userDetails = SecurityUtils.getPrincipal();

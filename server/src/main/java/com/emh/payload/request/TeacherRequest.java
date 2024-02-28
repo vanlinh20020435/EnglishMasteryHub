@@ -29,8 +29,6 @@ public class TeacherRequest
 
 	private Integer gender;
 
-	private Integer status;
-
 	@Size(max = 255)
 	private String avatar;
 

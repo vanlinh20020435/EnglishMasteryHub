@@ -21,8 +21,6 @@ public class UserResponse
 	@Size(max = 50)
 	private String email;
 
-	private String password;
-
 	private String role;
 
 	@NotNull

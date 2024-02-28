@@ -35,7 +35,6 @@ public class MapperUtils
 		adminResponse.setAdminId(admin.getAdminId());
 		adminResponse.setUsername(admin.getUsername());
 		adminResponse.setEmail(admin.getEmail());
-		adminResponse.setPassword(admin.getPassword());
 		adminResponse.setName(admin.getName());
 		adminResponse.setGender(admin.getGender());
 		adminResponse.setStatus(admin.getStatus());
@@ -65,10 +64,8 @@ public class MapperUtils
 		teacherDTO.setTeacherId(teacher.getTeacherId());
 		teacherDTO.setUsername(teacher.getUsername());
 		teacherDTO.setEmail(teacher.getEmail());
-		teacherDTO.setPassword(teacher.getPassword());
 		teacherDTO.setName(teacher.getName());
 		teacherDTO.setGender(teacher.getGender());
-		teacherDTO.setStatus(teacher.getStatus());
 		teacherDTO.setAvatar(teacher.getAvatar());
 		teacherDTO.setBirthday(teacher.getBirthday());
 		return teacherDTO;
@@ -81,7 +78,6 @@ public class MapperUtils
 		teacher.setPassword(teacherDTO.getPassword());
 		teacher.setName(teacherDTO.getName());
 		teacher.setGender(teacherDTO.getGender());
-		teacher.setStatus(teacherDTO.getStatus());
 		teacher.setAvatar(teacherDTO.getAvatar());
 		teacher.setBirthday(teacherDTO.getBirthday());
 		if (user == null)
@@ -95,7 +91,6 @@ public class MapperUtils
 		studentRequest.setStudentId(student.getStudentId());
 		studentRequest.setUsername(student.getUsername());
 		studentRequest.setEmail(student.getEmail());
-		studentRequest.setPassword(student.getPassword());
 		studentRequest.setName(student.getName());
 		studentRequest.setGender(student.getGender());
 		studentRequest.setStatus(student.getStatus());
@@ -131,6 +126,8 @@ public class MapperUtils
 		classesResponse.setTeacher(classes.getTeacher() == null ? null : MapperUtils.teacherMapToResponse(classes.getTeacher(), new TeacherResponse()));
 		classesResponse.setAvatar(classes.getAvatar());
 		classesResponse.setDescription(classes.getDescription());
+		classesResponse.setStartDate(classes.getStartDate());
+		classesResponse.setEndDate(classes.getEndDate());
 		return classesResponse;
 	}
 
@@ -139,6 +136,8 @@ public class MapperUtils
 		classes.setClassName(classesRequest.getClassName());
 		classes.setAvatar(classesRequest.getAvatar());
 		classes.setDescription(classesRequest.getDescription());
+		classes.setStartDate(classesRequest.getStartDate());
+		classes.setEndDate(classesRequest.getEndDate());
 		if (teacher == null)
 			throw new NotFoundException("teacher not found");
 		classes.setTeacher(teacher);

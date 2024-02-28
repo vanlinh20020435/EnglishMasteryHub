@@ -6,10 +6,12 @@ import com.emh.service.FilesStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+@CrossOrigin("*")
 @RestController
 public class FilesUploader
 {
@@ -18,6 +20,7 @@ public class FilesUploader
 	FilesStorageService storageService;
 
 	@PostMapping("/upload")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
 	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file)
 	{
 		try

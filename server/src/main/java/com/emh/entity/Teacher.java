@@ -47,7 +47,7 @@ public class Teacher extends BaseEntity
 	@Column
 	private LocalDate birthday;
 
-	@OneToMany(mappedBy = "teacher")
+	@OneToMany(mappedBy = "teacher", fetch = FetchType.EAGER)
 	private Set<Classes> classes;
 
 	@OneToMany(mappedBy = "teacher", cascade = CascadeType.REMOVE)

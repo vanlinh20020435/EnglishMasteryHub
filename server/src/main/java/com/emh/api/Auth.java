@@ -7,6 +7,7 @@ import com.emh.service.UserDetailsImpl;
 import com.emh.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-@CrossOrigin
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/auth")
 public class Auth
@@ -38,6 +39,7 @@ public class Auth
 	}
 
 	@PostMapping("/signout")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
 	public ResponseEntity<MessageResponse> logoutUser()
 	{
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

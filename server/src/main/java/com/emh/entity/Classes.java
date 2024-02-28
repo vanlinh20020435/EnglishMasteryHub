@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.Set;
 
 
@@ -27,11 +28,17 @@ public class Classes extends BaseEntity
 	@Column
 	private String description;
 
+	@Column(name = "start_date")
+	private Date startDate;
+
+	@Column(name = "end_date")
+	private Date endDate;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "teacher_id", nullable = false)
 	private Teacher teacher;
 
-	@OneToMany(mappedBy = "classs")
+	@OneToMany(mappedBy = "classs", fetch = FetchType.EAGER)
 	private Set<Student> classStudents;
 
 	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)

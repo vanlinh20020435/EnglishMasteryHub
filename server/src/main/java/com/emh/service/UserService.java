@@ -82,7 +82,6 @@ public class UserService
 		userResponse.setUserId(user.getUserId());
 		userResponse.setUsername(user.getUsername());
 		userResponse.setEmail(user.getEmail());
-		userResponse.setPassword(user.getPassword());
 		userResponse.setName(user.getName());
 		userResponse.setGender(user.getGender());
 		userResponse.setStatus(user.getStatus());

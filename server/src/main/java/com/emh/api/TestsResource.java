@@ -9,12 +9,13 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
 
-
+@CrossOrigin("*")
 @RestController
 @RequestMapping(value = "/api/testss", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TestsResource
@@ -28,12 +29,14 @@ public class TestsResource
 	}
 
 	@GetMapping
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	public ResponseEntity<List<TestsResponse>> getAllTestss()
 	{
 		return ResponseEntity.ok(testsService.findAll());
 	}
 
 	@GetMapping("/{testId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
 	public ResponseEntity<TestsResponse> getTests(
 			@PathVariable(name = "testId") final Integer testId)
 	{
@@ -41,6 +44,7 @@ public class TestsResource
 	}
 
 	@PostMapping
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	public ResponseEntity<Integer> createTests(@RequestBody @Valid final TestsRequest testsDTO) throws IOException
 	{
 		final Integer createdTestCode = testsService.create(testsDTO);
@@ -48,6 +52,7 @@ public class TestsResource
 	}
 
 	@PutMapping("/{testId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	public ResponseEntity<Integer> updateTests(
 			@PathVariable(name = "testId") final Integer testId,
 			@RequestBody @Valid final TestsRequest testsDTO)
@@ -57,6 +62,7 @@ public class TestsResource
 	}
 
 	@DeleteMapping("/{testId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	public ResponseEntity<Void> deleteTests(
 			@PathVariable(name = "testId") final Integer testId)
 	{
