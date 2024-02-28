@@ -22,9 +22,6 @@ public class TeacherResponse
 	@Size(max = 50)
 	private String email;
 
-	@Size
-	private String password;
-
 	@NotNull
 	@Size(max = 50)
 	private String name;

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-@CrossOrigin
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/auth")
 public class Auth

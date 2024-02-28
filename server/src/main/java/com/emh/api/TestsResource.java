@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
-
+@CrossOrigin("*")
 @RestController
 @RequestMapping(value = "/api/testss", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TestsResource

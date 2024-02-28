@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+@CrossOrigin("*")
 @RestController
 @RequestMapping(value = "/api/students", produces = MediaType.APPLICATION_JSON_VALUE)
 public class StudentResource
