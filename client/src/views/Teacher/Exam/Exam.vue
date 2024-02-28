@@ -1,23 +1,12 @@
 <template>
   <v-card class="height-100">
     <v-container class="d-flex flex-column height-100 v-container__full">
-      <HeaderTitle
-        isSearch
-        isCreate
-        title="Quản lý bài kiểm tra"
-        :createNew="createNewExam"
-      />
+      <HeaderTitle isSearch isCreate title="Quản lý bài kiểm tra" :createNew="createNewExam" />
       <v-divider class="header_divider" :thickness="2"></v-divider>
       <v-row style="height: 90%" class="d-flex justify-center">
         <v-col class="height-100" cols="12" md="11">
-          <v-data-table
-            style="overflow-y: auto"
-            class="height-100 scrollbar-custom v-data-table__exam"
-            fixed-header
-            :headers="headers"
-            :items="desserts"
-            :sort-by="[{ key: 'calories', order: 'asc' }]"
-          >
+          <v-data-table style="overflow-y: auto" class="height-100 scrollbar-custom v-data-table__exam" fixed-header
+            :headers="headers" :items="desserts" :sort-by="[{ key: 'calories', order: 'asc' }]">
             <template v-slot:top>
               <!-- <v-toolbar-title>My CRUD</v-toolbar-title>
                   <v-divider class="mx-4" inset vertical></v-divider> -->
@@ -37,34 +26,19 @@
                     <v-container>
                       <v-row>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.name"
-                            label="Dessert name"
-                          ></v-text-field>
+                          <v-text-field v-model="editedItem.name" label="Dessert name"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.calories"
-                            label="Calories"
-                          ></v-text-field>
+                          <v-text-field v-model="editedItem.calories" label="Calories"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.fat"
-                            label="Fat (g)"
-                          ></v-text-field>
+                          <v-text-field v-model="editedItem.fat" label="Fat (g)"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.carbs"
-                            label="Carbs (g)"
-                          ></v-text-field>
+                          <v-text-field v-model="editedItem.carbs" label="Carbs (g)"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.protein"
-                            label="Protein (g)"
-                          ></v-text-field>
+                          <v-text-field v-model="editedItem.protein" label="Protein (g)"></v-text-field>
                         </v-col>
                       </v-row>
                     </v-container>
@@ -83,35 +57,18 @@
               </v-dialog>
               <v-dialog v-model="dialogDelete" max-width="500px">
                 <v-card>
-                  <v-card-title class="text-h5"
-                    >Bạn có chắc chắn muốn xóa bài kiểm tra này?</v-card-title
-                  >
+                  <v-card-title class="text-h5">Bạn có chắc chắn muốn xóa bài kiểm tra này?</v-card-title>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn
-                      color="blue-darken-1"
-                      variant="text"
-                      @click="closeDelete"
-                      >Không</v-btn
-                    >
-                    <v-btn
-                      color="blue-darken-1"
-                      variant="text"
-                      @click="deleteItemConfirm"
-                      >Có</v-btn
-                    >
+                    <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Không</v-btn>
+                    <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm">Có</v-btn>
                     <v-spacer></v-spacer>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
             </template>
             <template v-slot:item.actions="{ item }">
-              <v-icon
-                color="#00bd7e"
-                size="default"
-                class="me-2"
-                @click="editItem(item)"
-              >
+              <v-icon color="#00bd7e" size="default" class="me-2" @click="editItem(item)">
                 mdi-pencil
               </v-icon>
               <v-icon color="red" size="default" @click="deleteItem(item)">

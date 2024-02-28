@@ -8,28 +8,36 @@
                             <img src="@/assets/images/logoemh.png" />
                         </v-col>
                         <v-col md="12">
-                            <v-text-field v-model="username" @change="failed = false" :error="failed" :rules="usernameRules"
-                                label="Username" hide-details="auto">
+                            <v-text-field v-model="username" @change="onChange" :error="loginFailed || userNotFound"
+                                :rules="usernameRules" label="Username" hide-details="auto">
                             </v-text-field>
                         </v-col>
                         <v-col md="12">
-                            <v-text-field v-model="password" @change="failed = false" :error="failed" :rules="passwordRules"
-                                label="Password" hide-details="auto">
+                            <v-text-field v-model="password" @change="onChange" :error="loginFailed || userNotFound"
+                                :rules="passwordRules" label="Password" hide-details="auto">
                             </v-text-field>
                         </v-col>
                         <v-col md="12"><v-btn color="#00bd7e" type="submit" block class="mt-2">Login</v-btn></v-col>
-                        <v-snackbar color="error" v-model="failed" location="top">
+                        <v-snackbar color="error" v-model="loginFailed" location="top">
                             Login failed!
                             <template v-slot:actions>
-                                <v-btn color="pink" variant="text" @click="failed = false">
+                                <v-btn color="pink" variant="text" @click="loginFailed = false">
                                     Close
                                 </v-btn>
                             </template>
                         </v-snackbar>
-                        <v-snackbar color="success" v-model="success" location="top">
+                        <v-snackbar color="error" v-model="userNotFound" location="top">
+                            User not found!
+                            <template v-slot:actions>
+                                <v-btn color="pink" variant="text" @click="userNotFound = false">
+                                    Close
+                                </v-btn>
+                            </template>
+                        </v-snackbar>
+                        <v-snackbar color="success" v-model="loginSuccess" location="top">
                             Login successfully!
                             <template v-slot:actions>
-                                <v-btn color="white" @click="success = false">
+                                <v-btn color="white" @click="loginSuccess = false">
                                     Close
                                 </v-btn>
                             </template>
@@ -42,11 +50,15 @@
 </template>
 
 <script>
-import { login } from '@/services'
+import { login, getUserInfo } from '@/services'
+import { authenticationRole } from "@/stores";
+import { mapState } from "pinia";
+
 export default {
     data: () => ({
-        failed: false,
-        success: false,
+        loginFailed: false,
+        userNotFound: false,
+        loginSuccess: false,
         error: false,
         valid: true,
         username: null,
@@ -60,20 +72,35 @@ export default {
             return 'Name is required.'
         }],
     }),
+    computed: {
+        ...mapState(authenticationRole, ["updateAuth", "authentication"]),
+    },
     methods: {
         async submit() {
             if (this.valid) {
                 const res = await login(this.username, this.password)
                 if (res.success) {
-                    console.log(res.data.accessToken);
-                    this.success = true
-                    // navigation
+                    this.updateAuth({ accessToken: res.data.accessToken })
+                    const userInfoRes = await getUserInfo(res.data.accessToken.token)
+                    if (userInfoRes.success) {
+                        userInfoRes.data.role = userInfoRes.data.role.toLowerCase()
+                        this.updateAuth({ user: userInfoRes.data })
+                        this.$router.replace(`/${this.authentication.user.role}`)
+                        this.loginSuccess = true
+                    } else {
+                        this.error = true
+                        this.userNotFound = true
+                    }
                 } else {
                     this.error = true
-                    this.failed = true
+                    this.loginFailed = true
                 }
             }
         },
+        onChange() {
+            this.loginFailed = false
+            this.userNotFound = false
+        }
     }
 }
 </script>

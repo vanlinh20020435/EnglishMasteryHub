@@ -9,6 +9,8 @@ import { authenticationRole } from "@/stores";
 import Login from "@/views/Login.vue";
 import StudentManager from "@/views/Admin/User/Student.vue";
 import TeacherManager from "@/views/Admin/User/Teacher.vue";
+import Class from "@/views/Admin/Class/index.vue";
+import Event from "@/views/Admin/Event/index.vue";
 const routes = [
   {
     path: "/login",
@@ -69,11 +71,11 @@ const routes = [
       },
       {
         path: "class",
-        component: HomeView,
+        component: Class,
       },
       {
         path: "event",
-        component: HomeView,
+        component: Event,
       },
     ],
   },
@@ -93,15 +95,15 @@ router.beforeEach((to, from, next) => {
   const authenticationStore = authenticationRole();
   const { authentication } = authenticationStore;
   const pathSplitted = path.split('/')
-  if (routes.some(route => (route.path === path) && route.public && !to.redirectedFrom)) {
+  if (routes.some(route => (route.path === path) && route.public)) {
     next()
     return
   }
-  if (authentication.role) {
-    if (pathSplitted.length && pathSplitted[1] === authentication.role) {
+  if (authentication?.user?.role) {
+    if (pathSplitted.length && pathSplitted[1] === authentication?.user?.role) {
       next();
     } else {
-      next("/" + authentication.role);
+      next("/" + authentication?.user?.role);
     }
   } else {
     next("/login");
