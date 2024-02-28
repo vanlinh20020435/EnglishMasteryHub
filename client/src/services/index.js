@@ -1,6 +1,6 @@
 
 import axios from 'axios'
-import { getAdmins } from './Admin'
+import { getAdmins } from './admin'
 
 const $axios = {
     ...axios.create({
