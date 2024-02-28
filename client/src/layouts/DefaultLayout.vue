@@ -5,36 +5,87 @@
         <v-btn variant="text" icon="mdi-menu" @click="drawer = !drawer"></v-btn>
       </template>
       <template v-slot:append>
-        <v-btn variant="tonal" style="margin-right: 5px" class="bg-btn"
-          >click</v-btn
-        >
-        <v-btn variant="tonal" class="bg-btn">click</v-btn>
+        <v-row justify="center">
+          <v-menu min-width="200px" rounded>
+            <template v-slot:activator="{ props }">
+              <v-btn icon v-bind="props" style="margin-right: 16px;">
+                <v-avatar color="brown" size="large">
+                  <v-img alt="Avatar"
+                    :src="authentication.user.avatar || 'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'"></v-img>
+                </v-avatar>
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-text>
+                <div class="mx-auto text-center">
+                  <h3>{{ authentication.user.name }}</h3>
+                  <p class="text-caption mt-1">{{ authentication.user.email }}</p>
+                  <v-divider class="my-3"></v-divider>
+                  <v-btn rounded variant="text" prepend-icon="mdi-account">
+                    Account
+                  </v-btn>
+                  <v-divider class="my-3"></v-divider>
+                  <v-btn rounded variant="text" prepend-icon="mdi-logout" @click="isOpenLogout = true">
+                    Log out
+                  </v-btn>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-menu>
+        </v-row>
       </template>
     </v-app-bar>
     <DefaultSidebar :drawer="drawer" :menu="menu" />
     <v-main class="d-flex justify-center" style="width: 100vw; height: 100vh">
-      <v-container
-        class="v-container__full"
-        style="padding: 0; background-color: #fff"
-      >
+      <v-container class="v-container__full" style="padding: 0; background-color: #fff">
         <!-- <h2>ghigigi</h2> -->
         <slot></slot>
       </v-container>
     </v-main>
+    <!-- <v-dialog v-model="isOpenLogout" width="auto">
+      <v-card prepend-icon="mdi-logout" max-width="400" title="Log out"
+        text="Application will clear all your infnomation.">
+        <template v-slot:actions>
+          <v-spacer />
+          <v-btn class="ms-auto" text="Cancel" @click="isOpenLogout = false"></v-btn>
+          <v-btn class="ms-auto" color="error" text="Ok" @click="isOpenLogout = false"></v-btn>
+        </template>
+      </v-card>
+    </v-dialog> -->
+
+    <PopUpYesNo msg="Bạn có chắc chắn muốn xóa bài kiểm tra này?" :visible="isOpenLogout" :handleClickYes="logout"
+      :handleClickNo="() => isOpenLogout = false" />
   </v-layout>
 </template>
 
 <script>
 import DefaultSidebar from "@/components/sidebar/DefaultSidebar.vue";
+import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
+import { authenticationRole } from "@/stores";
+import { mapState } from "pinia";
 export default {
   components: {
     DefaultSidebar,
+    PopUpYesNo
   },
   props: {
     menu: Array,
   },
+  computed: {
+    ...mapState(authenticationRole, ["authentication", "clearStore"]),
+  },
   data: () => ({
     drawer: true,
+    isOpenLogout: false
   }),
+  methods: {
+    logout() {
+      this.isOpenLogout = false
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
+      this.clearStore()
+      this.$router.replace('/login')
+    }
+  }
 };
 </script>
