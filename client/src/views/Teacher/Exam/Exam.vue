@@ -24,10 +24,10 @@
               <v-spacer></v-spacer>
               <v-dialog v-model="dialog" max-width="500px">
                 <!-- <template v-slot:activator="{ props }">
-                      <v-btn color="primary" dark class="mb-2" v-bind="props">
-                        New Item
-                      </v-btn>
-                    </template> -->
+                  <v-btn color="primary" dark class="mb-2" v-bind="props">
+                    New Item
+                  </v-btn>
+                </template> -->
                 <v-card>
                   <v-card-title>
                     <span class="text-h5">{{ formTitle }}</span>
@@ -81,29 +81,13 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
-              <v-dialog v-model="dialogDelete" max-width="500px">
-                <v-card>
-                  <v-card-title class="text-h5"
-                    >Bạn có chắc chắn muốn xóa bài kiểm tra này?</v-card-title
-                  >
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      color="blue-darken-1"
-                      variant="text"
-                      @click="closeDelete"
-                      >Không</v-btn
-                    >
-                    <v-btn
-                      color="blue-darken-1"
-                      variant="text"
-                      @click="deleteItemConfirm"
-                      >Có</v-btn
-                    >
-                    <v-spacer></v-spacer>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
+              <PopUpYesNo
+                msg="Bạn có chắc chắn muốn xóa bài kiểm tra này?"
+                :visible="dialogDelete"
+                :handleClickYes="deleteItemConfirm"
+                :handleClickNo="closeDelete"
+                @update:visible="handleVisible"
+              />
             </template>
             <template v-slot:item.actions="{ item }">
               <v-icon
@@ -130,14 +114,15 @@
 
 <script>
 import HeaderTitle from "@/components/header/HeaderTitle.vue";
+import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
 import { mapState } from "pinia";
-
 import { authenticationRole } from "@/stores";
 
 export default {
   name: "ManageExam",
   components: {
     HeaderTitle,
+    PopUpYesNo,
   },
   data: () => ({
     selected: [],
@@ -318,6 +303,7 @@ export default {
     deleteItem(item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.editedItem = Object.assign({}, item);
+      console.log(this.dialogDelete);
       this.dialogDelete = true;
     },
 
@@ -351,9 +337,10 @@ export default {
       this.close();
     },
     createNewExam() {
-      this.updateAuth({
-        isLogin: true,
-      });
+      this.dialog = true;
+    },
+    handleVisible(newValue) {
+      this.dialogDelete = newValue;
     },
   },
 };

@@ -6,7 +6,6 @@ export const authenticationRole = defineStore("authentication", () => {
     role: "teacher",
   });
   function updateAuth(newData) {
-    console.log("newData ===", newData);
     authentication.value = {
       ...authentication.value,
       ...newData,
