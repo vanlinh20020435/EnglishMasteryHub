@@ -6,7 +6,10 @@
                 :enableActive="() => activeItem = idx" />
         </v-list>
         <v-spacer />
-        <div class="hihi" @click="isRail = !isRail">hihi</div>
+        <div class="railor" @click="isRail = !isRail">
+            <v-icon v-if="isRail">mdi-arrow-expand-right</v-icon>
+            <v-icon v-else>mdi-arrow-collapse-left</v-icon>
+        </div>
     </v-navigation-drawer>
 </template>
 
@@ -35,11 +38,16 @@ export default {
 </script>
 
 <style scoped>
-.hihi {
+.railor {
     width: 100%;
     height: 64px;
     position: absolute;
     bottom: 0;
-    background-color: rgba(84, 84, 84, 0.65);
+    background-color: #00bd7e;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
 }
 </style>

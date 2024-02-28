@@ -1,8 +1,8 @@
 import { $axios } from "."
 
 function getAdmins() {
-    const path = ''
-    // $axios.get('', { headers: { 'Authentication': '' } })
+    const path = '/api/user/userinfo'
+    $axios.get(path, { headers: { 'Authentication': '' } })
 }
 
 export { getAdmins }
