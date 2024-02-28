@@ -9,7 +9,6 @@ export const authenticationRole = defineStore("authentication", () => {
   localStorage.setItem('accessToken', JSON.stringify(authentication.value.accessToken))
   localStorage.setItem('user', JSON.stringify(authentication.value.user))
   function updateAuth(newData) {
-    console.log("newData ===", newData);
     authentication.value = {
       ...authentication.value,
       ...newData,
