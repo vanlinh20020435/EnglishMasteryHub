@@ -6,6 +6,7 @@ import com.emh.entity.StudentNotifications;
 import com.emh.entity.Teacher;
 import com.emh.payload.request.ClassesRequest;
 import com.emh.payload.response.ClassesResponse;
+import com.emh.payload.response.StudentResponse;
 import com.emh.repos.ClassesRepository;
 import com.emh.repos.StudentNotificationsRepository;
 import com.emh.repos.StudentRepository;
@@ -99,4 +100,11 @@ public class ClassesService
 		return null;
 	}
 
+	public List<StudentResponse> getAllStudents(Integer classId)
+	{
+		Classes classes = classesRepository.findById(classId).orElseThrow(NotFoundException::new);
+		return classes.getClassStudents().stream()
+				.map(student -> MapperUtils.studentMapToResponse(student, new StudentResponse()))
+				.toList();
+	}
 }

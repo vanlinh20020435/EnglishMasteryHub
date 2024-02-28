@@ -2,8 +2,13 @@ package com.emh.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.media.*;
 import io.swagger.v3.oas.models.responses.ApiResponse;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,20 +33,14 @@ public class SwaggerConfig
 						.addProperty("message", new StringSchema())
 						.addProperty("property", new StringSchema())
 						.addProperty("rejectedValue", new ObjectSchema())
-						.addProperty("path", new StringSchema())));
+						.addProperty("path", new StringSchema())))
+				.addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
+					.components(new Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()));
 	}
 
-	@Bean
-	public OperationCustomizer operationCustomizer()
-	{
-		// add error type to each operation
-		return (operation, handlerMethod) -> {
-			operation.getResponses().addApiResponse("4xx/5xx", new ApiResponse()
-					.description("Error")
-					.content(new Content().addMediaType("*/*", new MediaType().schema(
-							new Schema<MediaType>().$ref("ApiErrorResponse")))));
-			return operation;
-		};
+	private SecurityScheme createAPIKeyScheme() {
+		return new SecurityScheme().type(SecurityScheme.Type.HTTP)
+				.bearerFormat("JWT")
+				.scheme("bearer");
 	}
-
 }

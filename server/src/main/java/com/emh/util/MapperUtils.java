@@ -66,7 +66,6 @@ public class MapperUtils
 		teacherDTO.setEmail(teacher.getEmail());
 		teacherDTO.setName(teacher.getName());
 		teacherDTO.setGender(teacher.getGender());
-		teacherDTO.setStatus(teacher.getStatus());
 		teacherDTO.setAvatar(teacher.getAvatar());
 		teacherDTO.setBirthday(teacher.getBirthday());
 		return teacherDTO;
@@ -79,7 +78,6 @@ public class MapperUtils
 		teacher.setPassword(teacherDTO.getPassword());
 		teacher.setName(teacherDTO.getName());
 		teacher.setGender(teacherDTO.getGender());
-		teacher.setStatus(teacherDTO.getStatus());
 		teacher.setAvatar(teacherDTO.getAvatar());
 		teacher.setBirthday(teacherDTO.getBirthday());
 		if (user == null)

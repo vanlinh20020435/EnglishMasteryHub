@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,12 +30,14 @@ public class StudentResource
 	}
 
 	@GetMapping
+	@Secured("ROLE_ADMIN")
 	public ResponseEntity<List<StudentResponse>> getAllStudents()
 	{
 		return ResponseEntity.ok(studentService.findAll());
 	}
 
 	@GetMapping("/{studentId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
 	public ResponseEntity<StudentResponse> getStudent(
 			@PathVariable(name = "studentId") final Integer studentId)
 	{
@@ -43,6 +46,7 @@ public class StudentResource
 
 	@PostMapping
 	@ApiResponse(responseCode = "201")
+	@Secured("ROLE_ADMIN")
 	public ResponseEntity<Integer> createStudent(@RequestBody @Valid final StudentRequest studentRequest)
 	{
 		final Integer createdStudentId = studentService.create(studentRequest);
@@ -50,6 +54,7 @@ public class StudentResource
 	}
 
 	@PutMapping("/{studentId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
 	public ResponseEntity<Integer> updateStudent(
 			@PathVariable(name = "studentId") final Integer studentId,
 			@RequestBody @Valid final StudentRequest studentRequest)
@@ -59,6 +64,7 @@ public class StudentResource
 	}
 
 	@DeleteMapping("/{studentId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	@ApiResponse(responseCode = "204")
 	public ResponseEntity<Void> deleteStudent(
 			@PathVariable(name = "studentId") final Integer studentId)

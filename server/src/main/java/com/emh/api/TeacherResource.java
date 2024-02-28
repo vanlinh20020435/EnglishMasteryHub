@@ -1,6 +1,7 @@
 package com.emh.api;
 
 import com.emh.payload.request.TeacherRequest;
+import com.emh.payload.response.ClassesResponse;
 import com.emh.payload.response.TeacherResponse;
 import com.emh.service.TeacherService;
 import com.emh.util.ReferencedException;
@@ -10,6 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,12 +30,14 @@ public class TeacherResource
 	}
 
 	@GetMapping
+	@Secured("ROLE_ADMIN")
 	public ResponseEntity<List<TeacherResponse>> getAllTeachers()
 	{
 		return ResponseEntity.ok(teacherService.findAll());
 	}
 
 	@GetMapping("/{teacherId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	public ResponseEntity<TeacherResponse> getTeacher(
 			@PathVariable(name = "teacherId") final Integer teacherId)
 	{
@@ -41,6 +45,7 @@ public class TeacherResource
 	}
 
 	@PostMapping
+	@Secured("ROLE_ADMIN")
 	@ApiResponse(responseCode = "201")
 	public ResponseEntity<Integer> createTeacher(@RequestBody @Valid final TeacherRequest teacherDTO)
 	{
@@ -49,6 +54,7 @@ public class TeacherResource
 	}
 
 	@PutMapping("/{teacherId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	public ResponseEntity<Integer> updateTeacher(
 			@PathVariable(name = "teacherId") final Integer teacherId,
 			@RequestBody @Valid final TeacherRequest teacherDTO)
@@ -58,6 +64,7 @@ public class TeacherResource
 	}
 
 	@DeleteMapping("/{teacherId}")
+	@Secured("ROLE_ADMIN")
 	@ApiResponse(responseCode = "204")
 	public ResponseEntity<Void> deleteTeacher(
 			@PathVariable(name = "teacherId") final Integer teacherId)
@@ -71,4 +78,10 @@ public class TeacherResource
 		return ResponseEntity.noContent().build();
 	}
 
+	@GetMapping("/{teacherId}/classes/get-all")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
+	public ResponseEntity<List<ClassesResponse>> getAllClasss(@PathVariable(name = "teacherId") final Integer teacherId)
+	{
+		return ResponseEntity.ok(teacherService.getAllClasss(teacherId));
+	}
 }
