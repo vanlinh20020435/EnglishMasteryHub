@@ -101,7 +101,7 @@ router.beforeEach((to, from, next) => {
     if (pathSplitted.length && pathSplitted[1] === authentication.role) {
       next();
     } else {
-      next('/' + authentication.role);
+      next("/" + authentication.role);
     }
   } else {
     next("/login");
