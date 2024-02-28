@@ -1,0 +1,41 @@
+.header_title {
+    font-size: clamp(1.125rem, 2vw, 1.25rem);
+    padding-left: 0;
+  }
+  
+  .header_icon {
+    width: 3rem;
+    height: auto;
+    margin-right: 1rem;
+    img {
+      width: 100%;
+      min-width: 100%;
+    }
+  }
+  
+  .header_divider {
+    max-height: 100% !important;
+    flex: none !important;
+    margin: 1rem 0;
+  }
+  
+  .header_search {
+    .v-input {
+      .v-input__control {
+        .v-field {
+          border: 1.4px solid var(--primary-color);
+          box-shadow: none;
+        }
+  
+        .v-field__prepend-inner {
+          i {
+            color: var(--primary-color);
+            opacity: 1;
+            &:before {
+              color: var(--primary-color);
+            }
+          }
+        }
+      }
+    }
+  }

@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { mapState } from 'pinia'
+import { mapState } from "pinia";
 import { authenticationRole } from "@/stores";
 
 export default {
@@ -28,19 +28,19 @@ export default {
     isOpen: true,
   }),
   computed: {
-    ...mapState(authenticationRole, ['authentication']),
+    ...mapState(authenticationRole, ["authentication"]),
   },
   methods: {
     onClickItem(idx = null) {
-      var path = `/${this.authentication.role}/${this.item.value}`;
+      var path = `/${this.authentication.user.role}/${this.item.value}`;
       if (idx != null && this.item.children) {
         this.activeItem = idx;
         path += "/" + this.item.children[idx].value;
       }
       this.enableActive();
       this.$router.replace(path);
-    }
-  }
+    },
+  },
 };
 </script>
 
