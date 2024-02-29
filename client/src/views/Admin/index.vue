@@ -41,9 +41,6 @@ export default {
             },
         ],
     }),
-    created() {
-        this.$router.replace('/admin/user')
-    }
 }
 </script>
 
