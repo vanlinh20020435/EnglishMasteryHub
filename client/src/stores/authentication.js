@@ -4,7 +4,7 @@ import { defineStore } from "pinia";
 export const authenticationRole = defineStore("authentication", () => {
   var locationUser = JSON.parse(localStorage.getItem("user"));
   var locationAccessToken = JSON.parse(localStorage.getItem("accessToken"));
-  if (locationAccessToken.expires < new Date()) {
+  if (locationAccessToken?.expires < new Date()) {
     locationUser = {};
     locationAccessToken = {};
     localStorage.removeItem("accessToken");
