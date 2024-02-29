@@ -50,6 +50,7 @@ const routes = [
   },
   {
     path: "/admin",
+    redirect: '/admin/user',
     component: Admin,
     children: [
       {
@@ -91,8 +92,8 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  console.log('navigating...');
   const path = to.fullPath;
-  console.log(to.redirectedFrom);
   const authenticationStore = authenticationRole();
   const { authentication } = authenticationStore;
   const pathSplitted = path.split('/')

@@ -30,7 +30,10 @@ export default {
         activeItem: 0
     }),
     mounted() {
-        this.menu.forEach(item => {
+        const path = this.$route.fullPath
+        const pathSplit1 = path.split('/')[2]
+        this.menu.forEach((item, idx) => {
+            if (item.value === pathSplit1) this.activeItem = idx
             if (item.children) this.open.push(item.value)
         });
     }

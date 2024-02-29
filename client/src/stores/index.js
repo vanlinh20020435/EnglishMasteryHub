@@ -1,1 +1,2 @@
-export {authenticationRole} from './authentication';
+export { authenticationRole } from './authentication';
+export { toastStore } from './toast'

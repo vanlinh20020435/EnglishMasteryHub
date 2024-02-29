@@ -8,40 +8,18 @@
                             <img src="@/assets/images/logoemh.png" />
                         </v-col>
                         <v-col md="12">
-                            <v-text-field v-model="username" @change="onChange" :error="loginFailed || userNotFound"
-                                :rules="usernameRules" label="Username" hide-details="auto">
+                            <v-text-field v-model="username" @change="onChange" :error="loginFailed" :rules="usernameRules"
+                                label="Username" hide-details="auto">
                             </v-text-field>
                         </v-col>
                         <v-col md="12">
-                            <v-text-field v-model="password" @change="onChange" :error="loginFailed || userNotFound"
-                                :rules="passwordRules" label="Password" hide-details="auto">
+                            <v-text-field v-model="password" @change="onChange" :error="loginFailed" :rules="passwordRules"
+                                label="Password" hide-details="auto">
                             </v-text-field>
                         </v-col>
-                        <v-col md="12"><v-btn color="#00bd7e" type="submit" block class="mt-2">Login</v-btn></v-col>
-                        <v-snackbar color="error" v-model="loginFailed" location="top">
-                            Login failed!
-                            <template v-slot:actions>
-                                <v-btn color="pink" variant="text" @click="loginFailed = false">
-                                    Close
-                                </v-btn>
-                            </template>
-                        </v-snackbar>
-                        <v-snackbar color="error" v-model="userNotFound" location="top">
-                            User not found!
-                            <template v-slot:actions>
-                                <v-btn color="pink" variant="text" @click="userNotFound = false">
-                                    Close
-                                </v-btn>
-                            </template>
-                        </v-snackbar>
-                        <v-snackbar color="success" v-model="loginSuccess" location="top">
-                            Login successfully!
-                            <template v-slot:actions>
-                                <v-btn color="white" @click="loginSuccess = false">
-                                    Close
-                                </v-btn>
-                            </template>
-                        </v-snackbar>
+                        <v-col md="12">
+                            <v-btn color="#00bd7e" type="submit" block class="mt-2">Login</v-btn>
+                        </v-col>
                     </v-row>
                 </v-form>
             </v-card>
@@ -51,14 +29,12 @@
 
 <script>
 import { login, getUserInfo } from '@/services'
-import { authenticationRole } from "@/stores";
+import { authenticationRole, toastStore } from "@/stores";
 import { mapState } from "pinia";
 
 export default {
     data: () => ({
         loginFailed: false,
-        userNotFound: false,
-        loginSuccess: false,
         error: false,
         valid: true,
         username: null,
@@ -74,9 +50,11 @@ export default {
     }),
     computed: {
         ...mapState(authenticationRole, ["updateAuth", "authentication"]),
+        ...mapState(toastStore, ["updateToast"]),
     },
     methods: {
         async submit() {
+            this.loginFailed = false
             if (this.valid) {
                 const res = await login(this.username, this.password)
                 if (res.success) {
@@ -85,14 +63,16 @@ export default {
                     if (userInfoRes.success) {
                         userInfoRes.data.role = userInfoRes.data.role.toLowerCase()
                         this.updateAuth({ user: userInfoRes.data })
+                        this.updateToast('success', "Login success!")
                         this.$router.replace(`/${this.authentication.user.role}`)
-                        this.loginSuccess = true
                     } else {
                         this.error = true
-                        this.userNotFound = true
+                        this.loginFailed = true
+                        this.updateToast('error', "User not found!")
                     }
                 } else {
                     this.error = true
+                    this.updateToast('error', 'Login failed!')
                     this.loginFailed = true
                 }
             }

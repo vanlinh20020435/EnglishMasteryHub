@@ -14,7 +14,7 @@
 
 <script>
 import { mapState } from "pinia";
-import { authenticationRole } from "@/stores";
+import { authenticationRole, toastStore } from "@/stores";
 
 export default {
   props: {
@@ -29,6 +29,16 @@ export default {
   }),
   computed: {
     ...mapState(authenticationRole, ["authentication"]),
+    ...mapState(toastStore, ["updateToast"]),
+  },
+  mounted() {
+    if (this.item.children) {
+      const path = this.$route.fullPath
+      const pathSplit2 = path.split('/')[3]
+      this.item.children.forEach((item, idx) => {
+        if (item.value === pathSplit2) this.activeItem = idx
+      });
+    }
   },
   methods: {
     onClickItem(idx = null) {
