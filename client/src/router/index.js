@@ -92,21 +92,36 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const path = to.fullPath;
+  console.log(to.redirectedFrom);
   const authenticationStore = authenticationRole();
   const { authentication } = authenticationStore;
   const pathSplitted = path.split('/')
-  if (routes.some(route => (route.path === path) && route.public)) {
-    next()
-    return
-  }
   if (authentication?.user?.role) {
-    if (pathSplitted.length && pathSplitted[1] === authentication?.user?.role) {
-      next();
-    } else {
+    if (path === '/login' && to.redirectedFrom) {
       next("/" + authentication?.user?.role);
+      return
+    }
+    if (pathSplitted.length && pathSplitted[1] === authentication?.user?.role) {
+      next()
+    } else {
+      if (routes.some(route => (route.path === path) && route.public)) {
+        if (path === 'login' || path === 'register') {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("user");
+        }
+        next()
+      } else {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("user");
+        next('/login')
+      }
     }
   } else {
-    next("/login");
+    if (routes.some(route => (route.path === path) && route.public)) {
+      next()
+    } else {
+      next("/login");
+    }
   }
 });
 
