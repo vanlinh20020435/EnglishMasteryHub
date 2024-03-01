@@ -38,22 +38,10 @@
     <DefaultSidebar :drawer="drawer" :menu="menu" />
     <v-main class="d-flex justify-center" style="width: 100vw; height: 100vh">
       <v-container class="v-container__full" style="padding: 0; background-color: #fff">
-        <!-- <h2>ghigigi</h2> -->
         <slot></slot>
       </v-container>
     </v-main>
-    <!-- <v-dialog v-model="isOpenLogout" width="auto">
-      <v-card prepend-icon="mdi-logout" max-width="400" title="Log out"
-        text="Application will clear all your infnomation.">
-        <template v-slot:actions>
-          <v-spacer />
-          <v-btn class="ms-auto" text="Cancel" @click="isOpenLogout = false"></v-btn>
-          <v-btn class="ms-auto" color="error" text="Ok" @click="isOpenLogout = false"></v-btn>
-        </template>
-      </v-card>
-    </v-dialog> -->
-
-    <PopUpYesNo msg="Bạn có chắc chắn muốn xóa bài kiểm tra này?" :visible="isOpenLogout" :handleClickYes="logout"
+    <PopUpYesNo msg="Bạn có chắc chắn muốn đăng xuất?" :visible="isOpenLogout" :handleClickYes="logout"
       :handleClickNo="() => isOpenLogout = false" />
   </v-layout>
 </template>
