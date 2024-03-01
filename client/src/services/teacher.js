@@ -5,7 +5,7 @@ function getTeachers() {
   $axios.get(path, { headers: { Authentication: "" } });
 }
 
-const apiCaller = async (
+const apiCallerGet = async (
   path,
   token = JSON.parse(localStorage?.getItem("accessToken"))?.token
 ) => {
@@ -27,8 +27,88 @@ const apiCaller = async (
   } catch (error) {
     console.log(error);
   }
-  console.log("result ===", result);
   return result;
 };
 
-export { getTeachers, apiCaller };
+const apiCallerPost = async (
+  path,
+  token = JSON.parse(localStorage?.getItem("accessToken"))?.token
+) => {
+  let result = {
+    success: false,
+    data: null,
+  };
+  try {
+    const headers = { Accept: "application/json" };
+    if (!!token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    const response = await $axios.post(path, {
+      headers: headers,
+    });
+
+    result.data = response.data;
+    result.success = true;
+  } catch (error) {
+    console.log(error);
+  }
+  return result;
+};
+
+const apiCallerDelete = async (
+  path,
+  token = JSON.parse(localStorage?.getItem("accessToken"))?.token
+) => {
+  let result = {
+    success: false,
+    data: null,
+  };
+  try {
+    const headers = { Accept: "*" };
+    if (!!token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    const response = await $axios.delete(path, {
+      headers: headers,
+    });
+
+    result.data = response.data;
+    result.success = true;
+  } catch (error) {
+    console.log(error);
+  }
+  return result;
+};
+
+const apiCallerPut = async (
+  path,
+  token = JSON.parse(localStorage?.getItem("accessToken"))?.token
+) => {
+  let result = {
+    success: false,
+    data: null,
+  };
+  try {
+    const headers = { Accept: "application/json" };
+    if (!!token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    const response = await $axios.put(path, {
+      headers: headers,
+    });
+
+    result.data = response.data;
+    result.success = true;
+  } catch (error) {
+    console.log(error);
+  }
+  return result;
+};
+
+export {
+  getTeachers,
+  apiCallerGet,
+  apiCallerDelete,
+  apiCallerPut,
+  apiCallerPost,
+};

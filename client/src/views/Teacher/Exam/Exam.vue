@@ -1,5 +1,18 @@
 <template>
   <v-card class="height-100">
+    <v-snackbar color="success" v-model="stateExams.success" location="top">
+      Xóa bài kiểm tra thành công!
+      <template v-slot:actions>
+        <v-btn
+          color="#EFE841"
+          variant="text"
+          @click="stateExams.success = false"
+        >
+          Đóng
+        </v-btn>
+      </template>
+    </v-snackbar>
+
     <v-container class="d-flex flex-column height-100 v-container__full">
       <HeaderTitle
         isSearch
@@ -15,8 +28,9 @@
             class="height-100 scrollbar-custom v-data-table__exam"
             fixed-header
             :headers="headers"
-            :items="this.stateExams.data"
+            :items="stateExams.data"
             :sort-by="[{ key: 'calories', order: 'asc' }]"
+            :loading="isLoading"
           >
             <template v-slot:top>
               <!-- <v-toolbar-title>My CRUD</v-toolbar-title>
@@ -103,7 +117,16 @@
               </v-icon>
             </template>
             <template v-slot:no-data>
-              <v-btn color="primary" @click="initialize"> Reset </v-btn>
+              <!-- <v-btn color="primary" @click="initialize"> Reset </v-btn> -->
+              <div class="exam_empty d-flex flex-column align-center">
+                <img
+                  src="@/assets/images/img_empty_exam.png"
+                  alt="Empty Exam"
+                  class="img_empty"
+                />
+
+                <h3 class="font-bold">Bạn chưa có bài kiểm tra nào!</h3>
+              </div>
             </template>
           </v-data-table>
         </v-col>
@@ -117,8 +140,7 @@ import HeaderTitle from "@/components/header/HeaderTitle.vue";
 import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
 import { mapState } from "pinia";
 import { authenticationRole } from "@/stores";
-import { apiCaller } from "@/services/teacher";
-import { ref } from "vue";
+import { apiCallerGet, apiCallerDelete } from "@/services/teacher";
 
 export default {
   name: "ManageExam",
@@ -127,6 +149,7 @@ export default {
     PopUpYesNo,
   },
   data: () => ({
+    isLoading: false,
     selected: [],
     dialog: false,
     dialogDelete: false,
@@ -163,11 +186,13 @@ export default {
       carbs: 0,
       protein: 0,
     },
-    stateExams: ref({
+    stateExams: {
       data: [],
       loading: true,
-      error: null,
-    }),
+      error: false,
+      success: false,
+      msg: "",
+    },
   }),
 
   computed: {
@@ -189,14 +214,19 @@ export default {
   created() {
     this.initialize();
   },
+
   mounted() {
     this.fetchDataExam();
   },
+
   methods: {
     async fetchDataExam() {
-      const result = await apiCaller("/api/testss");
-      this.stateExams.data = result.data;
-      console.log(this.stateExams.data);
+      this.isLoading = true;
+      const result = await apiCallerGet("/api/testss");
+      if (result?.data) {
+        this.isLoading = false;
+        this.stateExams.data = result.data;
+      }
     },
     initialize() {},
 
@@ -209,12 +239,18 @@ export default {
     deleteItem(item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      console.log(this.dialogDelete);
       this.dialogDelete = true;
     },
 
-    deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
+    async deleteItemConfirm() {
+      // this.desserts.splice(this.editedIndex, 1);
+      const result = await apiCallerDelete(
+        "/api/testss/" + this.editedItem.testId
+      );
+      if (result.success) {
+        this.stateExams.success = true;
+        this.fetchDataExam();
+      }
       this.closeDelete();
     },
 
@@ -243,7 +279,7 @@ export default {
       this.close();
     },
     createNewExam() {
-      this.dialog = true;
+      this.$router.replace('/');
     },
     handleVisible(newValue) {
       this.dialogDelete = newValue;
