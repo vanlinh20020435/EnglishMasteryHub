@@ -1,6 +1,6 @@
 
 import axios from 'axios'
-import { getAdmins } from './admin'
+import { getAdmins, createAdmin, editAdmin } from './admin'
 import { login, getUserInfo } from './auth'
 
 const $axios = {
@@ -9,4 +9,4 @@ const $axios = {
     })
 }
 
-export { $axios, getAdmins, login, getUserInfo }
+export { $axios, getAdmins, createAdmin, editAdmin, login, getUserInfo }
