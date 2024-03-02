@@ -2,7 +2,7 @@ import { $axios } from ".";
 
 function getTeachers() {
   const path = "/api/user/userinfo";
-  $axios.get(path, { headers: { Authentication: "" } });
+  $axios.get(path, { headers: { Authorization: "" } });
 }
 
 const apiCallerGet = async (
