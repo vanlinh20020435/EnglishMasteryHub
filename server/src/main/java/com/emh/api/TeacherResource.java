@@ -1,6 +1,7 @@
 package com.emh.api;
 
 import com.emh.payload.request.TeacherRequest;
+import com.emh.payload.response.AdminResponse;
 import com.emh.payload.response.ClassesResponse;
 import com.emh.payload.response.TeacherResponse;
 import com.emh.service.TeacherService;
@@ -83,5 +84,14 @@ public class TeacherResource
 	public ResponseEntity<List<ClassesResponse>> getAllClasss(@PathVariable(name = "teacherId") final Integer teacherId)
 	{
 		return ResponseEntity.ok(teacherService.getAllClasss(teacherId));
+	}
+
+	@GetMapping("/search")
+	@Secured({"ROLE_ADMIN"})
+	public ResponseEntity<List<TeacherResponse>> searchTeacher(@RequestParam(required = false) String username,
+														   @RequestParam(required = false) String email,
+														   @RequestParam(required = false) String name) throws Exception
+	{
+		return ResponseEntity.ok(teacherService.searchTeacher(username, email, name));
 	}
 }

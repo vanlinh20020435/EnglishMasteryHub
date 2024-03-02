@@ -38,7 +38,7 @@ public class Classes extends BaseEntity
 	@JoinColumn(name = "teacher_id", nullable = false)
 	private Teacher teacher;
 
-	@OneToMany(mappedBy = "classs", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "classs", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	private Set<Student> classStudents;
 
 	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)

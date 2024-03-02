@@ -5,12 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.OffsetDateTime;
+import java.util.Set;
 
 
 @Entity
 @Getter
 @Setter
-public class StudentTestDetail extends BaseEntity
+public class StudentTestResult extends BaseEntity
 {
 
 	@Id
@@ -18,8 +19,14 @@ public class StudentTestDetail extends BaseEntity
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column(nullable = false)
-	private OffsetDateTime timest;
+	@Column
+	private Integer score;
+
+	@Column
+	private Integer testDefaultScore;
+
+	@Column
+	private Integer time;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "test_code_id", nullable = false)
@@ -29,4 +36,6 @@ public class StudentTestDetail extends BaseEntity
 	@JoinColumn(name = "student_id", nullable = false)
 	private Student student;
 
+	@OneToMany(mappedBy = "studentTestResult", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	private Set<QuestAnswerResult> questAnswerResults;
 }

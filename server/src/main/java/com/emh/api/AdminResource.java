@@ -65,4 +65,11 @@ public class AdminResource
 		return ResponseEntity.noContent().build();
 	}
 
+	@GetMapping("/search")
+	public ResponseEntity<List<AdminResponse>> searchAdmin(@RequestParam(required = false) String username,
+														   @RequestParam(required = false) String email,
+														   @RequestParam(required = false) String name) throws Exception
+	{
+		return ResponseEntity.ok(adminService.searchAdmin(username, email, name));
+	}
 }

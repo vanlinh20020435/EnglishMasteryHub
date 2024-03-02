@@ -2,7 +2,6 @@ package com.emh.service;
 
 import com.emh.entity.Classes;
 import com.emh.entity.Teacher;
-import com.emh.entity.TeacherNotifications;
 import com.emh.entity.User;
 import com.emh.model.Role;
 import com.emh.payload.request.TeacherRequest;
@@ -12,9 +11,14 @@ import com.emh.repos.ClassesRepository;
 import com.emh.repos.TeacherNotificationsRepository;
 import com.emh.repos.TeacherRepository;
 import com.emh.repos.UserRepository;
+import com.emh.specifications.FilterOperation;
+import com.emh.specifications.SearchCriteria;
+import com.emh.specifications.SpecificationsBuilder;
+import com.emh.util.AppException;
 import com.emh.util.MapperUtils;
 import com.emh.util.NotFoundException;
 import com.emh.util.ReferencedWarning;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -58,6 +62,8 @@ public class TeacherService
 
 	public Integer create(final TeacherRequest teacherRequest)
 	{
+		if (userRepository.findOneByUsername(teacherRequest.getUsername()) != null)
+			throw new AppException("Account Already Exists");
 		final Teacher teacher = new Teacher();
 		teacherRequest.setPassword(new BCryptPasswordEncoder().encode(teacherRequest.getPassword()));
 		User user = MapperUtils.map(teacherRequest, User.class);
@@ -99,13 +105,6 @@ public class TeacherService
 			referencedWarning.addParam(teacherClasses.getClassId());
 			return referencedWarning;
 		}
-		final TeacherNotifications teacherTeacherNotifications = teacherNotificationsRepository.findFirstByTeacher(teacher);
-		if (teacherTeacherNotifications != null)
-		{
-			referencedWarning.setKey("teacher.teacherNotifications.teacher.referenced");
-			referencedWarning.addParam(teacherTeacherNotifications.getId());
-			return referencedWarning;
-		}
 		return null;
 	}
 
@@ -114,6 +113,21 @@ public class TeacherService
 		Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(NotFoundException::new);
 		return teacher.getClasses().stream()
 				.map(classs -> MapperUtils.classMapToResponse(classs, new ClassesResponse()))
+				.toList();
+	}
+
+	public List<TeacherResponse> searchTeacher(String username, String email, String name) throws Exception
+	{
+		SpecificationsBuilder<Teacher> spec = new SpecificationsBuilder<>();
+		if (StringUtils.isNotBlank(username))
+			spec.with(new SearchCriteria("username", FilterOperation.EQUAL.toString(), username, false));
+		if (StringUtils.isNotBlank(email))
+			spec.with(new SearchCriteria("email", FilterOperation.EQUAL.toString(), email, false));
+		if (StringUtils.isNotBlank(name))
+			spec.with(new SearchCriteria("name", FilterOperation.EQUAL.toString(), name, false));
+		final List<Teacher> teachers = teacherRepository.findAll(spec.build());
+		return teachers.stream()
+				.map(teacher -> MapperUtils.teacherMapToResponse(teacher, new TeacherResponse()))
 				.toList();
 	}
 }

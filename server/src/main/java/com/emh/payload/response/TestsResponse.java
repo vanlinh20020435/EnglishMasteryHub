@@ -1,11 +1,16 @@
 package com.emh.payload.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -33,6 +38,11 @@ public class TestsResponse
 	@NotNull
 	private Integer status;
 
+	@JsonSerialize(as = Date.class)
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
+	@JsonProperty("created")
+	private Date createdDate;
+
 	@NotNull
-	private List<QuestionsResponse> questions;
+	private List<QuestionsResponse> questions = new ArrayList<>();
 }

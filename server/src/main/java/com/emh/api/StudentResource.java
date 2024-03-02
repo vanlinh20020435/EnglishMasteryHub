@@ -1,7 +1,6 @@
 package com.emh.api;
 
 import com.emh.payload.request.StudentRequest;
-import com.emh.payload.request.TeacherRequest;
 import com.emh.payload.response.StudentResponse;
 import com.emh.service.StudentService;
 import com.emh.util.ReferencedException;
@@ -30,7 +29,7 @@ public class StudentResource
 	}
 
 	@GetMapping
-	@Secured("ROLE_ADMIN")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	public ResponseEntity<List<StudentResponse>> getAllStudents()
 	{
 		return ResponseEntity.ok(studentService.findAll());
@@ -78,4 +77,13 @@ public class StudentResource
 		return ResponseEntity.noContent().build();
 	}
 
+	@GetMapping("/search")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
+	public ResponseEntity<List<StudentResponse>> searchStudent(@RequestParam(required = false) String username,
+															   @RequestParam(required = false) String email,
+															   @RequestParam(required = false) String name,
+															   @RequestParam(required = false) Integer classId) throws Exception
+	{
+		return ResponseEntity.ok(studentService.searchStudent(username, email, name, classId));
+	}
 }

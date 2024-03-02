@@ -45,10 +45,7 @@ public class Tests extends BaseEntity
 	private Set<Questions> questions;
 
 	@OneToMany(mappedBy = "tests", cascade = CascadeType.REMOVE)
-	private Set<Scores> scores;
-
-	@OneToMany(mappedBy = "tests", cascade = CascadeType.REMOVE)
-	private Set<StudentTestDetail> testCodeStudentTestDetails;
+	private Set<StudentTestResult> testCodeStudentTestResults;
 
 	@OneToMany(mappedBy = "tests", cascade = CascadeType.REMOVE)
 	private Set<TestClass> testClasses;

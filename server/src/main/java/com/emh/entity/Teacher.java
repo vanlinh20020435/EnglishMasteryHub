@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.Set;
 
 
@@ -20,7 +21,7 @@ public class Teacher extends BaseEntity
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer teacherId;
 
-	@Column(nullable = false, length = 16)
+	@Column(nullable = false, length = 16, unique = true)
 	private String username;
 
 	@Column(length = 50)
@@ -45,7 +46,7 @@ public class Teacher extends BaseEntity
 	private String avatar;
 
 	@Column
-	private LocalDate birthday;
+	private Date birthday;
 
 	@OneToMany(mappedBy = "teacher", fetch = FetchType.EAGER)
 	private Set<Classes> classes;

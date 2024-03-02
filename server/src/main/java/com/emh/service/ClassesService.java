@@ -1,8 +1,6 @@
 package com.emh.service;
 
 import com.emh.entity.Classes;
-import com.emh.entity.Student;
-import com.emh.entity.StudentNotifications;
 import com.emh.entity.Teacher;
 import com.emh.payload.request.ClassesRequest;
 import com.emh.payload.response.ClassesResponse;
@@ -11,9 +9,14 @@ import com.emh.repos.ClassesRepository;
 import com.emh.repos.StudentNotificationsRepository;
 import com.emh.repos.StudentRepository;
 import com.emh.repos.TeacherRepository;
+import com.emh.specifications.FilterOperation;
+import com.emh.specifications.SearchCriteria;
+import com.emh.specifications.SpecificationsBuilder;
 import com.emh.util.MapperUtils;
 import com.emh.util.NotFoundException;
 import com.emh.util.ReferencedWarning;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -80,23 +83,6 @@ public class ClassesService
 
 	public ReferencedWarning getReferencedWarning(final Integer classId)
 	{
-		final ReferencedWarning referencedWarning = new ReferencedWarning();
-		final Classes classes = classesRepository.findById(classId)
-				.orElseThrow(NotFoundException::new);
-		final Student classsStudent = studentRepository.findFirstByClasss(classes);
-		if (classsStudent != null)
-		{
-			referencedWarning.setKey("classes.student.classs.referenced");
-			referencedWarning.addParam(classsStudent.getStudentId());
-			return referencedWarning;
-		}
-		final StudentNotifications classsStudentNotifications = studentNotificationsRepository.findFirstByClasss(classes);
-		if (classsStudentNotifications != null)
-		{
-			referencedWarning.setKey("classes.studentNotifications.classs.referenced");
-			referencedWarning.addParam(classsStudentNotifications.getId());
-			return referencedWarning;
-		}
 		return null;
 	}
 
@@ -105,6 +91,19 @@ public class ClassesService
 		Classes classes = classesRepository.findById(classId).orElseThrow(NotFoundException::new);
 		return classes.getClassStudents().stream()
 				.map(student -> MapperUtils.studentMapToResponse(student, new StudentResponse()))
+				.toList();
+	}
+
+	public List<ClassesResponse> searchClass(String className, Integer teacherId) throws Exception
+	{
+		SpecificationsBuilder<Classes> spec = new SpecificationsBuilder<>();
+		if (StringUtils.isNotBlank(className))
+			spec.with(new SearchCriteria("username", FilterOperation.EQUAL.toString(), className, false));
+		if (ObjectUtils.defaultIfNull(teacherId, 0) != 0)
+			spec.with(new SearchCriteria("teacher_id", FilterOperation.EQUAL.toString(), teacherId, false));
+		final List<Classes> classes = classesRepository.findAll(spec.build());
+		return classes.stream()
+				.map(classs -> MapperUtils.classMapToResponse(classs, new ClassesResponse()))
 				.toList();
 	}
 }

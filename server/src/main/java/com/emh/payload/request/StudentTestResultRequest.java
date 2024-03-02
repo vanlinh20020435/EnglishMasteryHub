@@ -1,5 +1,6 @@
 package com.emh.payload.request;
 
+import com.emh.entity.QuestAnswerResult;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -10,23 +11,22 @@ import java.util.List;
 
 @Getter
 @Setter
-public class TestsRequest
+public class StudentTestResultRequest
 {
+	private Integer score;
+
 	@NotNull
-	@Size(max = 255)
-	private String testName;
+	private Integer testDefaultScore;
 
-	@Size(max = 32)
-	private String password;
-
+	@NotNull
 	private Integer time;
 
 	@NotNull
-	private String description;
+	private Integer testId;
 
 	@NotNull
-	private Integer status;
+	private Integer studentId;
 
 	@NotNull
-	private List<QuestionsRequest> questions;
+	private List<QuestAnswerResult> questionResults;
 }

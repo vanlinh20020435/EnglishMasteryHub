@@ -7,8 +7,13 @@ import com.emh.payload.request.AdminRequest;
 import com.emh.payload.response.AdminResponse;
 import com.emh.repos.AdminRepository;
 import com.emh.repos.UserRepository;
+import com.emh.specifications.FilterOperation;
+import com.emh.specifications.SearchCriteria;
+import com.emh.specifications.SpecificationsBuilder;
+import com.emh.util.AppException;
 import com.emh.util.MapperUtils;
 import com.emh.util.NotFoundException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,6 +52,8 @@ public class AdminService
 
 	public Integer create(final AdminRequest adminDTO)
 	{
+		if (userRepository.findOneByUsername(adminDTO.getUsername()) != null)
+			throw new AppException("Account Already Exists");
 		final Admin admin = new Admin();
 		adminDTO.setPassword(new BCryptPasswordEncoder().encode(adminDTO.getPassword()));
 		User user = MapperUtils.map(adminDTO, User.class);
@@ -74,5 +81,20 @@ public class AdminService
 				.orElseThrow(NotFoundException::new);
 		adminRepository.deleteById(adminId);
 		userRepository.delete(admin.getUser());
+	}
+
+	public List<AdminResponse> searchAdmin(String username, String email, String name) throws Exception
+	{
+		SpecificationsBuilder<Admin> spec = new SpecificationsBuilder<>();
+		if (StringUtils.isNotBlank(username))
+			spec.with(new SearchCriteria("username", FilterOperation.EQUAL.toString(), username, false));
+		if (StringUtils.isNotBlank(email))
+			spec.with(new SearchCriteria("email", FilterOperation.EQUAL.toString(), email, false));
+		if (StringUtils.isNotBlank(name))
+			spec.with(new SearchCriteria("name", FilterOperation.EQUAL.toString(), name, false));
+		final List<Admin> admins = adminRepository.findAll(spec.build());
+		return admins.stream()
+				.map(admin -> MapperUtils.adminMapToResponse(admin, new AdminResponse()))
+				.toList();
 	}
 }

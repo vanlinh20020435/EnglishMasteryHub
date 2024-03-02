@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Date;
 
 
 @Entity
@@ -20,7 +21,7 @@ public class Admin extends BaseEntity
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer adminId;
 
-	@Column(nullable = false, length = 16)
+	@Column(nullable = false, length = 16, unique = true)
 	private String username;
 
 	@Column(length = 50)
@@ -42,7 +43,7 @@ public class Admin extends BaseEntity
 	private String avatar;
 
 	@Column
-	private LocalDate birthday;
+	private Date birthday;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)

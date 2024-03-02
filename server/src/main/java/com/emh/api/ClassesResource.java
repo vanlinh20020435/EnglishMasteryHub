@@ -2,10 +2,7 @@ package com.emh.api;
 
 import com.emh.payload.request.ClassFileRequest;
 import com.emh.payload.request.ClassesRequest;
-import com.emh.payload.response.ClassFileResponse;
-import com.emh.payload.response.ClassesResponse;
-import com.emh.payload.response.StudentResponse;
-import com.emh.payload.response.TestsResponse;
+import com.emh.payload.response.*;
 import com.emh.service.ClassFileService;
 import com.emh.service.ClassesService;
 import com.emh.service.TestClassService;
@@ -153,5 +150,13 @@ public class ClassesResource
 	public ResponseEntity<List<StudentResponse>> getAllStudents(@PathVariable(name = "classId") final Integer classId)
 	{
 		return ResponseEntity.ok(classesService.getAllStudents(classId));
+	}
+
+	@GetMapping("/search")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
+	public ResponseEntity<List<ClassesResponse>> searchClass(@RequestParam(required = false) String className,
+															 @RequestParam(required = false) Integer teacherId) throws Exception
+	{
+		return ResponseEntity.ok(classesService.searchClass(className, teacherId));
 	}
 }
