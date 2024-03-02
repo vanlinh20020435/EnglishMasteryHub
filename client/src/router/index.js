@@ -4,7 +4,12 @@ import Teacher from "@/views/Teacher/index.vue";
 import Manager from "@/views/Teacher/Manager.vue";
 import Admin from "@/views/Admin/index.vue";
 import User from "@/views/Admin/User/index.vue";
-import { ManageClass, ManageExam, ManageCurriculum } from "@/views/Teacher";
+import {
+  ManageClass,
+  ManageExam,
+  ManageCurriculum,
+  CreateExam,
+} from "@/views/Teacher";
 import { authenticationRole } from "@/stores";
 import Login from "@/views/Login.vue";
 import StudentManager from "@/views/Admin/User/Student.vue";
@@ -15,12 +20,12 @@ const routes = [
   {
     path: "/login",
     component: Login,
-    public: true
+    public: true,
   },
   {
     path: "/register",
     component: HomeView,
-    public: true
+    public: true,
   },
   {
     path: "/teacher",
@@ -40,7 +45,16 @@ const routes = [
       },
       {
         path: "exam",
-        component: ManageExam,
+        children: [
+          {
+            path: "",
+            component: ManageExam,
+          },
+          {
+            path: "add",
+            component: CreateExam,
+          },
+        ],
       },
       {
         path: "curriculum",
@@ -50,7 +64,7 @@ const routes = [
   },
   {
     path: "/admin",
-    redirect: '/admin/user',
+    redirect: "/admin/user",
     component: Admin,
     children: [
       {
@@ -84,7 +98,7 @@ const routes = [
     path: "/:pathMatch(.*)*",
     redirect: "/login",
   },
-]
+];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -92,34 +106,34 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  console.log('navigating...');
+  console.log("navigating...");
   const path = to.fullPath;
   const authenticationStore = authenticationRole();
   const { authentication } = authenticationStore;
-  const pathSplitted = path.split('/')
+  const pathSplitted = path.split("/");
   if (authentication?.user?.role) {
-    if (path === '/login' && to.redirectedFrom) {
+    if (path === "/login" && to.redirectedFrom) {
       next("/" + authentication?.user?.role);
-      return
+      return;
     }
     if (pathSplitted.length && pathSplitted[1] === authentication?.user?.role) {
-      next()
+      next();
     } else {
-      if (routes.some(route => (route.path === path) && route.public)) {
-        if (path === 'login' || path === 'register') {
+      if (routes.some((route) => route.path === path && route.public)) {
+        if (path === "login" || path === "register") {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("user");
         }
-        next()
+        next();
       } else {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("user");
-        next('/login')
+        next("/login");
       }
     }
   } else {
-    if (routes.some(route => (route.path === path) && route.public)) {
-      next()
+    if (routes.some((route) => route.path === path && route.public)) {
+      next();
     } else {
       next("/login");
     }

@@ -8,3 +8,16 @@
     max-height: 70%;
   }
 }
+.card_tips {
+  .v-card-title {
+    font-size: clamp(1rem, 1.2vw, 1.125rem);
+    white-space: pre;
+  }
+
+  .v-card-item {
+    .v-icon {
+      color: #ffc107;
+      opacity: 1;
+    }
+  }
+}

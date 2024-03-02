@@ -19,6 +19,8 @@
         isCreate
         title="Quản lý bài kiểm tra"
         :createNew="createNewExam"
+        @update:searchValue="handleSearchInputChange"
+        :searchValue="searchValue"
       />
       <v-divider class="header_divider" :thickness="2"></v-divider>
       <v-row style="height: 90%" class="d-flex justify-center">
@@ -28,8 +30,8 @@
             class="height-100 scrollbar-custom v-data-table__exam"
             fixed-header
             :headers="headers"
-            :items="stateExams.data"
-            :sort-by="[{ key: 'calories', order: 'asc' }]"
+            :items="filteredStateExams"
+            :sort-by="[{ key: 'testId', order: 'asc' }]"
             :loading="isLoading"
           >
             <template v-slot:top>
@@ -141,6 +143,7 @@ import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
 import { mapState } from "pinia";
 import { authenticationRole } from "@/stores";
 import { apiCallerGet, apiCallerDelete } from "@/services/teacher";
+import { removeVietnameseDiacritics } from "@/base/Validate";
 
 export default {
   name: "ManageExam",
@@ -165,9 +168,9 @@ export default {
         key: "testName",
       },
       { title: "Mô tả", key: "description", sortable: false },
+      { title: "Thời gian (phút)", key: "time" },
       { title: "Số câu hỏi", key: "totalQuestions" },
       { title: "Ngày tạo", key: "created" },
-      { title: "Thời gian (phút)", key: "time" },
       { title: "Thao tác", key: "actions", sortable: false },
     ],
     desserts: [],
@@ -193,13 +196,37 @@ export default {
       success: false,
       msg: "",
     },
+    searchValue: "",
   }),
 
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
     },
-    ...mapState(authenticationRole, ["updateAuth"]),
+    ...mapState(authenticationRole, ["updateAuth", "authentication"]),
+    filteredStateExams() {
+      if (!this.searchValue) {
+        // If searchValue is empty, return the original stateExams data
+        return this.stateExams.data;
+      } else {
+        const normalizedSearchInput = removeVietnameseDiacritics(
+          this.searchValue.toLowerCase()?.trim()
+        );
+        // If searchValue is not empty, filter stateExams based on testName
+        return this.stateExams.data.filter((exam) => {
+          const normalizedTitle = removeVietnameseDiacritics(
+            exam.testName.toLowerCase()?.trim()
+          );
+          if (normalizedSearchInput == "d") {
+            return (
+              normalizedTitle.includes("d") || normalizedTitle.includes("đ")
+            );
+          } else {
+            return normalizedTitle.includes(normalizedSearchInput);
+          }
+        });
+      }
+    },
   },
 
   watch: {
@@ -209,10 +236,9 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
-  },
-
-  created() {
-    this.initialize();
+    searchValue(newVal) {
+      this.handleSearchInputChange(newVal);
+    },
   },
 
   mounted() {
@@ -228,8 +254,6 @@ export default {
         this.stateExams.data = result.data;
       }
     },
-    initialize() {},
-
     editItem(item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.editedItem = Object.assign({}, item);
@@ -279,10 +303,13 @@ export default {
       this.close();
     },
     createNewExam() {
-      this.$router.replace('/');
+      this.$router.push(`/${this.authentication.user.role}/exam/add`);
     },
     handleVisible(newValue) {
       this.dialogDelete = newValue;
+    },
+    handleSearchInputChange(valueSearch) {
+      this.searchValue = valueSearch;
     },
   },
 };
