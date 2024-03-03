@@ -1,6 +1,6 @@
 package com.emh.payload.request;
 
-import com.emh.payload.response.QuestOptionResponse;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -30,11 +30,15 @@ public class QuestionsRequest
 
 	private Integer time;
 
+	@Valid
 	private List<QuestionsRequest> subQuestions;
 
+	@Valid
 	private List<QuestAnswerRequest> answers;
 
+	@Valid
 	private List<QuestOptionRequest> options;
 
+	@Valid
 	private List<QuestFileRequest> files;
 }

@@ -7,8 +7,13 @@ import com.emh.payload.request.AdminRequest;
 import com.emh.payload.response.AdminResponse;
 import com.emh.repos.AdminRepository;
 import com.emh.repos.UserRepository;
+import com.emh.specifications.FilterOperation;
+import com.emh.specifications.SearchCriteria;
+import com.emh.specifications.SpecificationsBuilder;
+import com.emh.util.AppException;
 import com.emh.util.MapperUtils;
 import com.emh.util.NotFoundException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,26 +50,31 @@ public class AdminService
 				.orElseThrow(NotFoundException::new);
 	}
 
-	public Integer create(final AdminRequest adminDTO)
+	public Integer create(final AdminRequest adminRequest)
 	{
+		if (userRepository.findOneByUsername(adminRequest.getUsername()) != null)
+			throw new AppException("Account Already Exists");
 		final Admin admin = new Admin();
-		adminDTO.setPassword(new BCryptPasswordEncoder().encode(adminDTO.getPassword()));
-		User user = MapperUtils.map(adminDTO, User.class);
+		adminRequest.setPassword(new BCryptPasswordEncoder().encode(adminRequest.getPassword()));
+		User user = MapperUtils.map(adminRequest, User.class);
 		user.setRole(Role.ADMIN.toString());
 		user.setStatus(1);
 		admin.setStatus(1);
 		user = userRepository.save(user);
-		MapperUtils.adminMapToEntity(adminDTO, admin, user);
+		MapperUtils.adminMapToEntity(adminRequest, admin, user);
 		return adminRepository.save(admin).getAdminId();
 	}
 
-	public void update(final Integer adminId, final AdminRequest adminDTO)
+	public void update(final Integer adminId, final AdminRequest adminRequest)
 	{
 		final Admin admin = adminRepository.findById(adminId)
 				.orElseThrow(NotFoundException::new);
-		User user = MapperUtils.map(adminDTO, User.class);
+		if (StringUtils.isNotBlank(adminRequest.getPassword()))
+			adminRequest.setPassword(admin.getPassword());
+		User user = MapperUtils.map(adminRequest, User.class);
+		user.setUserId(admin.getUser().getUserId());
 		user = userRepository.save(user);
-		MapperUtils.adminMapToEntity(adminDTO, admin, user);
+		MapperUtils.adminMapToEntity(adminRequest, admin, user);
 		adminRepository.save(admin);
 	}
 
@@ -74,5 +84,43 @@ public class AdminService
 				.orElseThrow(NotFoundException::new);
 		adminRepository.deleteById(adminId);
 		userRepository.delete(admin.getUser());
+	}
+
+	public List<AdminResponse> searchAdmin(String username, String email, String name) throws Exception
+	{
+		SpecificationsBuilder<Admin> spec = new SpecificationsBuilder<>();
+		if (StringUtils.isNotBlank(username))
+			spec.with(new SearchCriteria("username", FilterOperation.EQUAL.toString(), username, false));
+		if (StringUtils.isNotBlank(email))
+			spec.with(new SearchCriteria("email", FilterOperation.EQUAL.toString(), email, false));
+		if (StringUtils.isNotBlank(name))
+			spec.with(new SearchCriteria("name", FilterOperation.EQUAL.toString(), name, false));
+		final List<Admin> admins = adminRepository.findAll(spec.build());
+		return admins.stream()
+				.map(admin -> MapperUtils.adminMapToResponse(admin, new AdminResponse()))
+				.toList();
+	}
+
+	public void updateStatus(Integer id, Integer status)
+	{
+		final Admin admin = adminRepository.findById(id)
+				.orElseThrow(NotFoundException::new);
+		User user = admin.getUser();
+		admin.setStatus(status == 1 ? 1 : 0);
+		user.setStatus(status == 1 ? 1 : 0);
+		userRepository.save(user);
+		adminRepository.save(admin);
+	}
+
+	public void updatePassword(Integer id, String password)
+	{
+		password = new BCryptPasswordEncoder().encode(password);
+		final Admin admin = adminRepository.findById(id)
+				.orElseThrow(NotFoundException::new);
+		User user = admin.getUser();
+		admin.setPassword(password);
+		user.setPassword(password);
+		userRepository.save(user);
+		adminRepository.save(admin);
 	}
 }

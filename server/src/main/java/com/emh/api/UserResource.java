@@ -3,13 +3,12 @@ package com.emh.api;
 import com.emh.service.UserDetailsImpl;
 import com.emh.service.UserService;
 import com.emh.util.SecurityUtils;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin("*")
 @RestController
@@ -30,5 +29,15 @@ public class UserResource
 	{
 		UserDetailsImpl userDetails = SecurityUtils.getPrincipal();
 		return ResponseEntity.ok(userService.get(userDetails.getId()));
+	}
+
+	@PutMapping("/update-password")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
+	@ApiResponse(responseCode = "201")
+	public ResponseEntity<Integer> updatePassword(@RequestParam String password)
+	{
+		UserDetailsImpl userDetails = SecurityUtils.getPrincipal();
+		userService.updatePassword(userDetails.getId(), password);
+		return new ResponseEntity<>(userDetails.getId(), HttpStatus.CREATED);
 	}
 }

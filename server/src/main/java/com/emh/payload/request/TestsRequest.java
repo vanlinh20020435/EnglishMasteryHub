@@ -1,11 +1,11 @@
 package com.emh.payload.request;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 
 
@@ -20,8 +20,6 @@ public class TestsRequest
 	@Size(max = 32)
 	private String password;
 
-	private Integer totalQuestions;
-
 	private Integer time;
 
 	@NotNull
@@ -30,6 +28,7 @@ public class TestsRequest
 	@NotNull
 	private Integer status;
 
+	@Valid
 	@NotNull
 	private List<QuestionsRequest> questions;
 }

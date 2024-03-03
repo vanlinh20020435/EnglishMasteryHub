@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.OffsetDateTime;
 import java.util.Set;
 
 
@@ -45,10 +44,7 @@ public class Tests extends BaseEntity
 	private Set<Questions> questions;
 
 	@OneToMany(mappedBy = "tests", cascade = CascadeType.REMOVE)
-	private Set<Scores> scores;
-
-	@OneToMany(mappedBy = "tests", cascade = CascadeType.REMOVE)
-	private Set<StudentTestDetail> testCodeStudentTestDetails;
+	private Set<StudentTestResult> testCodeStudentTestResults;
 
 	@OneToMany(mappedBy = "tests", cascade = CascadeType.REMOVE)
 	private Set<TestClass> testClasses;

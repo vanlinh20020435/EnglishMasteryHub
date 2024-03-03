@@ -81,7 +81,7 @@ public class FilesStorageService
 	public static String moveFileUploadsToContent(String url) throws IOException
 	{
 		String fileName = FilenameUtils.getName(url);
-		if(new File(PropertyController.FILE_UPLOAD_URI + fileName).exists())
+		if (new File(PropertyController.FILE_UPLOAD_URI + fileName).exists())
 		{
 			FileUtils.moveFile(new File(PropertyController.FILE_STORAGE_URI + fileName), new File(PropertyController.FILE_UPLOAD_URI + fileName));
 			return PropertyController.FILE_UPLOAD_URI.replace("$FILE_NAME$", fileName);

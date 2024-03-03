@@ -11,5 +11,5 @@ public interface QuestionsRepository extends JpaRepository<Questions, Integer>
 	Questions findFirstByParentQuestionAndQuestionIdNot(Questions questions,
 														final Integer questionId);
 
-    Questions findFirstByTests(Tests tests);
+	Questions findFirstByTests(Tests tests);
 }

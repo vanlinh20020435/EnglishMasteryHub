@@ -26,11 +26,11 @@ public class ClassesResponse
 	private String description;
 
 	@JsonSerialize(as = Date.class)
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date startDate;
 
 	@JsonSerialize(as = Date.class)
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date endDate;
 
 	@NotNull

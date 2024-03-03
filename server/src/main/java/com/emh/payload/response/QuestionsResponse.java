@@ -1,6 +1,5 @@
 package com.emh.payload.response;
 
-import com.emh.entity.QuestOption;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -38,4 +37,6 @@ public class QuestionsResponse
 	private List<QuestAnswerResponse> answers;
 
 	private List<QuestOptionResponse> options;
+
+	private List<QuestFileResponse> files;
 }

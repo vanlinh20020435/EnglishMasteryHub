@@ -23,7 +23,7 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping(value = "/api/classess", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/class", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ClassesResource
 {
 
@@ -122,7 +122,7 @@ public class ClassesResource
 	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	@ApiResponse(responseCode = "201")
 	public ResponseEntity<Integer> addFileToClass(@PathVariable(name = "classId") final Integer classId,
-											   @RequestBody @Valid final ClassFileRequest classFileRequest)
+												  @RequestBody @Valid final ClassFileRequest classFileRequest)
 	{
 		final Integer fileId = classFileService.create(classId, classFileRequest);
 		return new ResponseEntity<>(fileId, HttpStatus.CREATED);
@@ -141,7 +141,7 @@ public class ClassesResource
 	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	@ApiResponse(responseCode = "204")
 	public ResponseEntity<Void> deleteFile(@PathVariable(name = "classId") final Integer classId,
-											@PathVariable(name = "fileId") final Integer fileId)
+										   @PathVariable(name = "fileId") final Integer fileId)
 	{
 		classFileService.delete(classId, fileId);
 		return ResponseEntity.noContent().build();
@@ -153,5 +153,13 @@ public class ClassesResource
 	public ResponseEntity<List<StudentResponse>> getAllStudents(@PathVariable(name = "classId") final Integer classId)
 	{
 		return ResponseEntity.ok(classesService.getAllStudents(classId));
+	}
+
+	@GetMapping("/search")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
+	public ResponseEntity<List<ClassesResponse>> searchClass(@RequestParam(required = false) String className,
+															 @RequestParam(required = false) Integer teacherId) throws Exception
+	{
+		return ResponseEntity.ok(classesService.searchClass(className, teacherId));
 	}
 }

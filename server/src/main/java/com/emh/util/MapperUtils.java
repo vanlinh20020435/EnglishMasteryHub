@@ -8,7 +8,6 @@ import com.emh.service.FilesStorageService;
 import org.modelmapper.convention.MatchingStrategies;
 
 import java.io.IOException;
-import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -59,27 +58,27 @@ public class MapperUtils
 		return admin;
 	}
 
-	public static TeacherResponse teacherMapToResponse(final Teacher teacher, final TeacherResponse teacherDTO)
+	public static TeacherResponse teacherMapToResponse(final Teacher teacher, final TeacherResponse teacherResponse)
 	{
-		teacherDTO.setTeacherId(teacher.getTeacherId());
-		teacherDTO.setUsername(teacher.getUsername());
-		teacherDTO.setEmail(teacher.getEmail());
-		teacherDTO.setName(teacher.getName());
-		teacherDTO.setGender(teacher.getGender());
-		teacherDTO.setAvatar(teacher.getAvatar());
-		teacherDTO.setBirthday(teacher.getBirthday());
-		return teacherDTO;
+		teacherResponse.setTeacherId(teacher.getTeacherId());
+		teacherResponse.setUsername(teacher.getUsername());
+		teacherResponse.setEmail(teacher.getEmail());
+		teacherResponse.setName(teacher.getName());
+		teacherResponse.setGender(teacher.getGender());
+		teacherResponse.setAvatar(teacher.getAvatar());
+		teacherResponse.setBirthday(teacher.getBirthday());
+		return teacherResponse;
 	}
 
-	public static Teacher teacherMapToEntity(final TeacherRequest teacherDTO, final Teacher teacher, final User user)
+	public static Teacher teacherMapToEntity(final TeacherRequest teacherRequest, final Teacher teacher, final User user)
 	{
-		teacher.setUsername(teacherDTO.getUsername());
-		teacher.setEmail(teacherDTO.getEmail());
-		teacher.setPassword(teacherDTO.getPassword());
-		teacher.setName(teacherDTO.getName());
-		teacher.setGender(teacherDTO.getGender());
-		teacher.setAvatar(teacherDTO.getAvatar());
-		teacher.setBirthday(teacherDTO.getBirthday());
+		teacher.setUsername(teacherRequest.getUsername());
+		teacher.setEmail(teacherRequest.getEmail());
+		teacher.setPassword(teacherRequest.getPassword());
+		teacher.setName(teacherRequest.getName());
+		teacher.setGender(teacherRequest.getGender());
+		teacher.setAvatar(teacherRequest.getAvatar());
+		teacher.setBirthday(teacherRequest.getBirthday());
 		if (user == null)
 			throw new NotFoundException("user not found");
 		teacher.setUser(user);
@@ -144,26 +143,27 @@ public class MapperUtils
 		return classes;
 	}
 
-	public static TestsResponse testMapToResponse(final Tests tests, final TestsResponse testsDTO)
+	public static TestsResponse testMapToResponse(final Tests tests, final TestsResponse testsResponse)
 	{
-		testsDTO.setTestId(tests.getTestId());
-		testsDTO.setTestName(tests.getTestName());
-		testsDTO.setPassword(tests.getPassword());
-		testsDTO.setTotalQuestions(tests.getTotalQuestions());
-		testsDTO.setTime(tests.getTime());
-		testsDTO.setDescription(tests.getDescription());
-		testsDTO.setStatus(tests.getStatus());
-		return testsDTO;
+		testsResponse.setTestId(tests.getTestId());
+		testsResponse.setTestName(tests.getTestName());
+		testsResponse.setPassword(tests.getPassword());
+		testsResponse.setTotalQuestions(tests.getTotalQuestions());
+		testsResponse.setTime(tests.getTime());
+		testsResponse.setDescription(tests.getDescription());
+		testsResponse.setStatus(tests.getStatus());
+		testsResponse.setCreatedDate(tests.getCreatedDate());
+		return testsResponse;
 	}
 
-	public static Tests testMapToEntity(final TestsRequest testsDTO, final Tests tests)
+	public static Tests testMapToEntity(final TestsRequest testsRequest, final Tests tests)
 	{
-		tests.setTestName(testsDTO.getTestName());
-		tests.setPassword(testsDTO.getPassword());
-		tests.setTotalQuestions(testsDTO.getTotalQuestions());
-		tests.setTime(testsDTO.getTime());
-		tests.setDescription(testsDTO.getDescription());
-		tests.setStatus(testsDTO.getStatus());
+		tests.setTestName(testsRequest.getTestName());
+		tests.setPassword(testsRequest.getPassword());
+		tests.setTotalQuestions(testsRequest.getQuestions().size());
+		tests.setTime(testsRequest.getTime());
+		tests.setDescription(testsRequest.getDescription());
+		tests.setStatus(testsRequest.getStatus());
 		return tests;
 	}
 
@@ -200,6 +200,7 @@ public class MapperUtils
 		questions.setType(questionsRequest.getDescription());
 		questions.setTests(tests);
 		questions.setParentQuestion(parentQuestions);
+		questions.setSkill(questionsRequest.getSkill());
 		return questions;
 	}
 

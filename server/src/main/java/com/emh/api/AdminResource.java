@@ -65,4 +65,29 @@ public class AdminResource
 		return ResponseEntity.noContent().build();
 	}
 
+	@GetMapping("/search")
+	public ResponseEntity<List<AdminResponse>> searchAdmin(@RequestParam(required = false) String username,
+														   @RequestParam(required = false) String email,
+														   @RequestParam(required = false) String name) throws Exception
+	{
+		return ResponseEntity.ok(adminService.searchAdmin(username, email, name));
+	}
+
+	@PutMapping("/{adminId}/update-status")
+	@ApiResponse(responseCode = "201")
+	public ResponseEntity<Integer> updateStatus(@PathVariable(name = "adminId") final Integer adminId,
+												@RequestParam Integer status)
+	{
+		adminService.updateStatus(adminId, status);
+		return new ResponseEntity<>(adminId, HttpStatus.CREATED);
+	}
+
+	@PutMapping("/{adminId}/update-password")
+	@ApiResponse(responseCode = "201")
+	public ResponseEntity<Integer> updatePassword(@PathVariable(name = "adminId") final Integer adminId,
+												  @RequestParam String password)
+	{
+		adminService.updatePassword(adminId, password);
+		return new ResponseEntity<>(adminId, HttpStatus.CREATED);
+	}
 }

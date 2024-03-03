@@ -1,23 +1,113 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from "vue-router";
+import HomeView from "../views/HomeView.vue";
+import Teacher from "@/views/Teacher/index.vue";
+import Manager from "@/views/Teacher/Manager.vue";
+import Admin from "@/views/Admin/index.vue";
+import User from "@/views/Admin/User/index.vue";
+import { ManageClass, ManageExam, ManageCurriculum } from "@/views/Teacher";
+import { authenticationRole } from "@/stores";
+import Login from "@/views/Login.vue";
+import StudentManager from "@/views/Admin/User/Student.vue";
+import TeacherManager from "@/views/Admin/User/Teacher.vue";
+import Class from "@/views/Admin/Class/index.vue";
+import Event from "@/views/Admin/Event/index.vue";
+const routes = [
+  {
+    path: "/login",
+    component: Login,
+    public: true
+  },
+  {
+    path: "/register",
+    component: HomeView,
+    public: true
+  },
+  {
+    path: "/teacher",
+    component: Teacher,
+    children: [
+      {
+        path: "",
+        component: Manager,
+      },
+      {
+        path: "manager",
+        component: Manager,
+      },
+      {
+        path: "class",
+        component: ManageClass,
+      },
+      {
+        path: "exam",
+        component: ManageExam,
+      },
+      {
+        path: "curriculum",
+        component: ManageCurriculum,
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    component: Admin,
+    children: [
+      {
+        path: "user",
+        children: [
+          {
+            path: "",
+            component: User,
+          },
+          {
+            path: "student",
+            component: StudentManager,
+          },
+          {
+            path: "teacher",
+            component: TeacherManager,
+          },
+        ],
+      },
+      {
+        path: "class",
+        component: Class,
+      },
+      {
+        path: "event",
+        component: Event,
+      },
+    ],
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: "/login",
+  },
+]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: HomeView
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    }
-  ]
-})
+  routes,
+});
 
-export default router
+router.beforeEach((to, from, next) => {
+  const path = to.fullPath;
+  const authenticationStore = authenticationRole();
+  const { authentication } = authenticationStore;
+  const pathSplitted = path.split('/')
+  if (routes.some(route => (route.path === path) && route.public)) {
+    next()
+    return
+  }
+  if (authentication?.user?.role) {
+    if (pathSplitted.length && pathSplitted[1] === authentication?.user?.role) {
+      next();
+    } else {
+      next("/" + authentication?.user?.role);
+    }
+  } else {
+    next("/login");
+  }
+});
+
+export default router;
