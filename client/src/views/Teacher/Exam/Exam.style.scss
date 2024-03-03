@@ -21,3 +21,32 @@
     }
   }
 }
+
+.toolbar-with-border {
+  border: 1px solid #fd7e14;
+
+  .v-toolbar-title__placeholder {
+    font-size: 14px;
+  }
+}
+
+.create-exam {
+  .v-list-subheader__text {
+    white-space: pre-wrap !important;
+    overflow: visible;
+    word-wrap: break-word;
+    color: #4d4d4d;
+  }
+}
+
+.label-required .v-list-subheader__text {
+  position: relative;
+}
+.label-required .v-list-subheader__text::after {
+  position: absolute;
+  content: "*";
+  right: -20px;
+  color: red;
+  top: 0;
+  bottom: 0;
+}

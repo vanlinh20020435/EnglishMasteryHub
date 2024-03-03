@@ -25,14 +25,14 @@ export default {
       //   ],
       // },
       {
-        title: "Quản lý lớp",
-        value: "class",
-        icon: "mdi-account-multiple",
-      },
-      {
         title: "Quản lý bài kiểm tra",
         value: "exam",
         icon: "mdi mdi-file-edit",
+      },
+      {
+        title: "Quản lý lớp",
+        value: "class",
+        icon: "mdi-account-multiple",
       },
       {
         title: "Giáo trình",
@@ -45,7 +45,7 @@ export default {
 </script>
 
 <template>
-  <DefaultLayout :menu="menu">
+  <DefaultLayout :menu="menu" typeLayout="teacher">
     <!-- <div style="width: 100%; height: 100%">teacher</div> -->
     <router-view />
   </DefaultLayout>

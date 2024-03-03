@@ -37,7 +37,7 @@
     </v-app-bar>
     <DefaultSidebar :drawer="drawer" :menu="menu" />
     <v-main class="d-flex justify-center" style="width: 100vw; height: 100vh">
-      <v-container class="v-container__full" style="padding: 16px; background-color: #fff">
+      <v-container :class="typeLayout == 'teacher' ? 'v-container__full pd-0' : 'v-container__full'" style="padding: 16px; background-color: #fff">
         <slot></slot>
       </v-container>
     </v-main>
@@ -58,6 +58,7 @@ export default {
   },
   props: {
     menu: Array,
+    typeLayout: String,
   },
   computed: {
     ...mapState(authenticationRole, ["authentication", "clearStore"]),
