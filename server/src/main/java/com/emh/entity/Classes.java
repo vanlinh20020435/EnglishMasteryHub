@@ -34,7 +34,7 @@ public class Classes extends BaseEntity
 	@Column(name = "end_date")
 	private Date endDate;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "teacher_id", nullable = false)
 	private Teacher teacher;
 

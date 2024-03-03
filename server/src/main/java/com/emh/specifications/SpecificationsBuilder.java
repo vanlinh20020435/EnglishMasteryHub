@@ -1,8 +1,6 @@
 package com.emh.specifications;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -26,7 +24,8 @@ public class SpecificationsBuilder<T>
 			return Specification.where(null);
 
 		List<Specification<T>> specs = new ArrayList<>();
-		for (SearchCriteria param : params) {
+		for (SearchCriteria param : params)
+		{
 			Specification<T> specification = specificationFactory.getByCriteria(param);
 			specs.add(specification);
 		}

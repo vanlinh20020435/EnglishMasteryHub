@@ -2,7 +2,10 @@ package com.emh.api;
 
 import com.emh.payload.request.ClassFileRequest;
 import com.emh.payload.request.ClassesRequest;
-import com.emh.payload.response.*;
+import com.emh.payload.response.ClassFileResponse;
+import com.emh.payload.response.ClassesResponse;
+import com.emh.payload.response.StudentResponse;
+import com.emh.payload.response.TestsResponse;
 import com.emh.service.ClassFileService;
 import com.emh.service.ClassesService;
 import com.emh.service.TestClassService;
@@ -20,7 +23,7 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping(value = "/api/classess", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/class", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ClassesResource
 {
 
@@ -119,7 +122,7 @@ public class ClassesResource
 	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	@ApiResponse(responseCode = "201")
 	public ResponseEntity<Integer> addFileToClass(@PathVariable(name = "classId") final Integer classId,
-											   @RequestBody @Valid final ClassFileRequest classFileRequest)
+												  @RequestBody @Valid final ClassFileRequest classFileRequest)
 	{
 		final Integer fileId = classFileService.create(classId, classFileRequest);
 		return new ResponseEntity<>(fileId, HttpStatus.CREATED);
@@ -138,7 +141,7 @@ public class ClassesResource
 	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	@ApiResponse(responseCode = "204")
 	public ResponseEntity<Void> deleteFile(@PathVariable(name = "classId") final Integer classId,
-											@PathVariable(name = "fileId") final Integer fileId)
+										   @PathVariable(name = "fileId") final Integer fileId)
 	{
 		classFileService.delete(classId, fileId);
 		return ResponseEntity.noContent().build();

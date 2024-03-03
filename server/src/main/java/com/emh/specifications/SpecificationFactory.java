@@ -1,10 +1,10 @@
 package com.emh.specifications;
 
+import org.springframework.data.jpa.domain.Specification;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-
-import org.springframework.data.jpa.domain.Specification;
 
 public class SpecificationFactory<T>
 {

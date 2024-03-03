@@ -21,6 +21,6 @@ public class ResourceConfig implements WebMvcConfigurer
 //		registry.addResourceHandler(PropertyController.RESOURCE_HANDLER).addResourceLocations("file:E:/Workspace/EnglishMasteryHub/server/uploads/");
 		registry.addResourceHandler(PropertyController.RESOURCE_HANDLER).
 				addResourceLocations(path + PropertyController.RESOURCE_PATH + "/",
-										path + PropertyController.FILE_PATH + "/");
+						path + PropertyController.FILE_PATH + "/");
 	}
 }

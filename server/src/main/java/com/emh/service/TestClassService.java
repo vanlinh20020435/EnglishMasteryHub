@@ -72,7 +72,7 @@ public class TestClassService
 
 	private void exportQuestions(Tests tests, TestsResponse testsResponse)
 	{
-		if(tests.getQuestions() == null)
+		if (tests.getQuestions() == null)
 			return;
 		List<QuestionsResponse> responses = new ArrayList<>();
 		for (Questions questions : tests.getQuestions())

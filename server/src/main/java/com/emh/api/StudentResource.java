@@ -86,4 +86,24 @@ public class StudentResource
 	{
 		return ResponseEntity.ok(studentService.searchStudent(username, email, name, classId));
 	}
+
+	@PutMapping("/{studentId}/update-status")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
+	@ApiResponse(responseCode = "201")
+	public ResponseEntity<Integer> updateStatus(@PathVariable(name = "studentId") final Integer studentId,
+												@RequestParam Integer status)
+	{
+		studentService.updateStatus(studentId, status);
+		return new ResponseEntity<>(studentId, HttpStatus.CREATED);
+	}
+
+	@PutMapping("/{studentId}/update-password")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
+	@ApiResponse(responseCode = "201")
+	public ResponseEntity<Integer> updatePassword(@PathVariable(name = "studentId") final Integer studentId,
+												  @RequestParam String password)
+	{
+		studentService.updatePassword(studentId, password);
+		return new ResponseEntity<>(studentId, HttpStatus.CREATED);
+	}
 }

@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -52,7 +50,7 @@ public class Student extends BaseEntity
 	@OneToMany(mappedBy = "student", cascade = CascadeType.REMOVE)
 	private Set<StudentTestResult> StudentTestResults;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 

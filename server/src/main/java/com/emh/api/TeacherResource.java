@@ -1,7 +1,6 @@
 package com.emh.api;
 
 import com.emh.payload.request.TeacherRequest;
-import com.emh.payload.response.AdminResponse;
 import com.emh.payload.response.ClassesResponse;
 import com.emh.payload.response.TeacherResponse;
 import com.emh.service.TeacherService;
@@ -89,9 +88,29 @@ public class TeacherResource
 	@GetMapping("/search")
 	@Secured({"ROLE_ADMIN"})
 	public ResponseEntity<List<TeacherResponse>> searchTeacher(@RequestParam(required = false) String username,
-														   @RequestParam(required = false) String email,
-														   @RequestParam(required = false) String name) throws Exception
+															   @RequestParam(required = false) String email,
+															   @RequestParam(required = false) String name) throws Exception
 	{
 		return ResponseEntity.ok(teacherService.searchTeacher(username, email, name));
+	}
+
+	@PutMapping("/{teacherId}/update-status")
+	@Secured({"ROLE_ADMIN"})
+	@ApiResponse(responseCode = "201")
+	public ResponseEntity<Integer> updateStatus(@PathVariable(name = "teacherId") final Integer teacherId,
+												@RequestParam Integer status)
+	{
+		teacherService.updateStatus(teacherId, status);
+		return new ResponseEntity<>(teacherId, HttpStatus.CREATED);
+	}
+
+	@PutMapping("/{teacherId}/update-password")
+	@Secured({"ROLE_ADMIN"})
+	@ApiResponse(responseCode = "201")
+	public ResponseEntity<Integer> updatePassword(@PathVariable(name = "teacherId") final Integer teacherId,
+												  @RequestParam String password)
+	{
+		teacherService.updatePassword(teacherId, password);
+		return new ResponseEntity<>(teacherId, HttpStatus.CREATED);
 	}
 }

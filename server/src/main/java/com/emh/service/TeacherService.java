@@ -79,7 +79,10 @@ public class TeacherService
 	{
 		final Teacher teacher = teacherRepository.findById(teacherId)
 				.orElseThrow(NotFoundException::new);
+		if (StringUtils.isNotBlank(teacherRequest.getPassword()))
+			teacherRequest.setPassword(teacher.getPassword());
 		User user = MapperUtils.map(teacherRequest, User.class);
+		user.setUserId(teacher.getUser().getUserId());
 		user = userRepository.save(user);
 		MapperUtils.teacherMapToEntity(teacherRequest, teacher, user);
 		teacherRepository.save(teacher);
@@ -129,5 +132,28 @@ public class TeacherService
 		return teachers.stream()
 				.map(teacher -> MapperUtils.teacherMapToResponse(teacher, new TeacherResponse()))
 				.toList();
+	}
+
+	public void updateStatus(Integer id, Integer status)
+	{
+		final Teacher teacher = teacherRepository.findById(id)
+				.orElseThrow(NotFoundException::new);
+		User user = teacher.getUser();
+		teacher.setStatus(status == 1 ? 1 : 0);
+		user.setStatus(status == 1 ? 1 : 0);
+		userRepository.save(user);
+		teacherRepository.save(teacher);
+	}
+
+	public void updatePassword(Integer id, String password)
+	{
+		password = new BCryptPasswordEncoder().encode(password);
+		final Teacher teacher = teacherRepository.findById(id)
+				.orElseThrow(NotFoundException::new);
+		User user = teacher.getUser();
+		teacher.setPassword(password);
+		user.setPassword(password);
+		userRepository.save(user);
+		teacherRepository.save(teacher);
 	}
 }

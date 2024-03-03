@@ -1,8 +1,9 @@
 package com.emh.payload.request;
 
 import com.emh.entity.QuestAnswerResult;
+
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,6 +28,7 @@ public class StudentTestResultRequest
 	@NotNull
 	private Integer studentId;
 
+	@Valid
 	@NotNull
 	private List<QuestAnswerResult> questionResults;
 }

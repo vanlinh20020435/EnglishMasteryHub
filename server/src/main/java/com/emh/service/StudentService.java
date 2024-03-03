@@ -6,7 +6,10 @@ import com.emh.entity.User;
 import com.emh.model.Role;
 import com.emh.payload.request.StudentRequest;
 import com.emh.payload.response.StudentResponse;
-import com.emh.repos.*;
+import com.emh.repos.ClassesRepository;
+import com.emh.repos.StudentRepository;
+import com.emh.repos.StudentTestResultRepository;
+import com.emh.repos.UserRepository;
 import com.emh.specifications.FilterOperation;
 import com.emh.specifications.SearchCriteria;
 import com.emh.specifications.SpecificationsBuilder;
@@ -78,7 +81,10 @@ public class StudentService
 	{
 		final Student student = studentRepository.findById(studentId)
 				.orElseThrow(NotFoundException::new);
+		if (StringUtils.isNotBlank(studentRequest.getPassword()))
+			studentRequest.setPassword(student.getPassword());
 		User user = MapperUtils.map(studentRequest, User.class);
+		user.setUserId(student.getUser().getUserId());
 		user = userRepository.save(user);
 		Classes classs = classesRepository.findById(studentRequest.getClassId())
 				.orElseThrow(NotFoundException::new);
@@ -114,5 +120,28 @@ public class StudentService
 		return students.stream()
 				.map(student -> MapperUtils.studentMapToResponse(student, new StudentResponse()))
 				.toList();
+	}
+
+	public void updateStatus(Integer id, Integer status)
+	{
+		final Student student = studentRepository.findById(id)
+				.orElseThrow(NotFoundException::new);
+		User user = student.getUser();
+		student.setStatus(status == 1 ? 1 : 0);
+		user.setStatus(status == 1 ? 1 : 0);
+		userRepository.save(user);
+		studentRepository.save(student);
+	}
+
+	public void updatePassword(Integer id, String password)
+	{
+		password = new BCryptPasswordEncoder().encode(password);
+		final Student student = studentRepository.findById(id)
+				.orElseThrow(NotFoundException::new);
+		User user = student.getUser();
+		student.setPassword(password);
+		user.setPassword(password);
+		userRepository.save(user);
+		studentRepository.save(student);
 	}
 }

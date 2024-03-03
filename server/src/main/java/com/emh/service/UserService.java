@@ -16,6 +16,8 @@ import com.emh.repos.TeacherRepository;
 import com.emh.repos.UserRepository;
 import com.emh.util.MapperUtils;
 import com.emh.util.NotFoundException;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -48,6 +50,10 @@ public class UserService
 	{
 		User user = userRepository.findById(userId)
 				.orElseThrow(NotFoundException::new);
+		if (StringUtils.isNotBlank(userRequest.getPassword()))
+			userRequest.setPassword(new BCryptPasswordEncoder().encode(userRequest.getPassword()));
+		else
+			userRequest.setPassword(user.getPassword());
 		user = userRepository.save(user);
 		switch (Role.valueOf(user.getRole()))
 		{
@@ -87,5 +93,32 @@ public class UserService
 		userResponse.setStatus(user.getStatus());
 		userResponse.setRole(user.getRole());
 		return userResponse;
+	}
+
+	public void updatePassword(Integer id, String password)
+	{
+		password = new BCryptPasswordEncoder().encode(password);
+		User user = userRepository.findById(id)
+				.orElseThrow(NotFoundException::new);
+		user.setPassword(password);
+		userRepository.save(user);
+		switch (Role.valueOf(user.getRole()))
+		{
+			case ADMIN:
+				Admin admin = adminRepository.findFirstByUser(user);
+				admin.setPassword(password);
+				adminRepository.save(admin);
+				break;
+			case TEACHER:
+				Teacher teacher = teacherRepository.findFirstByUser(user);
+				teacher.setPassword(password);
+				teacherRepository.save(teacher);
+				break;
+			case STUDENT:
+				Student student = studentRepository.findFirstByUser(user);
+				student.setPassword(password);
+				studentRepository.save(student);
+				break;
+		}
 	}
 }
