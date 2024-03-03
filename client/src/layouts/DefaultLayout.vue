@@ -9,7 +9,7 @@
           <v-menu min-width="200px" rounded>
             <template v-slot:activator="{ props }">
               <v-btn icon v-bind="props" style="margin-right: 16px;">
-                <v-avatar color="brown" size="large">
+                <v-avatar size="large">
                   <v-img alt="Avatar"
                     :src="authentication.user.avatar || 'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'"></v-img>
                 </v-avatar>

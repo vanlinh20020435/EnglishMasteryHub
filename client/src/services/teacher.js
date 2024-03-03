@@ -1,8 +1,30 @@
 import { $axios } from ".";
 
-function getTeachers() {
-  const path = "/api/user/userinfo";
-  $axios.get(path, { headers: { Authorization: "" } });
+const getTeachers = async (token) => {
+  const path = "/api/teachers";
+  return await apiCallerGet(path, token)
+}
+
+const searchTeachers = async (token = null, params) => {
+  const path = '/api/teachers/search'
+  var result = {
+    success: false,
+    data: null
+  }
+  try {
+    const response = await $axios.get(path, {
+      params: {
+        username: params.username || '',
+        name: params.name || '',
+        email: params.email || ''
+      }, headers: { 'Authorization': 'Bearer ' + token }
+    })
+    result.data = response.data;
+    result.success = true
+  } catch (error) {
+    console.log(error);
+  }
+  return result
 }
 
 const apiCallerGet = async (
@@ -107,6 +129,7 @@ const apiCallerPut = async (
 
 export {
   getTeachers,
+  searchTeachers,
   apiCallerGet,
   apiCallerDelete,
   apiCallerPut,

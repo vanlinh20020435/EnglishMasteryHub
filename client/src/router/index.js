@@ -16,6 +16,7 @@ import StudentManager from "@/views/Admin/User/Student.vue";
 import TeacherManager from "@/views/Admin/User/Teacher.vue";
 import Class from "@/views/Admin/Class/index.vue";
 import Event from "@/views/Admin/Event/index.vue";
+import ClassSlug from "@/views/Admin/Class/ClassSlug.vue";
 const routes = [
   {
     path: "/login",
@@ -87,6 +88,10 @@ const routes = [
       {
         path: "class",
         component: Class,
+      },
+      {
+        path: "class/:id",
+        component: ClassSlug,
       },
       {
         path: "event",
