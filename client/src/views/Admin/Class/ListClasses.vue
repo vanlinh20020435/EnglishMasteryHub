@@ -1,50 +1,28 @@
 <template>
-    <v-card style="margin-top: 16px;">
-        <v-toolbar color="#ebebeba3" flat>
-            <v-toolbar-title>Danh sách quản trị viên</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-btn icon="mdi-magnify" style="margin-right: 8px;" :color="isOpenFilter ? '#00bd7e' : ''"
-                @click="() => isOpenFilter = !isOpenFilter"></v-btn>
-            <v-btn class="mb-2" color="#00bd7e" dark variant="outlined" @click="isOpenForm = true">
-                Tạo mới
-            </v-btn>
-        </v-toolbar>
-        <v-row v-if="isOpenFilter" style="padding: 8px; margin-top: 8px">
-            <v-col cols="12" md="4">
-                <v-text-field v-model="filter.name" label="Name" @update:model-value="fetchFilter"
-                    clearable></v-text-field>
-            </v-col>
-            <v-col cols="12" md="4">
-                <v-text-field v-model="filter.username" label="Username" @update:model-value="fetchFilter"
-                    clearable></v-text-field>
-            </v-col>
-            <v-col cols="12" md="4">
-                <v-text-field v-model="filter.email" label="Email" @update:model-value="fetchFilter"
-                    clearable></v-text-field>
-            </v-col>
-        </v-row>
-        <v-data-table :loading="isLoadingData" :headers="headers" :items="data"
-            :sort-by="[{ key: 'adminId', order: 'asc' }]">
-            <template v-slot:item.avatar="{ item }">
-                <v-avatar>
-                    <v-img alt="Avatar"
-                        :src="item.avatar || 'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'"></v-img>
-                </v-avatar>
-            </template>
+    <v-data-table hover @click:row="(a, b) => handleClickItem(b.item)" :loading="loading" :headers="headers"
+        :items="data" :sort-by="[{ key: 'adminId', order: 'asc' }]">
+        <template v-slot:item.avatar="{ item }">
+            <v-avatar>
+                <v-img alt="Avatar"
+                    :src="item.avatar || 'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'"></v-img>
+            </v-avatar>
+        </template>
 
-            <template v-slot:item.actions="{ item }">
-                <v-icon class="me-2" color="primary" size="small" @click="() => openEdit(item)">
-                    mdi-pencil
-                </v-icon>
-                <v-icon size="small" color="error" @click="() => openDelete(item)">
-                    mdi-delete
-                </v-icon>
-                <PopUpYesNo msg="Bạn có chắc chắn muốn xoas?" :visible="isOpenDelete" :handleClickYes="deleteItem"
-                    :handleClickNo="() => isOpenDelete = false" />
-            </template>
-        </v-data-table>
-    </v-card>
-    <v-dialog v-model="isOpenForm" max-width="500px">
+        <template v-slot:item.teacher="{ item }">
+            {{ item.teacher?.username }}
+        </template>
+
+        <template v-slot:item.actions="{ item }">
+            <v-icon class="me-2" color="primary" size="small" @click.stop.prevent="() => openEdit(item)">
+                mdi-pencil
+            </v-icon>
+            <v-icon size="small" color="error" @click.stop.prevent="() => openDelete(item)">
+                mdi-delete
+            </v-icon>
+            <PopUpYesNo msg="Bạn có chắc chắn muốn xoas?" :visible="isOpenDelete" :handleClickYes="deleteItem"
+                :handleClickNo="() => isOpenDelete = false" />
+        </template>
+    </v-data-table><v-dialog v-model="isOpenForm" max-width="500px">
         <v-form v-model="formValid" @submit.prevent="submitForm">
             <v-card>
                 <v-card-title>
@@ -107,7 +85,7 @@
 
 <script>
 import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
-import { getAdmins, searchAdmins, createAdmin, editAdmin } from '@/services'
+import { getClasses, createAdmin, editAdmin } from '@/services'
 import { authenticationRole, toastStore } from "@/stores";
 import { mapState } from "pinia";
 
@@ -115,20 +93,24 @@ export default {
     components: {
         PopUpYesNo
     },
+    props: {
+        data: Array,
+        loading: Boolean,
+        reload: Function
+    },
     data() {
         return {
             datePicker: null,
             isOpenDatePicker: false,
             formValid: false,
             headers: [
-                { title: 'Admin ID', align: 'center', key: 'adminId', sortable: false },
+                { title: 'Class ID', align: 'center', key: 'classId', sortable: false },
+                { title: 'Class name', key: 'className', sortable: false },
                 { title: 'Avatar', key: 'avatar', sortable: false },
-                { title: 'Name', key: 'name', sortable: false },
-                { title: 'Username', key: 'username', sortable: false },
-                { title: 'Email', key: 'email', sortable: false },
-                { title: 'Birthday', key: 'birthday', sortable: false },
-                { title: 'Gender', key: 'gender', sortable: false },
-                { title: 'Status', key: 'status', sortable: false },
+                { title: 'Start', key: 'startDate' },
+                { title: 'End', key: 'endDate' },
+                { title: 'Description', key: 'description', sortable: false },
+                { title: 'Teacher', key: 'teacher', sortable: false },
                 { title: 'Actions', key: 'actions', sortable: false },
             ],
             isOpenForm: false,
@@ -136,8 +118,6 @@ export default {
             isEdit: false,
             formItem: {},
             delettingItem: {},
-            data: [],
-            valid: false,
             requireRules: [
                 value => {
                     if (value || value === 0) return true
@@ -154,45 +134,22 @@ export default {
                     return 'E-mail must be valid.'
                 },
             ],
-            isLoadingData: false,
             isLoadingForm: false,
-            datePickerComputed: null,
-            filter: {
-                username: '',
-                name: '',
-                email: ''
-            },
-            _timerId: null,
-            isOpenFilter: false
+            datePickerComputed: null
         }
     },
     computed: {
         ...mapState(authenticationRole, ["authentication"]),
         ...mapState(toastStore, ["updateToast"])
     },
-    mounted() {
-        this.fetchData()
-    },
     methods: {
         async fetchData() {
-            this.isLoadingData = true
-            const res = await getAdmins(this.authentication?.accessToken?.token)
+            this.loading = true
+            const res = await getClasses(this.authentication?.accessToken?.token)
             if (res.success) {
                 this.data = res.data
             }
-            this.isLoadingData = false
-        },
-        fetchFilter() {
-            clearTimeout(this._timerId)
-            this._timerId = setTimeout(async () => {
-                this.isLoadingData = true
-                const res = await searchAdmins(this.authentication?.accessToken?.token, this.filter)
-                if (res.success) {
-                    this.data = res.data
-                }
-                this.isLoadingData = false
-            }, 500)
-
+            this.loading = false
         },
         submitFilter() {
         },
@@ -205,7 +162,7 @@ export default {
                     await this.createItem()
                 }
                 this.isOpenForm = false
-                await this.fetchData()
+                await this.reload()
             }
         },
         async createItem() {
@@ -215,7 +172,7 @@ export default {
             if (res.success) {
                 console.log(res);
                 this.isOpenForm = false
-                await this.fetchData()
+                await this.reload()
             } else {
                 //error
             }
@@ -235,10 +192,13 @@ export default {
             if (res.success) {
                 console.log(res);
                 this.isOpenForm = false
-                await this.fetchData()
+                await this.reload()
             } else {
                 //error
             }
+        },
+        handleClickItem(item) {
+            this.$router.replace(`/admin/class/${item.classId}`)
         },
         deleteItem() {
 
@@ -249,6 +209,8 @@ export default {
         openEdit(item) {
             this.isOpenForm = true
             this.formItem = { ...item }
+            this.datePicker = new Date(this.formItem.birthday)
+            console.log(111111111111, this.datePicker);
             this.isEdit = true
         },
         openDelete(item) {
