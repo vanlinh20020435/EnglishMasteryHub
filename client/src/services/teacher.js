@@ -14,7 +14,7 @@ const apiCallerGet = async (
     data: null,
   };
   try {
-    const headers = { Accept: "application/json" };
+    const headers = { Accept: "*" };
     if (!!token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
@@ -32,18 +32,19 @@ const apiCallerGet = async (
 
 const apiCallerPost = async (
   path,
-  token = JSON.parse(localStorage?.getItem("accessToken"))?.token
+  token = JSON.parse(localStorage?.getItem("accessToken"))?.token,
+  body
 ) => {
   let result = {
     success: false,
     data: null,
   };
   try {
-    const headers = { Accept: "application/json" };
+    const headers = { Accept: "*" };
     if (!!token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
-    const response = await $axios.post(path, {
+    const response = await $axios.post(path, body, {
       headers: headers,
     });
 
@@ -57,7 +58,8 @@ const apiCallerPost = async (
 
 const apiCallerDelete = async (
   path,
-  token = JSON.parse(localStorage?.getItem("accessToken"))?.token
+  token = JSON.parse(localStorage?.getItem("accessToken"))?.token,
+  body
 ) => {
   let result = {
     success: false,
@@ -68,7 +70,7 @@ const apiCallerDelete = async (
     if (!!token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
-    const response = await $axios.delete(path, {
+    const response = await $axios.delete(path, body, {
       headers: headers,
     });
 
@@ -82,18 +84,19 @@ const apiCallerDelete = async (
 
 const apiCallerPut = async (
   path,
-  token = JSON.parse(localStorage?.getItem("accessToken"))?.token
+  token = JSON.parse(localStorage?.getItem("accessToken"))?.token,
+  body
 ) => {
   let result = {
     success: false,
     data: null,
   };
   try {
-    const headers = { Accept: "application/json" };
+    const headers = { Accept: "*" };
     if (!!token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
-    const response = await $axios.put(path, {
+    const response = await $axios.put(path, body, {
       headers: headers,
     });
 
