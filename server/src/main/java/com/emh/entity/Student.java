@@ -43,7 +43,7 @@ public class Student extends BaseEntity
 	@Column
 	private Date birthday;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "class_id", nullable = false)
 	private Classes classs;
 

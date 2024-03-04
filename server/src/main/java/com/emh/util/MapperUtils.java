@@ -95,7 +95,7 @@ public class MapperUtils
 		studentRequest.setStatus(student.getStatus());
 		studentRequest.setAvatar(student.getAvatar());
 		studentRequest.setBirthday(student.getBirthday());
-		studentRequest.setClasss(student.getClasss() == null ? null : student.getClasss().getClassId());
+		studentRequest.setClasss(classMapToResponse(student.getClasss(), new ClassesResponse()));
 		return studentRequest;
 	}
 
