@@ -2,30 +2,31 @@ import { $axios } from ".";
 
 const getTeachers = async (token) => {
   const path = "/api/teachers";
-  return await apiCallerGet(path, token)
-}
+  return await apiCallerGet(path, token);
+};
 
 const searchTeachers = async (token = null, params) => {
-  const path = '/api/teachers/search'
+  const path = "/api/teachers/search";
   var result = {
     success: false,
-    data: null
-  }
+    data: null,
+  };
   try {
     const response = await $axios.get(path, {
       params: {
-        username: params.username || '',
-        name: params.name || '',
-        email: params.email || ''
-      }, headers: { 'Authorization': 'Bearer ' + token }
-    })
+        username: params.username || "",
+        name: params.name || "",
+        email: params.email || "",
+      },
+      headers: { Authorization: "Bearer " + token },
+    });
     result.data = response.data;
-    result.success = true
+    result.success = true;
   } catch (error) {
     console.log(error);
   }
-  return result
-}
+  return result;
+};
 
 const apiCallerGet = async (
   path,
@@ -78,21 +79,18 @@ const apiCallerPost = async (
   return result;
 };
 
-const apiCallerDelete = async (
-  path,
-  token = JSON.parse(localStorage?.getItem("accessToken"))?.token,
-  body
-) => {
+const apiCallerDelete = async (path, body) => {
   let result = {
     success: false,
     data: null,
   };
   try {
+    const token = JSON.parse(localStorage?.getItem("accessToken"))?.token;
     const headers = { Accept: "*" };
     if (!!token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
-    const response = await $axios.delete(path, body, {
+    const response = await $axios.delete(path, {
       headers: headers,
     });
 
@@ -104,16 +102,13 @@ const apiCallerDelete = async (
   return result;
 };
 
-const apiCallerPut = async (
-  path,
-  token = JSON.parse(localStorage?.getItem("accessToken"))?.token,
-  body
-) => {
+const apiCallerPut = async (path, body) => {
   let result = {
     success: false,
     data: null,
   };
   try {
+    const token = JSON.parse(localStorage?.getItem("accessToken"))?.token;
     const headers = { Accept: "*" };
     if (!!token) {
       headers["Authorization"] = `Bearer ${token}`;

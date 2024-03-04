@@ -10,42 +10,53 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-public class Questions {
+public class Questions extends BaseEntity
+{
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer questionId;
+	@Id
+	@Column(nullable = false, updatable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer questionId;
 
-    @Column(nullable = false)
-    private Integer unit;
+	@Column(nullable = false, columnDefinition = "longtext")
+	private String content;
 
-    @Column(nullable = false)
-    private Integer levelId;
+	@Column(nullable = false)
+	private Integer status = 1;
 
-    @Column(nullable = false, columnDefinition = "longtext")
-    private String questionContent;
+	@Column(nullable = false, length = 50)
+	private String type;
 
-    @Column(nullable = false, columnDefinition = "longtext")
-    private String correctAnswer;
+	@Column(nullable = false, length = 50)
+	private String skill;
 
-    @Column(nullable = false)
-    private String sentBy;
+	@Column
+	private Integer time;
 
-    @Column(nullable = false)
-    private Integer status;
+	@Column(columnDefinition = "longtext")
+	private String description;
 
-    @OneToMany(mappedBy = "question")
-    private Set<QuestOfTest> questionQuestOfTests;
+	@Column(columnDefinition = "longtext")
+	private String explanation;
 
-    @OneToMany(mappedBy = "question")
-    private Set<StudentTestDetail> questionStudentTestDetails;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "test_id", nullable = false)
+	private Tests tests;
 
-    @OneToMany(mappedBy = "question")
-    private Set<QuestAnswer> questionQuestAnswers;
+	@OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	private Set<QuestAnswer> questionQuestAnswers;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_id", nullable = false)
-    private QuestType type;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "parent_question_id")
+	private Questions parentQuestion;
+
+	@OneToMany(mappedBy = "parentQuestion", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	private Set<Questions> questions;
+
+	@OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	private Set<QuestOption> questOptions;
+
+	@OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	private Set<QuestFile> questFiles;
 
 }
