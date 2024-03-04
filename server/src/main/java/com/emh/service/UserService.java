@@ -4,109 +4,121 @@ import com.emh.entity.Admin;
 import com.emh.entity.Student;
 import com.emh.entity.Teacher;
 import com.emh.entity.User;
-import com.emh.model.UserDTO;
+import com.emh.model.Role;
+import com.emh.payload.request.AdminRequest;
+import com.emh.payload.request.StudentRequest;
+import com.emh.payload.request.TeacherRequest;
+import com.emh.payload.request.UserRequest;
+import com.emh.payload.response.UserResponse;
 import com.emh.repos.AdminRepository;
 import com.emh.repos.StudentRepository;
 import com.emh.repos.TeacherRepository;
 import com.emh.repos.UserRepository;
+import com.emh.util.MapperUtils;
 import com.emh.util.NotFoundException;
-import com.emh.util.ReferencedWarning;
-import org.springframework.data.domain.Sort;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 
 @Service
-public class UserService {
+public class UserService
+{
 
-    private final UserRepository userRepository;
-    private final AdminRepository adminRepository;
-    private final TeacherRepository teacherRepository;
-    private final StudentRepository studentRepository;
+	private final UserRepository userRepository;
+	private final AdminRepository adminRepository;
+	private final TeacherRepository teacherRepository;
+	private final StudentRepository studentRepository;
 
-    public UserService(final UserRepository userRepository, final AdminRepository adminRepository,
-            final TeacherRepository teacherRepository, final StudentRepository studentRepository) {
-        this.userRepository = userRepository;
-        this.adminRepository = adminRepository;
-        this.teacherRepository = teacherRepository;
-        this.studentRepository = studentRepository;
-    }
+	public UserService(final UserRepository userRepository, final AdminRepository adminRepository,
+					   final TeacherRepository teacherRepository, final StudentRepository studentRepository)
+	{
+		this.userRepository = userRepository;
+		this.adminRepository = adminRepository;
+		this.teacherRepository = teacherRepository;
+		this.studentRepository = studentRepository;
+	}
 
-    public List<UserDTO> findAll() {
-        final List<User> users = userRepository.findAll(Sort.by("userId"));
-        return users.stream()
-                .map(user -> mapToDTO(user, new UserDTO()))
-                .toList();
-    }
+	public UserResponse get(final Integer userId)
+	{
+		return userRepository.findById(userId)
+				.map(user -> mapToResponse(user, new UserResponse()))
+				.orElseThrow(NotFoundException::new);
+	}
 
-    public UserDTO get(final Integer userId) {
-        return userRepository.findById(userId)
-                .map(user -> mapToDTO(user, new UserDTO()))
-                .orElseThrow(NotFoundException::new);
-    }
+	public void update(final Integer userId, final UserRequest userRequest)
+	{
+		User user = userRepository.findById(userId)
+				.orElseThrow(NotFoundException::new);
+		if (StringUtils.isNotBlank(userRequest.getPassword()))
+			userRequest.setPassword(new BCryptPasswordEncoder().encode(userRequest.getPassword()));
+		else
+			userRequest.setPassword(user.getPassword());
+		user = userRepository.save(user);
+		switch (Role.valueOf(user.getRole()))
+		{
+			case ADMIN:
+				Admin admin = adminRepository.findFirstByUser(user);
+				AdminRequest adminRequest = MapperUtils.map(userRequest, AdminRequest.class);
+				MapperUtils.adminMapToEntity(adminRequest, admin, user);
+				adminRepository.save(admin);
+			case TEACHER:
+				Teacher teacher = teacherRepository.findFirstByUser(user);
+				TeacherRequest teacherRequest = MapperUtils.map(userRequest, TeacherRequest.class);
+				MapperUtils.teacherMapToEntity(teacherRequest, teacher, user);
+				teacherRepository.save(teacher);
+			case STUDENT:
+				Student student = studentRepository.findFirstByUser(user);
+				StudentRequest studentRequest = MapperUtils.map(userRequest, StudentRequest.class);
+				MapperUtils.studentMapToEntity(studentRequest, student, user, student.getClasss());
+				studentRepository.save(student);
+		}
+	}
 
-    public Integer create(final UserDTO userDTO) {
-        final User user = new User();
-        mapToEntity(userDTO, user);
-        return userRepository.save(user).getUserId();
-    }
+	public void delete(final Integer studentId)
+	{
+		final Student student = studentRepository.findById(studentId)
+				.orElseThrow(NotFoundException::new);
+		studentRepository.deleteById(studentId);
+		userRepository.delete(student.getUser());
+	}
 
-    public void update(final Integer userId, final UserDTO userDTO) {
-        final User user = userRepository.findById(userId)
-                .orElseThrow(NotFoundException::new);
-        mapToEntity(userDTO, user);
-        userRepository.save(user);
-    }
+	private UserResponse mapToResponse(final User user, final UserResponse userResponse)
+	{
+		userResponse.setUserId(user.getUserId());
+		userResponse.setUsername(user.getUsername());
+		userResponse.setEmail(user.getEmail());
+		userResponse.setName(user.getName());
+		userResponse.setGender(user.getGender());
+		userResponse.setStatus(user.getStatus());
+		userResponse.setRole(user.getRole());
+		return userResponse;
+	}
 
-    public void delete(final Integer userId) {
-        userRepository.deleteById(userId);
-    }
-
-    private UserDTO mapToDTO(final User user, final UserDTO userDTO) {
-        userDTO.setUserId(user.getUserId());
-        userDTO.setUsername(user.getUsername());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setPassword(user.getPassword());
-        userDTO.setName(user.getName());
-        userDTO.setStatus(user.getStatus());
-        userDTO.setRole(user.getRole());
-        return userDTO;
-    }
-
-    private User mapToEntity(final UserDTO userDTO, final User user) {
-        user.setUsername(userDTO.getUsername());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
-        user.setName(userDTO.getName());
-        user.setStatus(userDTO.getStatus());
-        user.setRole(userDTO.getRole());
-        return user;
-    }
-
-    public ReferencedWarning getReferencedWarning(final Integer userId) {
-        final ReferencedWarning referencedWarning = new ReferencedWarning();
-        final User user = userRepository.findById(userId)
-                .orElseThrow(NotFoundException::new);
-        final Admin userAdmin = adminRepository.findFirstByUser(user);
-        if (userAdmin != null) {
-            referencedWarning.setKey("user.admin.user.referenced");
-            referencedWarning.addParam(userAdmin.getAdminId());
-            return referencedWarning;
-        }
-        final Teacher userTeacher = teacherRepository.findFirstByUser(user);
-        if (userTeacher != null) {
-            referencedWarning.setKey("user.teacher.user.referenced");
-            referencedWarning.addParam(userTeacher.getTeacherId());
-            return referencedWarning;
-        }
-        final Student userStudent = studentRepository.findFirstByUser(user);
-        if (userStudent != null) {
-            referencedWarning.setKey("user.student.user.referenced");
-            referencedWarning.addParam(userStudent.getStudentId());
-            return referencedWarning;
-        }
-        return null;
-    }
-
+	public void updatePassword(Integer id, String password)
+	{
+		password = new BCryptPasswordEncoder().encode(password);
+		User user = userRepository.findById(id)
+				.orElseThrow(NotFoundException::new);
+		user.setPassword(password);
+		userRepository.save(user);
+		switch (Role.valueOf(user.getRole()))
+		{
+			case ADMIN:
+				Admin admin = adminRepository.findFirstByUser(user);
+				admin.setPassword(password);
+				adminRepository.save(admin);
+				break;
+			case TEACHER:
+				Teacher teacher = teacherRepository.findFirstByUser(user);
+				teacher.setPassword(password);
+				teacherRepository.save(teacher);
+				break;
+			case STUDENT:
+				Student student = studentRepository.findFirstByUser(user);
+				student.setPassword(password);
+				studentRepository.save(student);
+				break;
+		}
+	}
 }

@@ -26,7 +26,16 @@ error:
     log-levels:
       5xx: ERROR
 app:
-  jwtSecret: emh
-  jwtExpirationMs: 1800000
-  jwtRefreshExpirationMs: 2592000000
-  pageSize: 15
+  jwt:
+    jwtSecret: UUY+YA4e6vDzHgfhxype+S5J9AwQKC8P0NXGLK9gV+OUB4a9g2liqCvruzMUrSYe
+    jwtExpirationMs: 1800000
+  resource:
+    handler: /uploads/**
+    path: /content/
+  file:
+    handler: /uploads/**
+    path: /uploads/
+    file-upload-uri: http://englishmasteryhub.online:8080/uploads/$FILE_NAME$
+    file-upload-path: uploads/
+    file-storage-uri: http://englishmasteryhub.online:8080/uploads/$FILE_NAME$
+    file-storage-path: content/

@@ -9,17 +9,17 @@ public class LoggerUtils
 
 	private static Logger getLogger()
 	{
-		if(logger == null)
+		if (logger == null)
 			logger = LoggerFactory.getLogger(LoggerUtils.class);
 		return logger;
 	}
 
-	public static void log (String message)
+	public static void log(String message)
 	{
 		getLogger().warn(message);
 	}
 
-	public static void log (Exception e)
+	public static void log(Exception e)
 	{
 		getLogger().error("{0}", e);
 	}
