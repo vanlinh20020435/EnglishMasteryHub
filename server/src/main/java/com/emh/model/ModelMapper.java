@@ -25,7 +25,8 @@ public class ModelMapper extends org.modelmapper.ModelMapper
 		getConfiguration().setMatchingStrategy(matchingStrategy);
 	}
 
-	public <D, T> List<D> mapList(final Collection<T> entityList, Class<D> outCLass) {
+	public <D, T> List<D> mapList(final Collection<T> entityList, Class<D> outCLass)
+	{
 		return entityList.stream()
 				.map(entity -> map(entity, outCLass))
 				.collect(Collectors.toList());

@@ -8,19 +8,20 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class TeacherNotifications {
+public class TeacherNotifications extends BaseEntity
+{
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@Id
+	@Column(nullable = false, updatable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "notification_id", nullable = false)
-    private Notifications notification;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "notification_id", nullable = false)
+	private Notifications notification;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teacher_id", nullable = false)
-    private Teacher teacher;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "teacher_id", nullable = false)
+	private Teacher teacher;
 
 }
