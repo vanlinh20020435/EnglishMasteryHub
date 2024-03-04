@@ -1,5 +1,24 @@
 <template>
-    <v-card style="margin-top: 16px;">
+    <v-card>
+        <v-row>
+            <v-col md="2">
+                <img style="width: 100%; height: 100%" src="../../../assets/images/class.png"></img>
+            </v-col>
+            <v-col md="10">
+                <div>
+                    <h2>{{ classInfo?.className }}</h2>
+                    <p><strong>Teacher: </strong>{{ classInfo?.teacher?.name }}</p>
+                    <p><strong>Time: </strong>{{ classInfo?.startDate }} - {{ classInfo.endDate }}</p>
+                    <p><strong>Description: </strong>{{ classInfo?.description }}</p>
+                </div>
+            </v-col>
+        </v-row>
+    </v-card>
+    <v-tabs v-model="tab" bg-color="#00bd7e" style="margin-top: 16px;">
+        <v-tab :value="0" :style="tab === 0 ? 'background: #039e6a' : ''">Danh sách học sinh</v-tab>
+        <v-tab :value="1" :style="tab === 0 ? '' : 'background: #039e6a'">Danh sách bài kiểm tra</v-tab>
+    </v-tabs>
+    <v-card v-if="tab === 0" style="margin-top: 16px;">
         <v-toolbar color="#ebebeba3" flat>
             <v-toolbar-title>Danh sách quản trị viên</v-toolbar-title>
             <v-spacer></v-spacer>
@@ -23,8 +42,9 @@
                     clearable></v-text-field>
             </v-col>
         </v-row>
-        <v-data-table :loading="isLoadingData" :headers="headers" :items="data"
+        <v-data-table :loading="isLoadingStudent" :headers="studentsHeaders" :items="students"
             :sort-by="[{ key: 'adminId', order: 'asc' }]">
+
             <template v-slot:item.avatar="{ item }">
                 <v-avatar>
                     <v-img alt="Avatar"
@@ -43,6 +63,9 @@
                     :handleClickNo="() => isOpenDelete = false" />
             </template>
         </v-data-table>
+    </v-card>
+    <v-card v-else>
+        hihi
     </v-card>
     <v-dialog v-model="isOpenForm" max-width="500px">
         <v-form v-model="formValid" @submit.prevent="submitForm">
@@ -106,87 +129,65 @@
 </template>
 
 <script>
-import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
-import { getAdmins, searchAdmins, createAdmin, editAdmin } from '@/services'
+import { getClass, getStudentsOfClass, searchStudents } from "@/services";
 import { authenticationRole, toastStore } from "@/stores";
 import { mapState } from "pinia";
-
 export default {
-    components: {
-        PopUpYesNo
-    },
-    data() {
-        return {
-            datePicker: null,
-            isOpenDatePicker: false,
-            formValid: false,
-            headers: [
-                { title: 'Admin ID', align: 'center', key: 'adminId', sortable: false },
-                { title: 'Avatar', key: 'avatar', sortable: false },
-                { title: 'Name', key: 'name', sortable: false },
-                { title: 'Username', key: 'username', sortable: false },
-                { title: 'Email', key: 'email', sortable: false },
-                { title: 'Birthday', key: 'birthday', sortable: false },
-                { title: 'Gender', key: 'gender', sortable: false },
-                { title: 'Status', key: 'status', sortable: false },
-                { title: 'Actions', key: 'actions', sortable: false },
-            ],
-            isOpenForm: false,
-            isOpenDelete: false,
-            isEdit: false,
-            formItem: {},
-            delettingItem: {},
-            data: [],
-            valid: false,
-            requireRules: [
-                value => {
-                    if (value || value === 0) return true
-                    return 'Name is required.'
-                },
-            ],
-            emailRules: [
-                value => {
-                    if (value) return true
-                    return 'E-mail is requred.'
-                },
-                value => {
-                    if (/.+@.+\..+/.test(value)) return true
-                    return 'E-mail must be valid.'
-                },
-            ],
-            isLoadingData: false,
-            isLoadingForm: false,
-            datePickerComputed: null,
-            filter: {
-                username: '',
-                name: '',
-                email: ''
-            },
-            _timerId: null,
-            isOpenFilter: false
-        }
+    data: () => ({
+        tab: 0,
+        classInfo: {},
+        isLoadingData: false,
+        isLoadingStudent: false,
+        students: [],
+        studentsHeaders: [
+            { title: 'AdminId', align: 'start', key: 'adminId', sortable: false },
+            { title: 'Avatar', key: 'avatar', sortable: false },
+            { title: 'Name', key: 'name', sortable: false },
+            { title: 'Username', key: 'username', sortable: false },
+            { title: 'Email', key: 'email', sortable: false },
+            { title: 'Birthday', key: 'birthday', sortable: false },
+            { title: 'Gender', key: 'gender', sortable: false },
+            { title: 'Status', key: 'status', sortable: false },
+            { title: 'Actions', key: 'actions', sortable: false },
+        ],
+        isOpenFilter: false,
+        filter: {
+            username: '',
+            name: '',
+            email: ''
+        },
+        _timerId: null,
+    }),
+    async mounted() {
+        await this.fetchData();
+        await this.fetchStudents();
     },
     computed: {
         ...mapState(authenticationRole, ["authentication"]),
         ...mapState(toastStore, ["updateToast"])
     },
-    mounted() {
-        this.fetchData()
-    },
     methods: {
         async fetchData() {
             this.isLoadingData = true
-            const res = await getAdmins(this.authentication?.accessToken?.token)
+            const res = await getClass(this.authentication?.accessToken?.token, this.$route.params.id)
             if (res.success) {
-                this.data = res.data
+                this.classInfo = res.data
             }
             this.isLoadingData = false
+        },
+        async fetchStudents() {
+            this.isLoadingStudent = true
+            const res = await getStudentsOfClass(this.authentication?.accessToken?.token, this.$route.params.id)
+            if (res.success) {
+                this.students = res.data
+            }
+            this.isLoadingStudent = false
         },
         fetchFilter() {
             clearTimeout(this._timerId)
             this._timerId = setTimeout(async () => {
                 this.isLoadingData = true
-                const res = await searchAdmins(this.authentication?.accessToken?.token, this.filter)
+                const res = await searchStudents(this.authentication?.accessToken?.token, this.filter)
                 if (res.success) {
                     this.data = res.data
                 }
@@ -194,82 +195,6 @@ export default {
             }, 500)
 
         },
-        submitFilter() {
-        },
-        async submitForm() {
-            if (this.formValid) {
-                if (this.datePicker) this.formItem.birthday = new Date(this.datePicker).toLocaleDateString();
-                if (this.isEdit) {
-                    await this.editItem()
-                } else {
-                    await this.createItem()
-                }
-                this.isOpenForm = false
-                await this.fetchData()
-            }
-        },
-        async createItem() {
-            this.isLoadingForm = true
-            const res = await createAdmin(this.authentication?.accessToken?.token, this.formItem)
-            this.isLoadingForm = false
-            if (res.success) {
-                console.log(res);
-                this.isOpenForm = false
-                await this.fetchData()
-            } else {
-                //error
-            }
-        },
-        async editItem() {
-            this.isLoadingForm = true
-            const payload = {
-                username: this.formItem.username,
-                email: this.formItem.email,
-                name: this.formItem.name,
-                gender: this.formItem.gender,
-                avatar: this.formItem.avatar,
-                birthday: this.formItem.birthday
-            }
-            const res = await editAdmin(this.formItem.adminId, this.authentication?.accessToken?.token, payload)
-            this.isLoadingForm = false
-            if (res.success) {
-                console.log(res);
-                this.isOpenForm = false
-                await this.fetchData()
-            } else {
-                //error
-            }
-        },
-        deleteItem() {
-
-        },
-        pickerFocussing(val) {
-            if (val) this.menu = true
-        },
-        openEdit(item) {
-            this.isOpenForm = true
-            this.formItem = { ...item }
-            this.isEdit = true
-        },
-        openDelete(item) {
-            this.isOpenDelete = true
-            this.delettingItem = { ...item }
-        }
     },
-    watch: {
-        isOpenDelete(val) {
-            if (!val) this.delettingItem = {}
-        },
-        isOpenForm(val) {
-            if (!val) {
-                this.formItem = {}
-                this.isEdit = false
-                this.datePicker = null
-            }
-        },
-        datePicker(val) {
-            this.datePickerComputed = val ? new Date(val).toLocaleDateString() : null
-        }
-    }
-}
+};
 </script>
