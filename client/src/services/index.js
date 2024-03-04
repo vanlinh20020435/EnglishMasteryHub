@@ -1,7 +1,10 @@
 
 import axios from 'axios'
-import { getAdmins } from './admin'
-import { login, getUserInfo } from './auth'
+export { getAdmins, searchAdmins, createAdmin, editAdmin } from './admin'
+export { getTeachers, searchTeachers } from './teacher'
+export { getStudents, searchStudents } from './student'
+export { getClasses, getClass, getStudentsOfClass, searchClasses } from './class'
+export { login, getUserInfo } from './auth'
 
 const $axios = {
     ...axios.create({
@@ -9,4 +12,4 @@ const $axios = {
     })
 }
 
-export { $axios, getAdmins, login, getUserInfo }
+export { $axios }
