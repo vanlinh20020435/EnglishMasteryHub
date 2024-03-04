@@ -433,23 +433,21 @@ export default {
   },
   methods: {
     handleAddSkill() {
-      if (this.selectedSkill == "Pronunciation") {
-        // Add Pronun1Manage component to pronun1List array
-        const questions = [
-          {
-            title: "Question 1",
-            numOptions: 2,
-            options: Array.from({ length: 2 }, (_, i) => ({
-              // Create an array of options with the specified length
-              title: `Option ${i + 1}`,
-            })),
-          },
-        ];
-        this.pronun1List.push({
-          typeSkill: this.selectedTypeSkill,
-          questions: questions, // Assign the questions array to the pronun1List item
-        });
-      }
+      // Add Pronun1Manage component to pronun1List array
+      const questions = [
+        {
+          title: "Question 1",
+          numOptions: 2,
+          options: Array.from({ length: 2 }, (_, i) => ({
+            // Create an array of options with the specified length
+            title: `Option ${i + 1}`,
+          })),
+        },
+      ];
+      this.pronun1List.push({
+        typeSkill: this.selectedTypeSkill,
+        questions: questions, // Assign the questions array to the pronun1List item
+      });
     },
     removePronun1(index) {
       // Remove Pronun1Manage component at specified index from pronun1List array
