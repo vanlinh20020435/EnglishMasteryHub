@@ -269,8 +269,7 @@ export default {
     async deleteItemConfirm() {
       // this.desserts.splice(this.editedIndex, 1);
       const result = await apiCallerDelete(
-        "/api/testss/" + this.editedItem.testId,
-        {}
+        "/api/testss/" + this.editedItem.testId
       );
       if (result.success) {
         this.stateExams.success = true;
