@@ -2,24 +2,22 @@
   <v-dialog v-model="dialogVisible" max-width="500px">
     <v-card class="card-popup">
       <v-card-title class="popup-msg">{{ msg }}</v-card-title>
-      <v-card-actions class="popup-actions">
-        <v-spacer></v-spacer>
+      <v-card-actions class="popup-actions d-flex justify-center">
         <v-btn
+          v-if="!hideBtnNo"
           color=""
           variant="text"
-          class="btn-default d-flex align-center justify-center"
+          class="btn-default d-flex align-center justify-center mr-7"
           @click="handleClickNo"
           >Không</v-btn
         >
-        <v-spacer></v-spacer>
         <v-btn
           color="blue-darken-1"
           class="btn-default btn-gradient d-flex align-center justify-center"
           variant="text"
           @click="handleClickYes"
-          >Có</v-btn
+          >{{ btnYes ? btnYes : "Có" }}</v-btn
         >
-        <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -33,6 +31,8 @@ export default {
     handleClickYes: Function,
     handleClickNo: Function,
     visible: Boolean,
+    hideBtnNo: Boolean,
+    btnYes: String,
   },
   data() {
     return {

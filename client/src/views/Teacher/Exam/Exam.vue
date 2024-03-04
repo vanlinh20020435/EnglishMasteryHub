@@ -1,16 +1,43 @@
 <template>
   <v-card class="height-100">
+    <v-snackbar color="success" v-model="stateExams.success" location="top">
+      Xóa bài kiểm tra thành công!
+      <template v-slot:actions>
+        <v-btn
+          color="#EFE841"
+          variant="text"
+          @click="stateExams.success = false"
+        >
+          Đóng
+        </v-btn>
+      </template>
+    </v-snackbar>
+
     <v-container class="d-flex flex-column height-100 v-container__full">
-      <HeaderTitle isSearch isCreate title="Quản lý bài kiểm tra" :createNew="createNewExam" />
+      <HeaderTitle
+        isSearch
+        isCreate
+        title="Quản lý bài kiểm tra"
+        :createNew="createNewExam"
+        @update:searchValue="handleSearchInputChange"
+        :searchValue="searchValue"
+      />
       <v-divider class="header_divider" :thickness="2"></v-divider>
       <v-row style="height: 90%" class="d-flex justify-center">
         <v-col class="height-100" cols="12" md="11">
-          <v-data-table style="overflow-y: auto" class="height-100 scrollbar-custom v-data-table__exam" fixed-header
-            :headers="headers" :items="desserts" :sort-by="[{ key: 'calories', order: 'asc' }]">
+          <v-data-table
+            style="overflow-y: auto"
+            class="height-100 scrollbar-custom v-data-table__exam"
+            fixed-header
+            :headers="headers"
+            :items="filteredStateExams"
+            :sort-by="[{ key: 'testId', order: 'asc' }]"
+            :loading="isLoading"
+          >
             <template v-slot:top>
               <!-- <v-toolbar-title>My CRUD</v-toolbar-title>
-                  <v-divider class="mx-4" inset vertical></v-divider> -->
-              <v-spacer></v-spacer>
+                  <v-divider class="mx-4" inset vertical></v-divider> 
+              <v-spacer></v-spacer>-->
               <v-dialog v-model="dialog" max-width="500px">
                 <!-- <template v-slot:activator="{ props }">
                   <v-btn color="primary" dark class="mb-2" v-bind="props">
@@ -26,19 +53,34 @@
                     <v-container>
                       <v-row>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="editedItem.name" label="Dessert name"></v-text-field>
+                          <v-text-field
+                            v-model="editedItem.name"
+                            label="Dessert name"
+                          ></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="editedItem.calories" label="Calories"></v-text-field>
+                          <v-text-field
+                            v-model="editedItem.calories"
+                            label="Calories"
+                          ></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="editedItem.fat" label="Fat (g)"></v-text-field>
+                          <v-text-field
+                            v-model="editedItem.fat"
+                            label="Fat (g)"
+                          ></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="editedItem.carbs" label="Carbs (g)"></v-text-field>
+                          <v-text-field
+                            v-model="editedItem.carbs"
+                            label="Carbs (g)"
+                          ></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field v-model="editedItem.protein" label="Protein (g)"></v-text-field>
+                          <v-text-field
+                            v-model="editedItem.protein"
+                            label="Protein (g)"
+                          ></v-text-field>
                         </v-col>
                       </v-row>
                     </v-container>
@@ -64,7 +106,12 @@
               />
             </template>
             <template v-slot:item.actions="{ item }">
-              <v-icon color="#00bd7e" size="default" class="me-2" @click="editItem(item)">
+              <v-icon
+                color="#00bd7e"
+                size="default"
+                class="me-2"
+                @click="editItem(item)"
+              >
                 mdi-pencil
               </v-icon>
               <v-icon color="red" size="default" @click="deleteItem(item)">
@@ -72,7 +119,16 @@
               </v-icon>
             </template>
             <template v-slot:no-data>
-              <v-btn color="primary" @click="initialize"> Reset </v-btn>
+              <!-- <v-btn color="primary" @click="initialize"> Reset </v-btn> -->
+              <div class="exam_empty d-flex flex-column align-center">
+                <img
+                  src="@/assets/images/img_empty_exam.png"
+                  alt="Empty Exam"
+                  class="img_empty"
+                />
+
+                <h3 class="font-bold">Bạn chưa có bài kiểm tra nào!</h3>
+              </div>
             </template>
           </v-data-table>
         </v-col>
@@ -86,6 +142,8 @@ import HeaderTitle from "@/components/header/HeaderTitle.vue";
 import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
 import { mapState } from "pinia";
 import { authenticationRole } from "@/stores";
+import { apiCallerGet, apiCallerDelete } from "@/services/teacher";
+import { removeVietnameseDiacritics } from "@/base/Validate";
 
 export default {
   name: "ManageExam",
@@ -94,6 +152,7 @@ export default {
     PopUpYesNo,
   },
   data: () => ({
+    isLoading: false,
     selected: [],
     dialog: false,
     dialogDelete: false,
@@ -102,17 +161,16 @@ export default {
         title: "ID",
         align: "start",
         sortable: false,
-        key: "id",
+        key: "testId",
       },
       {
         title: "Tên bài kiểm tra",
-        sortable: false,
-        key: "name",
+        key: "testName",
       },
-      { title: "Danh mục", key: "calories" },
-      { title: "Số câu hỏi", key: "fat" },
-      { title: "Ngày tạo", key: "carbs" },
-      // { title: "Protein (g)", key: "protein" },
+      { title: "Mô tả", key: "description", sortable: false },
+      { title: "Thời gian (phút)", key: "time" },
+      { title: "Số câu hỏi", key: "totalQuestions" },
+      { title: "Ngày tạo", key: "created" },
       { title: "Thao tác", key: "actions", sortable: false },
     ],
     desserts: [],
@@ -131,13 +189,44 @@ export default {
       carbs: 0,
       protein: 0,
     },
+    stateExams: {
+      data: [],
+      loading: true,
+      error: false,
+      success: false,
+      msg: "",
+    },
+    searchValue: "",
   }),
 
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
     },
-    ...mapState(authenticationRole, ["updateAuth"]),
+    ...mapState(authenticationRole, ["updateAuth", "authentication"]),
+    filteredStateExams() {
+      if (!this.searchValue) {
+        // If searchValue is empty, return the original stateExams data
+        return this.stateExams.data;
+      } else {
+        const normalizedSearchInput = removeVietnameseDiacritics(
+          this.searchValue.toLowerCase()?.trim()
+        );
+        // If searchValue is not empty, filter stateExams based on testName
+        return this.stateExams.data.filter((exam) => {
+          const normalizedTitle = removeVietnameseDiacritics(
+            exam.testName.toLowerCase()?.trim()
+          );
+          if (normalizedSearchInput == "d") {
+            return (
+              normalizedTitle.includes("d") || normalizedTitle.includes("đ")
+            );
+          } else {
+            return normalizedTitle.includes(normalizedSearchInput);
+          }
+        });
+      }
+    },
   },
 
   watch: {
@@ -147,122 +236,24 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
+    searchValue(newVal) {
+      this.handleSearchInputChange(newVal);
+    },
   },
 
-  created() {
-    this.initialize();
+  mounted() {
+    this.fetchDataExam();
   },
 
   methods: {
-    initialize() {
-      this.desserts = [
-        {
-          id: 1,
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-        },
-        {
-          id: 2,
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-        },
-        {
-          id: 3,
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-        },
-        {
-          id: 4,
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-        },
-        {
-          id: 5,
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-        },
-        {
-          id: 6,
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-        },
-        {
-          id: 7,
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-        },
-        {
-          id: 8,
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-        },
-        {
-          id: 9,
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-        },
-        {
-          id: 10,
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-        },
-        {
-          id: 11,
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-        },
-        {
-          id: 12,
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-        },
-        {
-          id: 13,
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-        },
-      ];
+    async fetchDataExam() {
+      this.isLoading = true;
+      const result = await apiCallerGet("/api/testss");
+      if (result?.data) {
+        this.isLoading = false;
+        this.stateExams.data = result.data;
+      }
     },
-
     editItem(item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.editedItem = Object.assign({}, item);
@@ -272,12 +263,18 @@ export default {
     deleteItem(item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      console.log(this.dialogDelete);
       this.dialogDelete = true;
     },
 
-    deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
+    async deleteItemConfirm() {
+      // this.desserts.splice(this.editedIndex, 1);
+      const result = await apiCallerDelete(
+        "/api/testss/" + this.editedItem.testId
+      );
+      if (result.success) {
+        this.stateExams.success = true;
+        this.fetchDataExam();
+      }
       this.closeDelete();
     },
 
@@ -306,10 +303,13 @@ export default {
       this.close();
     },
     createNewExam() {
-      this.dialog = true;
+      this.$router.push(`/${this.authentication.user.role}/exam/add`);
     },
     handleVisible(newValue) {
       this.dialogDelete = newValue;
+    },
+    handleSearchInputChange(valueSearch) {
+      this.searchValue = valueSearch;
     },
   },
 };

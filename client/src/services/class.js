@@ -1,7 +1,7 @@
 import { $axios } from "."
 
-const getAdmins = async (token = null) => {
-    const path = '/api/admins'
+const getClasses = async (token = null) => {
+    const path = '/api/class'
     var result = {
         success: false,
         data: null
@@ -16,18 +16,50 @@ const getAdmins = async (token = null) => {
     return result
 }
 
-const searchAdmins = async (token = null, params) => {
-    const path = '/api/admins/search'
+const getClass = async (token = null, id = null) => {
+    const path = `/api/class/${id}`
     var result = {
         success: false,
         data: null
     }
     try {
-        const response = await $axios.get(path, { params: {
-            username: params.username || '',
-            name: params.name || '',
-            email: params.email || ''
-        }, headers: { 'Authorization': 'Bearer ' + token } })
+        const response = await $axios.get(path, { headers: { 'Authorization': 'Bearer ' + token } })
+        result.data = response.data;
+        result.success = true
+    } catch (error) {
+        console.log(error);
+    }
+    return result
+}
+
+const getStudentsOfClass = async (token = null, id = null) => {
+    const path = `/api/class/${id}/students/get-all`
+    var result = {
+        success: false,
+        data: null
+    }
+    try {
+        const response = await $axios.get(path, { headers: { 'Authorization': 'Bearer ' + token } })
+        result.data = response.data;
+        result.success = true
+    } catch (error) {
+        console.log(error);
+    }
+    return result
+}
+
+const searchClasses = async (token = null, params) => {
+    const path = '/api/class/search'
+    var result = {
+        success: false,
+        data: null
+    }
+    const healthyParams = {}
+    if (params.className) healthyParams.className = params.className
+    if (params.teacherId) healthyParams.teacherId = params.teacherId
+    try {
+        const response = await $axios.get(path
+            , { headers: { 'Authorization': 'Bearer ' + token }, params: healthyParams })
         result.data = response.data;
         result.success = true
     } catch (error) {
@@ -68,4 +100,4 @@ const editAdmin = async (id = null, token = null, payload = null) => {
     return result
 }
 
-export { getAdmins, createAdmin, editAdmin, searchAdmins }
+export { getClasses, getClass, getStudentsOfClass, searchClasses, createAdmin, editAdmin }

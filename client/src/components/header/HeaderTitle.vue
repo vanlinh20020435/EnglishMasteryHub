@@ -16,22 +16,20 @@
     </v-col>
     <v-col cols="12" md="4" style="padding-right: 5%">
       <v-row class="d-flex align-center header_search justify-end">
-        <v-autocomplete
-          v-if="!!isSearch"
-          :items="items"
-          auto-select-first
-          class="flex-full-width"
-          density="comfortable"
-          item-props
-          menu-icon=""
+        <v-text-field
+          v-model="localSearchValue"
+          @input="updateSearchValue"
           placeholder="Tìm kiếm tên bài kiểm tra"
-          prepend-inner-icon="mdi-magnify"
-          rounded
           theme="light"
-          variant="solo"
-          hide-details
           color="#00bd7e"
-        ></v-autocomplete>
+          prepend-inner-icon="mdi-magnify"
+          v-if="!!isSearch"
+          rounded
+          hide-no-data
+          hide-details
+          :clearable="!unClearable"
+          @click:clear="clearSearchValue"
+        ></v-text-field>
 
         <v-icon
           @click="createNew"
@@ -56,6 +54,29 @@ export default {
     isSearch: Boolean,
     isCreate: Boolean,
     createNew: Function,
+  },
+  data() {
+    return {
+      localSearchValue: "",
+      unClearable: false, // Use a local data property to store the search value
+    };
+  },
+  watch: {
+    // Watch for changes in the searchValue prop and update localSearchValue accordingly
+    searchValue(newVal) {
+      this.localSearchValue = newVal;
+    },
+  },
+  methods: {
+    // Emit an event when localSearchValue changes to update the searchValue prop in the parent component
+    updateSearchValue() {
+      this.$emit("update:searchValue", this.localSearchValue);
+    },
+    clearSearchValue() {
+      if (!this.unClearable) {
+        this.updateSearchValue("");
+      }
+    },
   },
 };
 </script>
