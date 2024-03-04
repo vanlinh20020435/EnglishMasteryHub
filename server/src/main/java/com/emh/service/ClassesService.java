@@ -11,6 +11,7 @@ import com.emh.repos.StudentRepository;
 import com.emh.repos.TeacherRepository;
 import com.emh.specifications.FilterOperation;
 import com.emh.specifications.SearchCriteria;
+import com.emh.specifications.SearchForeignCriteria;
 import com.emh.specifications.SpecificationsBuilder;
 import com.emh.util.MapperUtils;
 import com.emh.util.NotFoundException;
@@ -98,9 +99,9 @@ public class ClassesService
 	{
 		SpecificationsBuilder<Classes> spec = new SpecificationsBuilder<>();
 		if (StringUtils.isNotBlank(className))
-			spec.with(new SearchCriteria("username", FilterOperation.EQUAL.toString(), className, false));
+			spec.with(new SearchCriteria("className", FilterOperation.EQUAL.toString(), className, false));
 		if (ObjectUtils.defaultIfNull(teacherId, 0) != 0)
-			spec.with(new SearchCriteria("teacher_id", FilterOperation.EQUAL.toString(), teacherId, false));
+			spec.with(new SearchForeignCriteria("teacher", "teacherId", FilterOperation.FOREIGN_KEY.toString(), teacherId, false));
 		final List<Classes> classes = classesRepository.findAll(spec.build());
 		return classes.stream()
 				.map(classs -> MapperUtils.classMapToResponse(classs, new ClassesResponse()))
