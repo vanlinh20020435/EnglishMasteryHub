@@ -70,3 +70,5 @@ coverage
 *.tsbuildinfo
 
 **/log
+**/server/uploads
+**/server/content
