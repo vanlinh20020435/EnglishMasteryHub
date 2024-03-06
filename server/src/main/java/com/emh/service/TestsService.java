@@ -1,18 +1,18 @@
 package com.emh.service;
 
 import com.emh.entity.*;
+import com.emh.model.Role;
 import com.emh.payload.request.*;
 import com.emh.payload.response.*;
 import com.emh.repos.*;
-import com.emh.util.MapperUtils;
-import com.emh.util.NotFoundException;
-import com.emh.util.ReferencedWarning;
+import com.emh.util.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -25,13 +25,17 @@ public class TestsService
 	private final QuestAnswerRepository questAnswerRepository;
 	private final QuestOptionRepository questOptionRepository;
 	private final QuestFileRepository questFileRepository;
+	private final CustomUserDetailsService customUserDetailsService;
+	private final UserRepository userRepository;
 
 	public TestsService(final TestsRepository testsRepository,
 						final QuestionsRepository questionsRepository,
 						final StudentTestResultRepository studentTestResultRepository,
 						final QuestAnswerRepository questAnswerRepository,
 						final QuestOptionRepository questOptionRepository,
-						final QuestFileRepository questFileRepository)
+						final QuestFileRepository questFileRepository,
+						final CustomUserDetailsService customUserDetailsService,
+						UserRepository userRepository)
 	{
 		this.testsRepository = testsRepository;
 		this.questionsRepository = questionsRepository;
@@ -39,6 +43,8 @@ public class TestsService
 		this.questAnswerRepository = questAnswerRepository;
 		this.questOptionRepository = questOptionRepository;
 		this.questFileRepository = questFileRepository;
+		this.customUserDetailsService = customUserDetailsService;
+		this.userRepository = userRepository;
 	}
 
 	public List<TestsResponse> findAll()
@@ -69,12 +75,18 @@ public class TestsService
 	{
 		final Tests tests = testsRepository.findById(testId)
 				.orElseThrow(NotFoundException::new);
+		if(!checkPermission(getCreator(tests.getCreatedBy())))
+			throw new ForbiddenException();
 		MapperUtils.testMapToEntity(testsDTO, tests);
 		testsRepository.save(tests);
 	}
 
 	public void delete(final Integer testId)
 	{
+		final Tests tests = testsRepository.findById(testId)
+				.orElseThrow(NotFoundException::new);
+		if(!checkPermission(getCreator(tests.getCreatedBy())))
+			throw new ForbiddenException();
 		testsRepository.deleteById(testId);
 	}
 
@@ -150,9 +162,13 @@ public class TestsService
 
 	private TestsResponse exportTest(Tests tests)
 	{
+		User creator = getCreator(tests.getCreatedBy());
+		Boolean permission = checkPermission(creator);
 		TestsResponse response = new TestsResponse();
 		MapperUtils.testMapToResponse(tests, response);
 		exportQuestions(tests, response);
+		response.setCreator(creator.getName());
+		response.setHavePermission(permission);
 		return response;
 	}
 
@@ -233,5 +249,25 @@ public class TestsService
 			subQuest.add(questionsResponse);
 		}
 		parentQuestions.setSubQuestions(subQuest);
+	}
+
+	private User getCreator(String creator)
+	{
+		return userRepository.findOneByUsername(creator);
+	}
+
+	private boolean checkPermission(User creator)
+	{
+		UserDetailsImpl userDetails = SecurityUtils.getPrincipal();
+		User currentUser = userRepository.findById(userDetails.getId())
+				.orElseThrow(NotFoundException::new);
+		return checkPermission(currentUser, creator);
+	}
+
+	private boolean checkPermission(User curentUser, User targetUser)
+	{
+		if(curentUser.getRole().equalsIgnoreCase(Role.ADMIN.toString()))
+			return true;
+		return Objects.equals(curentUser.getUserId(), targetUser.getUserId());
 	}
 }

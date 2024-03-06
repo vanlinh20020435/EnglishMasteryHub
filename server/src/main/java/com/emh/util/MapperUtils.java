@@ -66,6 +66,7 @@ public class MapperUtils
 		teacherResponse.setName(teacher.getName());
 		teacherResponse.setGender(teacher.getGender());
 		teacherResponse.setAvatar(teacher.getAvatar());
+		teacherResponse.setStatus(teacher.getStatus());
 		teacherResponse.setBirthday(teacher.getBirthday());
 		return teacherResponse;
 	}
