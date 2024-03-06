@@ -153,7 +153,7 @@
                       </v-toolbar>
                       <v-col
                         v-if="selectedSkill == skill.title"
-                        v-for="(pronun1, index) in pronun1List"
+                        v-for="(pronun1, index) in questionList"
                         :key="index"
                         class="pa-2"
                       >
@@ -386,8 +386,8 @@ export default {
       },
     ],
     selectedSkill: "",
-    selectedTypeSkill: "123",
-    pronun1List: [], // Array to store Pronun1Manage components
+    selectedTypeSkill: "",
+    questionList: [], // Array to store Pronun1Manage components
     required: [
       (v) => {
         if (v) return true;
@@ -433,47 +433,47 @@ export default {
   },
   methods: {
     handleAddSkill() {
-      // Add Pronun1Manage component to pronun1List array
+      // Add Pronun1Manage component to questionList array
       const questions = [
         {
           title: "Question 1",
           numOptions: 2,
           options: Array.from({ length: 2 }, (_, i) => ({
-            // Create an array of options with the specified length
-            title: `Option ${i + 1}`,
+            option: "",
           })),
+          answers: [],
         },
       ];
-      this.pronun1List.push({
+      this.questionList.push({
         typeSkill: this.selectedTypeSkill,
-        questions: questions, // Assign the questions array to the pronun1List item
+        questions: questions, // Assign the questions array to the questionList item
       });
     },
     removePronun1(index) {
-      // Remove Pronun1Manage component at specified index from pronun1List array
-      this.pronun1List.splice(index, 1);
+      // Remove Pronun1Manage component at specified index from questionList array
+      this.questionList.splice(index, 1);
     },
     handleDeleteQuestionInPronun1(pronun1Index, questionIndex) {
-      // Remove the question at the specified index from the pronun1List array
-      this.pronun1List[pronun1Index].questions.splice(questionIndex, 1);
+      // Remove the question at the specified index from the questionList array
+      this.questionList[pronun1Index].questions.splice(questionIndex, 1);
     },
     handleUpdateGroupTitleQuestion(index, updatedValue) {
-      // Update the groupTitleQuestion property in pronun1List at the specified index
-      this.pronun1List[index].typeSkill = updatedValue;
+      // Update the groupTitleQuestion property in questionList at the specified index
+      this.questionList[index].typeSkill = updatedValue;
       this.$emit("updateGroupTitleQuestion", updatedValue); // Emit the event
     },
     handleAddQuestion(pronun1Index) {
       // Find the Pronun1Manage component at the specified index
-      const pronun1 = this.pronun1List[pronun1Index];
+      const pronun1 = this.questionList[pronun1Index];
 
       // Create a new question object
       const newQuestion = {
         title: `New Question`,
         numOptions: 2,
         options: Array.from({ length: 2 }, (_, i) => ({
-          // Create an array of options with the specified length
-          title: `Option ${i + 1}`,
+          option: "",
         })),
+        answers: [],
       };
 
       // Push the new question to the questions array of the Pronun1Manage component
@@ -498,15 +498,17 @@ export default {
           ],
         };
 
-        const result = await apiCallerPost(
-          "/api/testss",
-          JSON.parse(localStorage?.getItem("accessToken"))?.token,
-          body
-        );
+        console.log("questionList", this.questionList);
 
-        if (result.success) {
-          this.dialogCreateSuccess = true;
-        }
+        // const result = await apiCallerPost(
+        //   "/api/testss",
+        //   JSON.parse(localStorage?.getItem("accessToken"))?.token,
+        //   body
+        // );
+
+        // if (result.success) {
+        //   this.dialogCreateSuccess = true;
+        // }
       }
     },
   },

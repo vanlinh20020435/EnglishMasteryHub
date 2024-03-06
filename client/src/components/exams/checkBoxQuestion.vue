@@ -2,7 +2,15 @@
   <v-col>
     <v-row class="d-flex">
       <v-col cols="1" class="pa-0">
-        <v-checkbox large class="checkbox-large" color="primary"> </v-checkbox>
+        <v-checkbox
+          :checked="isChecked"
+          :model-value="isChecked"
+          @change="handleCheckboxChange"
+          large
+          class="checkbox-large"
+          color="primary"
+        >
+        </v-checkbox>
       </v-col>
       <v-col cols="10">
         <v-row>
@@ -11,6 +19,8 @@
             hide-no-data
             single-line
             variant="solo"
+            :model-value="option"
+            @input="updateOption($event.target.value)"
           >
           </v-text-field>
         </v-row>
@@ -22,6 +32,8 @@
             single-line
             hide-details
             placeholder="Giải thích đáp án"
+            :model-value="explanation"
+            @input="updateExplanation($event.target.value)"
           >
           </v-text-field>
         </v-row>
@@ -47,6 +59,9 @@ export default {
   props: {
     handleDeleteOption: Function,
     isDescOption: Boolean,
+    option: String,
+    explanation: String,
+    questionIndex: Number,
   },
   data: () => ({
     required: [
@@ -55,7 +70,27 @@ export default {
         return "Trường nhập bắt buộc!";
       },
     ],
+
+    isChecked: false,
   }),
+  methods: {
+    updateOption(value) {
+      this.$emit("update:option", value);
+    },
+    updateExplanation(value) {
+      this.$emit("update:updateExplanation", value);
+    },
+    handleCheckboxChange() {
+      if (this.isChecked) {
+        // Push option and explanation to the parent component
+        this.$emit("addAnswer", {
+          option: this.option,
+          explanation: this.explanation,
+          questionIndex: this.questionIndex,
+        });
+      }
+    },
+  },
 };
 </script>
 

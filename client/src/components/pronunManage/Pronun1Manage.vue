@@ -87,6 +87,15 @@
                     :handleDeleteOption="
                       () => handleDeleteOption(index, indexOption - 1)
                     "
+                    @update:option="
+                      (value) =>
+                        handleUpdateOption(index, indexOption - 1, value)
+                    "
+                    @update:updateExplanation="
+                      (value) =>
+                        handleChangeExplanation(index, indexOption - 1, value)
+                    "
+                    @addAnswer="(data) => handleAddAnswer(data)"
                   />
                 </v-col>
               </v-row>
@@ -100,7 +109,7 @@
                   @click="() => handleAddOption(index)"
                   color="#00bd7e"
                   theme="dark"
-                  >Thêm câu hỏi</v-btn
+                  >Thêm item</v-btn
                 >
               </div>
             </v-col>
@@ -180,9 +189,9 @@ export default {
         title: `Question ${newIndex}`,
         numOptions: 2,
         options: Array.from({ length: 2 }, (_, i) => ({
-          // Create an array of options with the specified length
-          title: `Option ${i + 1}`,
+          option: "",
         })),
+        answers: [],
       });
       this.$nextTick(() => {
         this.showFullQuestion[newIndex - 1] = true;
@@ -218,7 +227,7 @@ export default {
         // Push a new option to the question's options array
         const newIndex = question.options.length + 1;
         question.options.push({
-          title: `Option ${newIndex}`,
+          option: "",
         });
 
         // Emit an event to notify the parent component about the addition
@@ -254,8 +263,21 @@ export default {
       const question = this.questions[questionIndex];
 
       question["files"] = this.fileUpload;
+    },
 
-      // For example, using axios:
+    handleUpdateOption(questionIndex, optionIndex, value) {
+      // Update the answer value in the corresponding question option
+      this.questions[questionIndex].options[optionIndex].option = value;
+    },
+
+    handleChangeExplanation(questionIndex, optionIndex, value) {
+      // Update the answer value in the corresponding question option
+      this.questions[questionIndex].options[optionIndex].explanation = value;
+    },
+
+    handleAddAnswer(data) {
+      const { option, explanation, questionIndex } = data;
+      this.question[questionIndex].answers.push({ option, explanation });
     },
   },
 };
