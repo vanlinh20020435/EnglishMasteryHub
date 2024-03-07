@@ -17,6 +17,7 @@ import TeacherManager from '@/views/Admin/User/Teacher.vue';
 import Class from '@/views/Admin/Class/index.vue';
 import Event from '@/views/Admin/Event/index.vue';
 import ClassSlug from '@/views/Admin/Class/ClassSlug.vue';
+import Account from '@/views/Account/index.vue';
 const routes = [
   {
     path: '/login',
@@ -26,6 +27,11 @@ const routes = [
   {
     path: '/register',
     component: HomeView,
+    public: true,
+  },
+  {
+    path: '/account',
+    component: Account,
     public: true,
   },
   {
