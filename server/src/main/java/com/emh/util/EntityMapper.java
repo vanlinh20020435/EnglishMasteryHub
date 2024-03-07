@@ -167,7 +167,7 @@ public class EntityMapper
 		questions.setDescription(questionsRequest.getDescription());
 		questions.setTitle(questionsRequest.getTitle());
 		questions.setTime(questionsRequest.getTime());
-		questions.setType(questionsRequest.getDescription());
+		questions.setType(questionsRequest.getType());
 		questions.setTests(tests);
 		questions.setSkill(questionsRequest.getSkill());
 		return questions;
@@ -179,7 +179,7 @@ public class EntityMapper
 		questions.setDescription(questionsRequest.getDescription());
 		questions.setTitle(questionsRequest.getTitle());
 		questions.setTime(questionsRequest.getTime());
-		questions.setType(questionsRequest.getDescription());
+		questions.setType(questionsRequest.getType());
 		questions.setTests(tests);
 		questions.setParentQuestion(parentQuestions);
 		questions.setSkill(questionsRequest.getSkill());
