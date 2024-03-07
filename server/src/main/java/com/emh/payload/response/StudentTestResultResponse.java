@@ -25,5 +25,8 @@ public class StudentTestResultResponse
 	private TestsResponse test;
 
 	@NotNull
+	private StudentResponse student;
+
+	@NotNull
 	private List<QuestAnswerResultResponse> questionResults;
 }

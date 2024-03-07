@@ -13,10 +13,7 @@ import com.emh.repos.UserRepository;
 import com.emh.specifications.FilterOperation;
 import com.emh.specifications.SearchCriteria;
 import com.emh.specifications.SpecificationsBuilder;
-import com.emh.util.AppException;
-import com.emh.util.MapperUtils;
-import com.emh.util.NotFoundException;
-import com.emh.util.ReferencedWarning;
+import com.emh.util.*;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
@@ -49,14 +46,14 @@ public class StudentService
 	{
 		final List<Student> students = studentRepository.findAll(Sort.by("studentId"));
 		return students.stream()
-				.map(student -> MapperUtils.studentMapToResponse(student, new StudentResponse()))
+				.map(student -> EntityMapper.studentMapToResponse(student, new StudentResponse()))
 				.toList();
 	}
 
 	public StudentResponse get(final Integer studentId)
 	{
 		return studentRepository.findById(studentId)
-				.map(student -> MapperUtils.studentMapToResponse(student, new StudentResponse()))
+				.map(student -> EntityMapper.studentMapToResponse(student, new StudentResponse()))
 				.orElseThrow(NotFoundException::new);
 	}
 
@@ -73,7 +70,7 @@ public class StudentService
 		user = userRepository.save(user);
 		Classes classs = classesRepository.findById(studentRequest.getClassId())
 				.orElseThrow(NotFoundException::new);
-		MapperUtils.studentMapToEntity(studentRequest, student, user, classs);
+		EntityMapper.studentMapToEntity(studentRequest, student, user, classs);
 		return studentRepository.save(student).getStudentId();
 	}
 
@@ -81,14 +78,15 @@ public class StudentService
 	{
 		final Student student = studentRepository.findById(studentId)
 				.orElseThrow(NotFoundException::new);
-		if (StringUtils.isNotBlank(studentRequest.getPassword()))
-			studentRequest.setPassword(student.getPassword());
+		studentRequest.setPassword(student.getPassword());
 		User user = MapperUtils.map(studentRequest, User.class);
 		user.setUserId(student.getUser().getUserId());
+		user.setRole(Role.STUDENT.toString());
+		user.setStatus(student.getUser().getStatus());
 		user = userRepository.save(user);
 		Classes classs = classesRepository.findById(studentRequest.getClassId())
 				.orElseThrow(NotFoundException::new);
-		MapperUtils.studentMapToEntity(studentRequest, student, user, classs);
+		EntityMapper.studentMapToEntity(studentRequest, student, user, classs);
 		studentRepository.save(student);
 	}
 
@@ -118,7 +116,7 @@ public class StudentService
 			spec.with(new SearchCriteria("class_id", FilterOperation.EQUAL.toString(), classId, false));
 		final List<Student> students = studentRepository.findAll(spec.build());
 		return students.stream()
-				.map(student -> MapperUtils.studentMapToResponse(student, new StudentResponse()))
+				.map(student -> EntityMapper.studentMapToResponse(student, new StudentResponse()))
 				.toList();
 	}
 

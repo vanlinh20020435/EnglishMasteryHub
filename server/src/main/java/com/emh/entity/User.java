@@ -1,9 +1,12 @@
 package com.emh.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
 
 
@@ -35,6 +38,12 @@ public class User extends BaseEntity
 
 	@Column(nullable = false)
 	private Integer gender;
+
+	@Column
+	private String avatar;
+
+	@Column
+	private Date birthday;
 
 	@Column(nullable = false, name = "\"role\"", length = 50)
 	private String role;

@@ -5,7 +5,7 @@ import com.emh.payload.response.*;
 import com.emh.repos.ClassesRepository;
 import com.emh.repos.TestClassRepository;
 import com.emh.repos.TestsRepository;
-import com.emh.util.MapperUtils;
+import com.emh.util.EntityMapper;
 import com.emh.util.NotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +65,7 @@ public class TestClassService
 	private TestsResponse exportTest(Tests tests)
 	{
 		TestsResponse response = new TestsResponse();
-		MapperUtils.testMapToResponse(tests, response);
+		EntityMapper.testMapToResponse(tests, response);
 		exportQuestions(tests, response);
 		return response;
 	}
@@ -80,7 +80,7 @@ public class TestClassService
 			if (questions.getParentQuestion() != null)
 				continue;
 			QuestionsResponse questionsResponse = new QuestionsResponse();
-			MapperUtils.questionMapToResponse(questions, questionsResponse);
+			EntityMapper.questionMapToResponse(questions, questionsResponse);
 			exportQuestionAnswers(questions, questionsResponse);
 			exportQuestionOptions(questions, questionsResponse);
 			exportQuestionFiles(questions, questionsResponse);
@@ -98,7 +98,7 @@ public class TestClassService
 		for (QuestAnswer questAnswer : questions.getQuestionQuestAnswers())
 		{
 			QuestAnswerResponse answer = new QuestAnswerResponse();
-			MapperUtils.questionAnswerMapToResponse(questAnswer, answer);
+			EntityMapper.questionAnswerMapToResponse(questAnswer, answer);
 			responses.add(answer);
 		}
 		questionsResponse.setAnswers(responses);
@@ -112,7 +112,7 @@ public class TestClassService
 		for (QuestOption questOption : questions.getQuestOptions())
 		{
 			QuestOptionResponse option = new QuestOptionResponse();
-			MapperUtils.questionOptionMapToResponse(questOption, option);
+			EntityMapper.questionOptionMapToResponse(questOption, option);
 			responses.add(option);
 		}
 		questionsResponse.setOptions(responses);
@@ -126,7 +126,7 @@ public class TestClassService
 		for (QuestFile questFile : questions.getQuestFiles())
 		{
 			QuestFileResponse file = new QuestFileResponse();
-			MapperUtils.questionFileMapToResponse(questFile, file);
+			EntityMapper.questionFileMapToResponse(questFile, file);
 			responses.add(file);
 		}
 		questionsResponse.setFiles(responses);
@@ -140,7 +140,7 @@ public class TestClassService
 		for (Questions subQuestions : questions.getQuestions())
 		{
 			QuestionsResponse questionsResponse = new QuestionsResponse();
-			MapperUtils.questionMapToResponse(subQuestions, questionsResponse);
+			EntityMapper.questionMapToResponse(subQuestions, questionsResponse);
 			exportQuestionAnswers(subQuestions, questionsResponse);
 			exportQuestionOptions(subQuestions, questionsResponse);
 			exportQuestionFiles(subQuestions, questionsResponse);
