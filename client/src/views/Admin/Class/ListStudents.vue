@@ -32,7 +32,7 @@
       </template>
 
       <template v-slot:item.gender="{ item }">
-        {{ item.gender ? 'Female' : 'Male' }}
+        {{ item.gender ? 'Male' : 'Female' }}
       </template>
 
       <template v-slot:item.status="{ item }">
