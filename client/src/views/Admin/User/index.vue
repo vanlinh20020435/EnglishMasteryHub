@@ -135,15 +135,15 @@
       </v-card>
     </v-form>
   </v-dialog>
-  <PopUpYesNo msg="Bạn có chắc chắn muốn xoá?" :visible="isOpenDelete" :handleClickYes="deleteItem"
-    :handleClickNo="() => (isOpenDelete = false)" />
+  <PopUpYesNo :msg="`Bạn có chắc chắn muốn xoá admin ${delettingItem.name}?`" :visible="isOpenDelete"
+    :handleClickYes="deleteItem" :handleClickNo="() => (isOpenDelete = false)" />
   <PopUpYesNo :msg="`Bạn có chắc chắn muốn ${itemUpdating.status ? 'khóa' : 'mở khóa'}?`" :visible="isOpenLock"
     :handleClickYes="updateLock" :handleClickNo="() => (isOpenLock = false)" />
 </template>
 
 <script>
 import PopUpYesNo from '@/components/popup/PopUpYesNo.vue';
-import { getAdmins, searchAdmins, createAdmin, editAdmin, editAdminStatus, changeAdminPassword } from '@/services';
+import { getAdmins, searchAdmins, createAdmin, editAdmin, editAdminStatus, changeAdminPassword, deleteAdmin } from '@/services';
 import { authenticationRole, toastStore } from '@/stores';
 import { mapState } from 'pinia';
 
@@ -336,18 +336,29 @@ export default {
         this.authentication?.accessToken?.token,
         payload
       );
-      this.isLoadingForm = false;
       if (res.success) {
         console.log(res);
-        this.isOpenForm = false;
         await this.fetchData();
       } else {
         //error
       }
+      this.isOpenForm = false;
+      this.isLoadingForm = false;
     },
-    deleteItem() { },
-    pickerFocussing(val) {
-      if (val) this.menu = true;
+    async deleteItem() {
+      this.isLoadingForm = true;
+      const res = await deleteAdmin(
+        this.authentication?.accessToken?.token,
+        this.delettingItem.adminId
+      );
+      if (res.success) {
+        console.log(res);
+        await this.fetchData();
+      } else {
+        //error
+      }
+      this.isOpenDelete = false
+      this.isLoadingForm = false;
     },
     openEdit(item) {
       this.isOpenForm = true;

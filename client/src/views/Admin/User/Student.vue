@@ -30,21 +30,17 @@
         "></v-img>
         </v-avatar>
       </template>
-
       <template v-slot:item.class="{ item }">
         {{ item.class?.className }}
       </template>
-
       <template v-slot:item.gender="{ item }">
         {{ item.gender ? 'Male' : 'Female' }}
       </template>
-
       <template v-slot:item.status="{ item }">
         <v-chip @click="() => openLock(item)" variant="elevated" :color="item.status ? 'success' : 'error'">{{
         item.status ? 'Active' : 'Inactive'
       }}</v-chip>
       </template>
-
       <template v-slot:item.actions="{ item }">
         <v-icon class="me-2" color="primary" size="small" @click="() => openEdit(item)">
           mdi-pencil
@@ -81,16 +77,18 @@
             <v-col cols="12" md="12" sm="6">
               <v-text-field v-model="formItem.email" :rules="emailRules" label="Email"></v-text-field>
             </v-col>
+            <v-col cols="12" md="12" sm="6">
+              <v-select label="Class" v-model="formItem.classId" :items="classSelector"></v-select>
+            </v-col>
             <v-col cols="12" md="6" sm="6">
               <v-select label="Gender" v-model="formItem.gender" :items="genderSelector"></v-select>
             </v-col>
             <v-col cols="12" md="6" sm="6">
               <v-dialog ref="dialog" v-model="isOpenDatePicker" :return-value.sync="datePicker" persistent
                 width="290px">
-
                 <template v-slot:activator="{ attrs }">
-                  <v-text-field v-model="datePickerComputed" :rules="requireRules" label="Birthday" readonly
-                    v-bind="attrs" clearable @click="() => (isOpenDatePicker = true)"></v-text-field>
+                  <v-text-field v-model="datePickerComputed" label="Birthday" readonly v-bind="attrs" clearable
+                    @click="() => (isOpenDatePicker = true)"></v-text-field>
                 </template>
                 <v-date-picker v-model="datePicker" scrollable @update:model-value="() => (isOpenDatePicker = false)">
                 </v-date-picker>
@@ -138,10 +136,10 @@
       </v-card>
     </v-form>
   </v-dialog>
-  <PopUpYesNo :msg="`Bạn có chắc chắn muốn ${itemUpdating.status ? 'khóa' : 'mở khóa'}?`" :visible="isOpenLock"
+  <PopUpYesNo :msg="`Bạn có chắc chắn muốn ${itemUpdatingLock.status ? 'khóa' : 'mở khóa'}?`" :visible="isOpenLock"
     :handleClickYes="updateLock" :handleClickNo="() => (isOpenLock = false)" />
-  <PopUpYesNo msg="Bạn có chắc chắn muốn xoas?" :visible="isOpenDelete" :handleClickYes="deleteItem"
-    :handleClickNo="() => (isOpenDelete = false)" />
+  <PopUpYesNo :msg="`Bạn có chắc chắn muốn xoá học sinh ${delettingItem.name}?`" :visible="isOpenDelete"
+    :handleClickYes="deleteItem" :handleClickNo="() => (isOpenDelete = false)" />
 </template>
 
 <script>
@@ -152,11 +150,12 @@ import {
   createStudent,
   editStudent,
   editStudentStatus,
-  changeStudentPassword
+  changeStudentPassword,
+  deleteStudent,
+  getClasses
 } from '@/services';
 import { authenticationRole, toastStore } from '@/stores';
 import { mapState } from 'pinia';
-
 export default {
   components: {
     PopUpYesNo,
@@ -166,7 +165,7 @@ export default {
       isOpenChangePassword: false,
       formPasswordValid: false,
       passUpdating: {},
-      itemUpdating: {},
+      itemUpdatingLock: {},
       isOpenLock: false,
       datePicker: null,
       isOpenDatePicker: false,
@@ -192,6 +191,7 @@ export default {
         { value: 1, title: 'Male' },
         { value: 0, title: 'Female' },
       ],
+      classSelector: [],
       isOpenForm: false,
       isOpenDelete: false,
       isEdit: false,
@@ -269,22 +269,22 @@ export default {
     },
     openLock(item) {
       this.isOpenLock = true
-      this.itemUpdating = item
+      this.itemUpdatingLock = item
     },
     openChangePassword(item) {
       this.isOpenChangePassword = true
       this.passUpdating.id = item.studentId
     },
     async updateLock() {
-      const updateStatus = this.itemUpdating?.status ? 0 : 1
-      const res = await editStudentStatus(this.itemUpdating?.studentId, this.authentication?.accessToken?.token, updateStatus)
+      const updateStatus = this.itemUpdatingLock?.status ? 0 : 1
+      const res = await editStudentStatus(this.itemUpdatingLock?.studentId, this.authentication?.accessToken?.token, updateStatus)
       if (res.success) {
         await this.fetchData();
       } else {
         //error
       }
       this.isOpenLock = false
-      this.itemUpdating = {}
+      this.itemUpdatingLock = {}
     },
     async submitChangePassword() {
       if (this.formPasswordValid) {
@@ -306,7 +306,6 @@ export default {
           await this.createItem();
         }
         this.isOpenForm = false;
-        await this.fetchData();
       }
     },
     async createItem() {
@@ -333,6 +332,7 @@ export default {
         gender: this.formItem.gender,
         avatar: this.formItem.avatar,
         birthday: this.formItem.birthday,
+        classId: this.formItem.classId,
       };
       const res = await editStudent(
         this.formItem.studentId,
@@ -348,14 +348,27 @@ export default {
         //error
       }
     },
-    deleteItem() { },
-    pickerFocussing(val) {
-      if (val) this.menu = true;
+    async deleteItem() {
+      this.isLoadingForm = true;
+      const res = await deleteStudent(
+        this.authentication?.accessToken?.token,
+        this.delettingItem.studentId
+      );
+      if (res.success) {
+        console.log(res);
+        await this.fetchData();
+      } else {
+        //error
+      }
+      this.isOpenDelete = false
+      this.isLoadingForm = false;
     },
     openEdit(item) {
       this.isOpenForm = true;
       this.formItem = { ...item };
+      this.formItem.classId = this.formItem.class.classId
       this.isEdit = true;
+      this.datePickerComputed = this.formItem.birthday
     },
     openDelete(item) {
       this.isOpenDelete = true;
@@ -369,11 +382,16 @@ export default {
     isOpenChangePassword(val) {
       if (!val) this.passUpdating = {};
     },
-    isOpenForm(val) {
+    async isOpenForm(val) {
       if (!val) {
         this.formItem = {};
         this.isEdit = false;
         this.datePicker = null;
+      } else {
+        const res = await getClasses(this.authentication?.accessToken?.token)
+        if (res.success) {
+          this.classSelector = res.data.map(cls => ({ title: cls.className, value: cls.classId }))
+        }
       }
     },
     datePicker(val) {

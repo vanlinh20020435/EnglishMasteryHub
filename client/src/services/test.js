@@ -1,7 +1,7 @@
 import { $axios } from "."
 
-export const getAdmins = async (token = null) => {
-    const path = '/api/admins'
+export const getTests = async (token = null) => {
+    const path = '/api/testss'
     var result = {
         success: false,
         data: null
@@ -94,22 +94,6 @@ export const changeAdminPassword = async (id = null, token = null, password) => 
     }
     try {
         const response = await $axios.put(path, {}, { params: { password }, headers: { 'Authorization': 'Bearer ' + token } })
-        result.data = response.data;
-        result.success = true
-    } catch (error) {
-        console.log(error);
-    }
-    return result
-}
-
-export const deleteAdmin = async (token = null, id = null) => {
-    const path = `/api/admins/${id}`
-    var result = {
-        success: false,
-        data: null
-    }
-    try {
-        const response = await $axios.delete(path, { headers: { 'Authorization': 'Bearer ' + token } })
         result.data = response.data;
         result.success = true
     } catch (error) {

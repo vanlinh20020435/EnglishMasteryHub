@@ -18,6 +18,8 @@ import Class from '@/views/Admin/Class/index.vue';
 import Event from '@/views/Admin/Event/index.vue';
 import ClassSlug from '@/views/Admin/Class/ClassSlug.vue';
 import Account from '@/views/Account/index.vue';
+import Student from '@/views/Student/index.vue';
+import News from '@/views/Student/News.vue';
 const routes = [
   {
     path: '/login',
@@ -102,6 +104,29 @@ const routes = [
       {
         path: 'event',
         component: Event,
+      },
+    ],
+  },
+  {
+    path: '/student',
+    redirect: '/student/news',
+    component: Student,
+    children: [
+      {
+        path: 'news',
+        component: News,
+      },
+      {
+        path: 'test',
+        component: News,
+      },
+      {
+        path: 'test/:id',
+        component: News,
+      },
+      {
+        path: 'document',
+        component: News,
       },
     ],
   },
