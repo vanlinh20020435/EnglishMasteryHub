@@ -20,6 +20,8 @@ import ClassSlug from '@/views/Admin/Class/ClassSlug.vue';
 import Account from '@/views/Account/index.vue';
 import Student from '@/views/Student/index.vue';
 import News from '@/views/Student/News.vue';
+import Test from '@/views/Student/Test/index.vue';
+import Docs from '@/views/Student/Docs.vue';
 const routes = [
   {
     path: '/login',
@@ -118,7 +120,7 @@ const routes = [
       },
       {
         path: 'test',
-        component: News,
+        component: Test,
       },
       {
         path: 'test/:id',
@@ -126,7 +128,7 @@ const routes = [
       },
       {
         path: 'document',
-        component: News,
+        component: Docs,
       },
     ],
   },
