@@ -1,12 +1,13 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 
-export const useCounterStore = defineStore('counter', () => {
+export const studentStore = defineStore('student', () => {
   const student = ref({ class: {} });
   const cls = computed(() => student.value.class);
-  function updateStudent(newData) {
-    authentication.value = {
-      ...authentication.value,
+  async function updateStudent(newData) {
+    console.log('store');
+    student.value = {
+      ...student.value,
       ...newData,
     };
   }

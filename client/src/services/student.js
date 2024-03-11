@@ -19,7 +19,7 @@ export const getStudents = async (token = null) => {
 };
 
 export const getStudent = async (token = null, id = null) => {
-  const path = `/api/students/${id}`;
+  const path = `/api/students/find-by-user/${id}`;
   var result = {
     success: false,
     data: null,
