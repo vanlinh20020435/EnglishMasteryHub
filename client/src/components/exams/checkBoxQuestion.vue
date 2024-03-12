@@ -3,12 +3,11 @@
     <v-row class="d-flex">
       <v-col cols="1" class="pa-0">
         <v-checkbox
-          :checked="isChecked"
-          :model-value="isChecked"
-          @change="handleCheckboxChange"
           large
           class="checkbox-large"
           color="primary"
+          :checked="checked"
+          @change="handleCheckboxChange"
         >
         </v-checkbox>
       </v-col>
@@ -61,7 +60,7 @@ export default {
     isDescOption: Boolean,
     option: String,
     explanation: String,
-    questionIndex: Number,
+    checked: Boolean,
   },
   data: () => ({
     required: [
@@ -70,8 +69,6 @@ export default {
         return "Trường nhập bắt buộc!";
       },
     ],
-
-    isChecked: false,
   }),
   methods: {
     updateOption(value) {
@@ -80,15 +77,9 @@ export default {
     updateExplanation(value) {
       this.$emit("update:updateExplanation", value);
     },
-    handleCheckboxChange() {
-      if (this.isChecked) {
-        // Push option and explanation to the parent component
-        this.$emit("addAnswer", {
-          option: this.option,
-          explanation: this.explanation,
-          questionIndex: this.questionIndex,
-        });
-      }
+    handleCheckboxChange(event) {
+      // Emit input event with updated checkbox state]
+      this.$emit("checkboxChange", event.target.checked);
     },
   },
 };

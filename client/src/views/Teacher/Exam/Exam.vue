@@ -133,6 +133,22 @@
           </v-data-table>
         </v-col>
       </v-row>
+      <PopUpYesNo
+        msg="Bạn không có quyền chỉnh sửa bài kiểm tra này!"
+        btnYes="Đồng ý"
+        :visible="openPopupEdit"
+        :handleClickYes="
+          () => {
+            this.openPopupEdit = false;
+          }
+        "
+        hideBtnNo
+        @update:visible="
+          (newValue) => {
+            this.openPopupEdit = newValue;
+          }
+        "
+      />
     </v-container>
   </v-card>
 </template>
@@ -152,6 +168,7 @@ export default {
     PopUpYesNo,
   },
   data: () => ({
+    openPopupEdit: false,
     isLoading: false,
     selected: [],
     dialog: false,
@@ -257,7 +274,10 @@ export default {
     editItem(item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      this.dialog = true;
+      // this.dialog = true;
+      if (!item?.havePermission) {
+        this.openPopupEdit = true;
+      }
     },
 
     deleteItem(item) {
