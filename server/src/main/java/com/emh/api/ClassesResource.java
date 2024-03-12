@@ -2,10 +2,7 @@ package com.emh.api;
 
 import com.emh.payload.request.ClassFileRequest;
 import com.emh.payload.request.ClassesRequest;
-import com.emh.payload.response.ClassFileResponse;
-import com.emh.payload.response.ClassesResponse;
-import com.emh.payload.response.StudentResponse;
-import com.emh.payload.response.TestsResponse;
+import com.emh.payload.response.*;
 import com.emh.service.ClassFileService;
 import com.emh.service.ClassesService;
 import com.emh.service.TestClassService;
@@ -107,6 +104,14 @@ public class ClassesResource
 		return ResponseEntity.ok(testClassService.findAllByClass(classId));
 	}
 
+	@GetMapping("/{classId}/tests-info/get-all")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
+	@ApiResponse(responseCode = "201")
+	public ResponseEntity<List<TestInfoResponse>> getAllTestInfo(@PathVariable(name = "classId") final Integer classId)
+	{
+		return ResponseEntity.ok(testClassService.findAllInfoByClass(classId));
+	}
+
 
 	@DeleteMapping("/{classId}/tests/{testId}")
 	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
@@ -129,7 +134,7 @@ public class ClassesResource
 	}
 
 	@GetMapping("/{classId}/files/get-all")
-	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
 	@ApiResponse(responseCode = "201")
 	public ResponseEntity<List<ClassFileResponse>> getAllFiles(@PathVariable(name = "classId") final Integer classId)
 	{
@@ -148,7 +153,7 @@ public class ClassesResource
 	}
 
 	@GetMapping("/{classId}/students/get-all")
-	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
 	@ApiResponse(responseCode = "201")
 	public ResponseEntity<List<StudentResponse>> getAllStudents(@PathVariable(name = "classId") final Integer classId)
 	{

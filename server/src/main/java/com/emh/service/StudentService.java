@@ -142,4 +142,12 @@ public class StudentService
 		userRepository.save(user);
 		studentRepository.save(student);
 	}
+
+	public StudentResponse getByUserId(Integer userId)
+	{
+		User user = userRepository.findById(userId)
+				.orElseThrow(NotFoundException::new);
+		Student student = studentRepository.findFirstByUser(user);
+		return EntityMapper.studentMapToResponse(student, new StudentResponse());
+	}
 }

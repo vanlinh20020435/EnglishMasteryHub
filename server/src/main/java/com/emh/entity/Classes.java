@@ -44,7 +44,7 @@ public class Classes extends BaseEntity
 	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)
 	private Set<StudentNotifications> classStudentNotificationses;
 
-	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "classs", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	private Set<TestClass> testClasses;
 
 	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)

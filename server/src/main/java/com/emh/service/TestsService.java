@@ -6,6 +6,7 @@ import com.emh.payload.request.*;
 import com.emh.payload.response.*;
 import com.emh.repos.*;
 import com.emh.util.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -269,5 +270,31 @@ public class TestsService
 		if (curentUser.getRole().equalsIgnoreCase(Role.ADMIN.toString()))
 			return true;
 		return Objects.equals(curentUser.getUserId(), targetUser.getUserId());
+	}
+
+	public List<TestsResponse> findAllByUserId(Integer userId)
+	{
+		User user = userRepository.findById(userId)
+				.orElseThrow(NotFoundException::new);
+		final List<Tests> testses = testsRepository.findAllByCreator(user.getUsername());
+		return testses.stream()
+				.map(this::exportTest)
+				.toList();
+	}
+
+	public TestInfoResponse getInfo(Integer testId)
+	{
+		return testsRepository.findById(testId)
+				.map(test -> EntityMapper.testInfoMapToResponse(test, new TestInfoResponse()))
+				.orElseThrow(NotFoundException::new);
+	}
+
+	public Boolean checkPassword(Integer testId, String password)
+	{
+		Tests tests = testsRepository.findById(testId)
+				.orElseThrow(NotFoundException::new);
+		if(StringUtils.isBlank(tests.getPassword()))
+			return true;
+		return tests.getPassword().equals(password);
 	}
 }

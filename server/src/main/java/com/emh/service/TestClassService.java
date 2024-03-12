@@ -148,4 +148,13 @@ public class TestClassService
 		}
 		parentQuestions.setSubQuestions(subQuest);
 	}
+
+	public List<TestInfoResponse> findAllInfoByClass(Integer classId)
+	{
+		final Classes classs = classesRepository.findById(classId)
+				.orElseThrow(NotFoundException::new);
+		return classs.getTestClasses().stream()
+				.map(testClass -> EntityMapper.testInfoMapToResponse(testClass.getTests(), new TestInfoResponse()))
+				.toList();
+	}
 }

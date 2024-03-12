@@ -15,11 +15,11 @@ public class TestClass extends BaseEntity
 	@EmbeddedId
 	TestClassKey id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "class_id", nullable = false)
 	private Classes classs;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "test_id", nullable = false)
 	private Tests tests;
 

@@ -138,6 +138,18 @@ public class EntityMapper
 		return testsResponse;
 	}
 
+	public static TestInfoResponse testInfoMapToResponse(final Tests tests, final TestInfoResponse testInfoResponse)
+	{
+		testInfoResponse.setTestId(tests.getTestId());
+		testInfoResponse.setTestName(tests.getTestName());
+		testInfoResponse.setTotalQuestions(tests.getTotalQuestions());
+		testInfoResponse.setTime(tests.getTime());
+		testInfoResponse.setDescription(tests.getDescription());
+		testInfoResponse.setStatus(tests.getStatus());
+		testInfoResponse.setCreatedDate(tests.getCreatedDate());
+		return testInfoResponse;
+	}
+
 	public static Tests testMapToEntity(final TestsRequest testsRequest, final Tests tests)
 	{
 		tests.setTestName(testsRequest.getTestName());
