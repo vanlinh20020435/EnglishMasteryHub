@@ -1,7 +1,8 @@
 <template>
   <v-app v-if="cls?.classId">
-    <StudentNavbar :drawwing="() => (drawer = !drawer)" :user="authentication?.user" :student="student" />
-    <v-main class="d-flex justify-center" style="width: 100vw; height: 100vh">
+    <StudentNavbar style="flex: 0" :drawwing="() => (drawer = !drawer)" :user="authentication?.user"
+      :student="student" />
+    <v-main class="d-flex justify-center" style="width: 100vw; flex: 1;">
       <v-container>
         <slot></slot>
       </v-container>

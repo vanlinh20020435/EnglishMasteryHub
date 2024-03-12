@@ -16,6 +16,38 @@ export const getTests = async (token = null) => {
     return result
 }
 
+export const getTest = async (token = null, testId = null) => {
+    const path = `/api/testss/${testId}`
+    var result = {
+        success: false,
+        data: null
+    }
+    try {
+        const response = await $axios.get(path, { headers: { 'Authorization': 'Bearer ' + token } })
+        result.data = response.data;
+        result.success = true
+    } catch (error) {
+        console.log(error);
+    }
+    return result
+}
+
+export const getTestsByClass = async (token = null, classId) => {
+    const path = `/api/class/${classId}/tests-info/get-all`
+    var result = {
+        success: false,
+        data: null
+    }
+    try {
+        const response = await $axios.get(path, { headers: { 'Authorization': 'Bearer ' + token } })
+        result.data = response.data;
+        result.success = true
+    } catch (error) {
+        console.log(error);
+    }
+    return result
+}
+
 export const searchAdmins = async (token = null, params) => {
     const path = '/api/admins/search'
     var result = {
