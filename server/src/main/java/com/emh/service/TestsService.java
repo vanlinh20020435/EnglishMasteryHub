@@ -293,7 +293,7 @@ public class TestsService
 	{
 		Tests tests = testsRepository.findById(testId)
 				.orElseThrow(NotFoundException::new);
-		if(StringUtils.isBlank(tests.getPassword()))
+		if (StringUtils.isBlank(tests.getPassword()))
 			return true;
 		return tests.getPassword().equals(password);
 	}

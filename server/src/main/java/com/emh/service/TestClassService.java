@@ -5,6 +5,7 @@ import com.emh.payload.response.*;
 import com.emh.repos.ClassesRepository;
 import com.emh.repos.TestClassRepository;
 import com.emh.repos.TestsRepository;
+import com.emh.util.AppException;
 import com.emh.util.EntityMapper;
 import com.emh.util.NotFoundException;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,9 @@ public class TestClassService
 				.orElseThrow(NotFoundException::new);
 		Tests tests = testsRepository.findById(testId)
 				.orElseThrow(NotFoundException::new);
+		TestClass old = testClassRepository.findOneByClasssAndTests(classes, tests);
+		if(old != null)
+			throw new AppException("Test already exists");
 		testClass.setTests(tests);
 		testClass.setClasss(classes);
 		testClassRepository.save(testClass);

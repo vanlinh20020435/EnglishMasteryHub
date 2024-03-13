@@ -13,24 +13,24 @@ import java.io.Serializable;
 public class TestClass extends BaseEntity
 {
 	@EmbeddedId
-	TestClassKey id;
+	TestClassKey id = new TestClassKey();
 
+	@MapsId("classId")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "class_id", nullable = false)
 	private Classes classs;
 
+	@MapsId("testId")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "test_id", nullable = false)
 	private Tests tests;
+}
 
-	@Embeddable
-	class TestClassKey implements Serializable
-	{
-
-		@Column(name = "student_id")
-		Long studentId;
-
-		@Column(name = "course_id")
-		Long courseId;
-	}
+@Getter
+@Setter
+@Embeddable
+class TestClassKey implements Serializable
+{
+	Integer classId;
+	Integer testId;
 }

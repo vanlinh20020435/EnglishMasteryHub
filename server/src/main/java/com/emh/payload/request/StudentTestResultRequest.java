@@ -1,6 +1,5 @@
 package com.emh.payload.request;
 
-import com.emh.entity.QuestAnswerResult;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

@@ -1,11 +1,9 @@
 package com.emh.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
@@ -57,4 +55,7 @@ public class User extends BaseEntity
 	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
 	private Set<Student> userStudents;
 
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@JoinColumn(name = "refresh_token_id")
+	private RefreshToken refreshToken;
 }

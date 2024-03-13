@@ -29,6 +29,7 @@ app:
   jwt:
     jwtSecret: UUY+YA4e6vDzHgfhxype+S5J9AwQKC8P0NXGLK9gV+OUB4a9g2liqCvruzMUrSYe
     jwtExpirationMs: 21600000
+    jwtRefreshExpirationMs: 86400000
   resource:
     handler: /uploads/**
     path: /content/

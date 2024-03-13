@@ -1,10 +1,14 @@
 package com.emh.service;
 
 import com.emh.entity.*;
-import com.emh.payload.request.*;
-import com.emh.payload.response.*;
+import com.emh.payload.request.QuestAnswerResultRequest;
+import com.emh.payload.request.StudentTestResultRequest;
+import com.emh.payload.request.TestsRequest;
+import com.emh.payload.response.QuestAnswerResultResponse;
+import com.emh.payload.response.StudentTestResultResponse;
 import com.emh.repos.*;
-import com.emh.util.*;
+import com.emh.util.EntityMapper;
+import com.emh.util.NotFoundException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -102,7 +106,7 @@ public class StudentTestResultService
 		{
 			QuestAnswerResult answerResult = new QuestAnswerResult();
 			Questions questions = questionsRepository.findById(questAnswerResultRequest.getQuestionId())
-								.orElseThrow(NotFoundException::new);
+					.orElseThrow(NotFoundException::new);
 			EntityMapper.questAnswerResultMapToEntity(questAnswerResultRequest, answerResult, questions, studentTestResult);
 			questAnswerResultRepository.save(answerResult);
 		}

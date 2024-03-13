@@ -1,37 +1,32 @@
 package com.emh.payload.response;
 
 import com.emh.controller.PropertyController;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.io.IOException;
-
+@Getter
+@Setter
 public class JwtResponse
 {
-	private AccessToken accessToken;
+	private Token accessToken;
+	private Token refreshToken;
 
-	public JwtResponse(String accessToken) throws IOException
+	public JwtResponse(String accessToken, String refreshToken)
 	{
-		this.accessToken = new AccessToken(accessToken);
+		Long now = System.currentTimeMillis();
+		this.accessToken = new Token(accessToken, now + PropertyController.JWT_EXPIRATION_MS);
+		this.refreshToken = new Token(refreshToken, now + PropertyController.JWT_REFRESH_EXPIRATION_MS);
 	}
 
-	public AccessToken getAccessToken()
-	{
-		return accessToken;
-	}
-
-	public void setAccessToken(AccessToken accessToken)
-	{
-		this.accessToken = accessToken;
-	}
-
-	private static class AccessToken
+	private static class Token
 	{
 		public String token;
 		public Long expires;
 
-		public AccessToken(String token) throws IOException
+		public Token(String token, Long expires)
 		{
 			this.token = token;
-			expires = System.currentTimeMillis() + PropertyController.JWT_EXPIRATION_MS;
+			this.expires = expires;
 		}
 	}
 }

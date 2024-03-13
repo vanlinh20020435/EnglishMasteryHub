@@ -276,7 +276,7 @@ public class EntityMapper
 	}
 
 	public static QuestAnswerResult questAnswerResultMapToEntity(final QuestAnswerResultRequest answerResultRequest, final QuestAnswerResult questAnswerResult,
-														  final Questions questions, final StudentTestResult studentTestResult)
+																 final Questions questions, final StudentTestResult studentTestResult)
 	{
 		questAnswerResult.setScore(answerResultRequest.getScore());
 		questAnswerResult.setAnswers(answerResultRequest.getAnswers());

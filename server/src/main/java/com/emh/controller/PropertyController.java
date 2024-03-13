@@ -8,6 +8,7 @@ public class PropertyController
 {
 	public static String JWT_SECRET;
 	public static Long JWT_EXPIRATION_MS;
+	public static Long JWT_REFRESH_EXPIRATION_MS;
 	public static String RESOURCE_HANDLER;
 	public static String RESOURCE_PATH;
 	public static String FILE_HANDLER;
@@ -27,6 +28,12 @@ public class PropertyController
 	public void setJwtExpirationMs(String jwtExpirationMs)
 	{
 		PropertyController.JWT_EXPIRATION_MS = Long.parseLong(jwtExpirationMs);
+	}
+
+	@Value("${app.jwt.jwtRefreshExpirationMs}")
+	public void setJwtRefreshExpirationMs(String jwtRefreshExpirationMs)
+	{
+		PropertyController.JWT_REFRESH_EXPIRATION_MS = Long.parseLong(jwtRefreshExpirationMs);
 	}
 
 	@Value("${app.resource.handler}")
