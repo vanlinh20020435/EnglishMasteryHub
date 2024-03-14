@@ -35,7 +35,7 @@ export {
   searchClasses,
 } from './class';
 export { login, getUserInfo } from './auth';
-export { getTests, getTest, getTestsByClass } from './test';
+export { getTests, getTest, getTestInfo, getTestsByClass } from './test';
 
 const $axios = {
   ...axios.create({

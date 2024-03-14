@@ -12,8 +12,8 @@
 
                     <template v-slot:append>
                         <div style="display: flex; flex-direction: column; align-items: flex-end;">
-                            <v-list-item-title>Thời gian làm bài: 90 phút</v-list-item-title>
-                            <v-list-item-subtitle>Tổng số câu hỏi: 50</v-list-item-subtitle>
+                            <v-list-item-title>Thời gian làm bài: {{ test.time }} phút</v-list-item-title>
+                            <v-list-item-subtitle>Tổng số câu hỏi: {{ test.totalQuestions }} câu</v-list-item-subtitle>
                         </div>
                     </template>
                 </v-list-item>
@@ -175,7 +175,7 @@ export default {
         console.log('test', this.authentication.accessToken.token, this.student.class.classId);
         const res = await getTestsByClass(this.authentication.accessToken.token, this.student.class.classId)
         if (res.success) {
-            // this.tests = res.data
+            this.tests = res.data
         }
     }
 }
