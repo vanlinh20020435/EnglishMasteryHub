@@ -79,7 +79,7 @@ export default {
     drawwing: Function,
   },
   computed: {
-    ...mapState(authenticationRole, ['clearStore']),
+    ...mapState(authenticationRole, ['clearAuth']),
   },
   data: () => ({
     isOpenLogout: false,
@@ -89,7 +89,7 @@ export default {
       this.isOpenLogout = false;
       localStorage.removeItem('accessToken');
       localStorage.removeItem('user');
-      this.clearStore();
+      this.clearAuth();
       this.$router.replace('/login');
     },
   },

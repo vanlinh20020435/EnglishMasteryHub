@@ -36,19 +36,21 @@
       </template>
 
       <template v-slot:item.status="{ item }">
-        <v-chip variant="elevated" :color="item.status ? 'success' : 'error'">{{ item.status ? 'Active' : 'Inactive'
-          }}</v-chip>
+        <v-chip @click="() => openLock(item)" variant="elevated" :color="item.status ? 'success' : 'error'">{{
+        item.status ? 'Active' : 'Inactive'
+      }}</v-chip>
       </template>
 
       <template v-slot:item.actions="{ item }">
         <v-icon class="me-2" color="primary" size="small" @click="() => openEdit(item)">
           mdi-pencil
         </v-icon>
+        <v-icon class="me-2" color="warning" @click="() => openChangePassword(item)">
+          mdi-key-variant
+        </v-icon>
         <v-icon size="small" color="error" @click="() => openDelete(item)">
           mdi-delete
         </v-icon>
-        <PopUpYesNo msg="Bạn có chắc chắn muốn xoas?" :visible="isOpenDelete" :handleClickYes="deleteItem"
-          :handleClickNo="() => (isOpenDelete = false)" />
       </template>
     </v-data-table>
   </v-card>
@@ -76,6 +78,9 @@
               <v-col cols="12" md="12" sm="6">
                 <v-text-field v-model="formItem.email" :rules="emailRules" label="Email"></v-text-field>
               </v-col>
+              <v-col cols="12" md="12" sm="6">
+                <v-select label="Class" v-model="formItem.classId" :items="classSelector"></v-select>
+              </v-col>
               <v-col cols="12" md="6" sm="6">
                 <v-select label="Gender" v-model="formItem.gender" :items="genderSelector"></v-select>
               </v-col>
@@ -96,21 +101,62 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue-darken-1" variant="text" @click="() => (isOpenForm = false)">
+          <v-btn variant="tonal" @click="() => (isOpenForm = false)">
             Cancel
           </v-btn>
-          <v-btn color="blue-darken-1" variant="text" type="submit">
+          <v-btn color="success" variant="flat" type="submit">
             Save
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
   </v-dialog>
+  <v-dialog v-model="isOpenChangePassword" max-width="500px">
+    <v-form v-model="formPasswordValid" @submit.prevent="submitChangePassword">
+      <v-card>
+        <v-card-title>
+          Đổi mật khẩu
+        </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" md="12" sm="6">
+              <v-text-field v-model="passUpdating.password" :rules="requireRules" label="Password"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="12" sm="6">
+              <v-text-field v-model="passUpdating.repeat" :rules="repeatRules" label="Repeat password"></v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn variant="tonal" @click="() => (isOpenChangePassword = false)">
+            Cancel
+          </v-btn>
+          <v-btn color="success" variant="flat" type="submit">
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-form>
+  </v-dialog>
+  <PopUpYesNo :msg="`Bạn có chắc chắn muốn ${itemUpdatingLock.status ? 'khóa' : 'mở khóa'}?`" :visible="isOpenLock"
+    :handleClickYes="updateLock" :handleClickNo="() => (isOpenLock = false)" />
+  <PopUpYesNo :msg="`Bạn có chắc chắn muốn xoá học sinh ${delettingItem.name}?`" :visible="isOpenDelete"
+    :handleClickYes="deleteItem" :handleClickNo="() => (isOpenDelete = false)" />
 </template>
 
 <script>
 import PopUpYesNo from '@/components/popup/PopUpYesNo.vue';
-import { getStudentsOfClass, searchStudents, createStudent } from '@/services';
+import {
+  getStudentsOfClass,
+  searchStudents,
+  createStudent,
+  editStudent,
+  editStudentStatus,
+  changeStudentPassword,
+  deleteStudent,
+  getClasses
+} from '@/services';
 import { authenticationRole, toastStore } from '@/stores';
 import { mapState } from 'pinia';
 export default {
@@ -118,6 +164,12 @@ export default {
     PopUpYesNo,
   },
   data: () => ({
+    delettingItem: {},
+    isOpenChangePassword: false,
+    formPasswordValid: false,
+    passUpdating: {},
+    itemUpdatingLock: {},
+    isOpenLock: false,
     isLoadingStudent: false,
     students: [],
     studentsHeaders: [
@@ -140,10 +192,21 @@ export default {
       { value: 1, title: 'Male' },
       { value: 0, title: 'Female' },
     ],
+    classSelector: [],
     requireRules: [
       (value) => {
         if (value || value === 0) return true;
         return 'Name is required.';
+      },
+    ],
+    repeatRules: [
+      (value) => {
+        if (value || value === 0) return true;
+        return 'Name is required.';
+      },
+      (value) => {
+        if (this.passUpdating?.password === value) return true;
+        return "Haven't equal yet!";
       },
     ],
     emailRules: [
@@ -205,6 +268,33 @@ export default {
         this.isLoadingStudent = false;
       }, 500);
     },
+    openLock(item) {
+      this.isOpenLock = true
+      this.itemUpdatingLock = item
+    },
+    openChangePassword(item) {
+      this.isOpenChangePassword = true
+      this.passUpdating.id = item.studentId
+    },
+    async updateLock() {
+      const updateStatus = this.itemUpdatingLock?.status ? 0 : 1
+      const res = await editStudentStatus(this.itemUpdatingLock?.studentId, this.authentication?.accessToken?.token, updateStatus)
+      if (res.success) {
+        await this.fetchStudents();
+      } else {
+        //error
+      }
+      this.isOpenLock = false
+      this.itemUpdatingLock = {}
+    },
+    async submitChangePassword() {
+      if (this.formPasswordValid) {
+        const res = await changeStudentPassword(this.passUpdating?.id, this.authentication?.accessToken?.token, this.passUpdating?.password);
+        this.isOpenChangePassword = false;
+        this.passUpdating = {}
+        await this.fetchStudents();
+      }
+    },
     async submitForm() {
       if (this.formValid) {
         if (this.datePicker)
@@ -217,7 +307,6 @@ export default {
           await this.createItem();
         }
         this.isOpenForm = false;
-        await this.fetchData();
       }
     },
     async createItem() {
@@ -230,7 +319,7 @@ export default {
       if (res.success) {
         console.log(res);
         this.isOpenForm = false;
-        await this.fetchData();
+        await this.fetchStudents();
       } else {
         //error
       }
@@ -244,9 +333,10 @@ export default {
         gender: this.formItem.gender,
         avatar: this.formItem.avatar,
         birthday: this.formItem.birthday,
+        classId: this.formItem.classId,
       };
-      const res = await editAdmin(
-        this.formItem.adminId,
+      const res = await editStudent(
+        this.formItem.studentId,
         this.authentication?.accessToken?.token,
         payload
       );
@@ -254,12 +344,26 @@ export default {
       if (res.success) {
         console.log(res);
         this.isOpenForm = false;
-        await this.fetchData();
+        await this.fetchStudents();
       } else {
         //error
       }
     },
-    deleteItem() { },
+    async deleteItem() {
+      this.isLoadingForm = true;
+      const res = await deleteStudent(
+        this.authentication?.accessToken?.token,
+        this.delettingItem.studentId
+      );
+      if (res.success) {
+        console.log(res);
+        await this.fetchData();
+      } else {
+        //error
+      }
+      this.isOpenDelete = false
+      this.isLoadingForm = false;
+    },
     pickerFocussing(val) {
       if (val) this.menu = true;
     },
@@ -267,6 +371,7 @@ export default {
       this.isOpenForm = true;
       this.formItem = { ...item };
       this.isEdit = true;
+      this.datePickerComputed = this.formItem.birthday
     },
     openDelete(item) {
       this.isOpenDelete = true;
@@ -277,11 +382,19 @@ export default {
     isOpenDelete(val) {
       if (!val) this.delettingItem = {};
     },
-    isOpenForm(val) {
+    isOpenChangePassword(val) {
+      if (!val) this.passUpdating = {};
+    },
+    async isOpenForm(val) {
       if (!val) {
         this.formItem = {};
         this.isEdit = false;
         this.datePicker = null;
+      } else {
+        const res = await getClasses(this.authentication?.accessToken?.token)
+        if (res.success) {
+          this.classSelector = res.data.map(cls => ({ title: cls.className, value: cls.classId }))
+        }
       }
     },
     datePicker(val) {

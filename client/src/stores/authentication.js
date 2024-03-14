@@ -1,43 +1,43 @@
-import { ref } from "vue";
-import { defineStore } from "pinia";
+import { ref } from 'vue';
+import { defineStore } from 'pinia';
 
-export const authenticationRole = defineStore("authentication", () => {
-  var locationUser = JSON.parse(localStorage.getItem("user"));
-  var locationAccessToken = JSON.parse(localStorage.getItem("accessToken"));
+export const authenticationRole = defineStore('authentication', () => {
+  var locationUser = JSON.parse(localStorage.getItem('user'));
+  var locationAccessToken = JSON.parse(localStorage.getItem('accessToken'));
   if (locationAccessToken?.expires < new Date()) {
-    console.log('token expires')
+    console.log('token expires');
     locationUser = {};
     locationAccessToken = {};
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('user');
   }
   const authentication = ref({
     user: locationUser || {},
     accessToken: locationAccessToken || {},
   });
   localStorage.setItem(
-    "accessToken",
+    'accessToken',
     JSON.stringify(authentication.value.accessToken)
   );
-  localStorage.setItem("user", JSON.stringify(authentication.value.user));
+  localStorage.setItem('user', JSON.stringify(authentication.value.user));
   function updateAuth(newData) {
     authentication.value = {
       ...authentication.value,
       ...newData,
     };
     localStorage.setItem(
-      "accessToken",
+      'accessToken',
       JSON.stringify(authentication.value.accessToken)
     );
-    localStorage.setItem("user", JSON.stringify(authentication.value.user));
+    localStorage.setItem('user', JSON.stringify(authentication.value.user));
   }
 
-  function clearStore() {
+  function clearAuth() {
     authentication.value = {
       user: {},
-      accessToken: {}
-    }
+      accessToken: {},
+    };
   }
 
-  return { authentication, updateAuth, clearStore };
+  return { authentication, updateAuth, clearAuth };
 });

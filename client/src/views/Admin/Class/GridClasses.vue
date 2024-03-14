@@ -1,13 +1,11 @@
 <template>
   <v-container fluid grid-list-sm>
     <v-row>
-      <v-col v-for="i in 6" :key="i" :cols="cols"
-        ><img
-          :src="`https://randomuser.me/api/portraits/men/${i + 20}.jpg`"
-          class="image"
-          alt="lorem"
-          width="100%"
-          height="100%" />
+      <v-col v-for="(cls, idx) in data" :key="idx" :cols="cols">
+        <v-card style="width: 100%; height: 100%" @click="() => handleClickItem(cls)">
+          <img :src="cls.avatar || `/src/assets/images/class.png`" class="image" alt="lorem" width="100%"
+            height="150" />
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -22,61 +20,31 @@
           <v-container>
             <v-row>
               <v-col cols="12" md="12" sm="6">
-                <v-text-field
-                  v-model="formItem.name"
-                  :rules="requireRules"
-                  label="Name"></v-text-field>
+                <v-text-field v-model="formItem.name" :rules="requireRules" label="Name"></v-text-field>
               </v-col>
               <v-col cols="12" md="12" sm="6">
-                <v-text-field
-                  v-model="formItem.username"
-                  :rules="requireRules"
-                  label="Username"></v-text-field>
+                <v-text-field v-model="formItem.username" :rules="requireRules" label="Username"></v-text-field>
               </v-col>
               <v-col v-if="!isEdit" cols="12" md="12" sm="6">
-                <v-text-field
-                  v-model="formItem.password"
-                  :rules="requireRules"
-                  label="Password"></v-text-field>
+                <v-text-field v-model="formItem.password" :rules="requireRules" label="Password"></v-text-field>
               </v-col>
               <v-col cols="12" md="12" sm="6">
-                <v-text-field
-                  v-model="formItem.avatar"
-                  label="Avatar"></v-text-field>
+                <v-text-field v-model="formItem.avatar" label="Avatar"></v-text-field>
               </v-col>
               <v-col cols="12" md="12" sm="6">
-                <v-text-field
-                  v-model="formItem.email"
-                  :rules="emailRules"
-                  label="Email"></v-text-field>
+                <v-text-field v-model="formItem.email" :rules="emailRules" label="Email"></v-text-field>
               </v-col>
               <v-col cols="12" md="6" sm="6">
-                <v-text-field
-                  v-model="formItem.gender"
-                  :rules="requireRules"
-                  label="Gender"></v-text-field>
+                <v-text-field v-model="formItem.gender" :rules="requireRules" label="Gender"></v-text-field>
               </v-col>
               <v-col cols="12" md="6" sm="6">
-                <v-dialog
-                  ref="dialog"
-                  v-model="isOpenDatePicker"
-                  :return-value.sync="datePicker"
-                  persistent
+                <v-dialog ref="dialog" v-model="isOpenDatePicker" :return-value.sync="datePicker" persistent
                   width="290px">
                   <template v-slot:activator="{ attrs }">
-                    <v-text-field
-                      v-model="datePickerComputed"
-                      :rules="requireRules"
-                      label="Birthday"
-                      readonly
-                      v-bind="attrs"
-                      clearable
-                      @click="() => (isOpenDatePicker = true)"></v-text-field>
+                    <v-text-field v-model="datePickerComputed" :rules="requireRules" label="Birthday" readonly
+                      v-bind="attrs" clearable @click="() => (isOpenDatePicker = true)"></v-text-field>
                   </template>
-                  <v-date-picker
-                    v-model="datePicker"
-                    scrollable
-                    @update:model-value="() => (isOpenDatePicker = false)">
+                  <v-date-picker v-model="datePicker" scrollable @update:model-value="() => (isOpenDatePicker = false)">
                   </v-date-picker>
                 </v-dialog>
               </v-col>
@@ -85,15 +53,10 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="blue-darken-1"
-            variant="text"
-            @click="() => (isOpenForm = false)">
+          <v-btn color="blue-darken-1" variant="text" @click="() => (isOpenForm = false)">
             Cancel
           </v-btn>
-          <v-btn color="blue-darken-1" variant="text" type="submit">
-            Save
-          </v-btn>
+          <v-btn color="blue-darken-1" variant="text" type="submit"> Save </v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
@@ -101,10 +64,10 @@
 </template>
 
 <script>
-import PopUpYesNo from '@/components/popup/PopUpYesNo.vue';
-import { getClasses, createAdmin, editAdmin } from '@/services';
-import { authenticationRole, toastStore } from '@/stores';
-import { mapState } from 'pinia';
+import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
+import { getClasses, createAdmin, editAdmin } from "@/services";
+import { authenticationRole, toastStore } from "@/stores";
+import { mapState } from "pinia";
 
 export default {
   components: {
@@ -121,12 +84,12 @@ export default {
       isOpenDatePicker: false,
       formValid: false,
       headers: [
-        { title: 'className', align: 'start', key: 'adminId', sortable: false },
-        { title: 'startDate', key: 'avatar', sortable: false },
-        { title: 'endDate', key: 'name', sortable: false },
-        { title: 'teacherId', key: 'username', sortable: false },
-        { title: 'description', key: 'email', sortable: false },
-        { title: 'Actions', key: 'actions', sortable: false },
+        { title: "className", align: "start", key: "adminId", sortable: false },
+        { title: "startDate", key: "avatar", sortable: false },
+        { title: "endDate", key: "name", sortable: false },
+        { title: "teacherId", key: "username", sortable: false },
+        { title: "description", key: "email", sortable: false },
+        { title: "Actions", key: "actions", sortable: false },
       ],
       isOpenForm: false,
       isOpenDelete: false,
@@ -136,17 +99,17 @@ export default {
       requireRules: [
         (value) => {
           if (value || value === 0) return true;
-          return 'Name is required.';
+          return "Name is required.";
         },
       ],
       emailRules: [
         (value) => {
           if (value) return true;
-          return 'E-mail is requred.';
+          return "E-mail is requred.";
         },
         (value) => {
           if (/.+@.+\..+/.test(value)) return true;
-          return 'E-mail must be valid.';
+          return "E-mail must be valid.";
         },
       ],
       isLoadingForm: false,
@@ -154,11 +117,11 @@ export default {
     };
   },
   computed: {
-    ...mapState(authenticationRole, ['authentication']),
-    ...mapState(toastStore, ['updateToast']),
+    ...mapState(authenticationRole, ["authentication"]),
+    ...mapState(toastStore, ["updateToast"]),
     cols() {
-      const { lg, md, sm } = this.$vuetify.display;
-      return lg ? 2 : md ? 3 : sm ? 4 : 6;
+      const { xl, lg, md, sm } = this.$vuetify.display;
+      return (lg || xl) ? 2 : md ? 3 : sm ? 4 : 6;
     },
   },
   methods: {
@@ -170,13 +133,11 @@ export default {
       }
       this.loading = false;
     },
-    submitFilter() {},
+    submitFilter() { },
     async submitForm() {
       if (this.formValid) {
         if (this.datePicker)
-          this.formItem.birthday = new Date(
-            this.datePicker
-          ).toLocaleDateString();
+          this.formItem.birthday = new Date(this.datePicker).toLocaleDateString();
         if (this.isEdit) {
           await this.editItem();
         } else {
@@ -225,7 +186,10 @@ export default {
         //error
       }
     },
-    deleteItem() {},
+    deleteItem() { },
+    handleClickItem(item) {
+      this.$router.replace(`/admin/class/${item.classId}`);
+    },
     pickerFocussing(val) {
       if (val) this.menu = true;
     },

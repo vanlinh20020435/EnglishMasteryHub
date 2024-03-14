@@ -177,3 +177,19 @@ export const changeTeacherPassword = async (id = null, token = null, password) =
   }
   return result
 }
+export const deleteTeacher = async (token = null, id = null) => {
+  const path = `/api/teachers/${id}`
+  var result = {
+    success: false,
+    data: null
+  }
+  try {
+    const response = await $axios.delete(path, { headers: { 'Authorization': 'Bearer ' + token } })
+    result.data = response.data;
+    result.success = true
+  } catch (error) {
+    console.log(error);
+  }
+  return result
+}
+

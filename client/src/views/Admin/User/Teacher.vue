@@ -134,8 +134,8 @@
       </v-card>
     </v-form>
   </v-dialog>
-  <PopUpYesNo msg="Bạn có chắc chắn muốn xoas?" :visible="isOpenDelete" :handleClickYes="deleteItem"
-    :handleClickNo="() => (isOpenDelete = false)" />
+  <PopUpYesNo :msg="`Bạn có chắc chắn muốn xoá học sinh ${delettingItem.name}?`" :visible="isOpenDelete"
+    :handleClickYes="deleteItem" :handleClickNo="() => (isOpenDelete = false)" />
   <PopUpYesNo :msg="`Bạn có chắc chắn muốn ${itemUpdating.status ? 'khóa' : 'mở khóa'}?`" :visible="isOpenLock"
     :handleClickYes="updateLock" :handleClickNo="() => (isOpenLock = false)" />
 </template>
@@ -149,6 +149,7 @@ import {
   editTeacherStatus,
   changeTeacherPassword,
   editTeacher,
+  deleteTeacher,
 } from '@/services';
 import { authenticationRole, toastStore } from '@/stores';
 import { mapState } from 'pinia';
@@ -343,7 +344,21 @@ export default {
         //error
       }
     },
-    deleteItem() { },
+    async deleteItem() {
+      this.isLoadingForm = true;
+      const res = await deleteTeacher(
+        this.authentication?.accessToken?.token,
+        this.delettingItem.teacherId
+      );
+      if (res.success) {
+        console.log(res);
+        await this.fetchData();
+      } else {
+        //error
+      }
+      this.isOpenDelete = false
+      this.isLoadingForm = false;
+    },
     pickerFocussing(val) {
       if (val) this.menu = true;
     },
@@ -351,6 +366,7 @@ export default {
       this.isOpenForm = true;
       this.formItem = { ...item };
       this.isEdit = true;
+      this.datePickerComputed = this.formItem.birthday
     },
     openDelete(item) {
       this.isOpenDelete = true;
