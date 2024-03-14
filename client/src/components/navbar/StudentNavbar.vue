@@ -10,8 +10,6 @@
         <img src="./../../assets/images/logoemhnavba.png" style="flex: 0; width: 30px; margin-right: 8px" />
         <h2 style="color: #fff">English Master Hub</h2>
       </div>
-      <v-icon color="#fff">mdi-menu-right</v-icon>
-      <h2 style="color: #fff">{{ student?.class?.className }}</h2>
       <v-spacer />
       <v-menu min-width="200px" rounded>
         <template v-slot:activator="{ props }">
@@ -66,7 +64,6 @@ export default {
   },
   props: {
     user: Object,
-    student: Object,
     drawwing: Function,
   },
   computed: {

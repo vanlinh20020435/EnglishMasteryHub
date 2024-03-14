@@ -32,8 +32,8 @@ export const getTest = async (token = null, testId = null) => {
     return result
 }
 
-export const getTestInfo = async (token = null, testId = null) => {
-    const path = `/api/testss/tests-info/${testId}`
+export const getTestInfo = async (token = null, classId = null, testId = null) => {
+    const path = `/api/testss/tests-info/${classId}/${testId}`
     var result = {
         success: false,
         data: null

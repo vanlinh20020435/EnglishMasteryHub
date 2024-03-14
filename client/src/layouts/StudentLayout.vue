@@ -1,7 +1,6 @@
 <template>
   <v-app v-if="cls?.classId">
-    <StudentNavbar style="flex: 0" :drawwing="() => (drawer = !drawer)" :user="authentication?.user"
-      :student="student" />
+    <StudentNavbar style="flex: 0" :drawwing="() => (drawer = !drawer)" :user="authentication?.user" />
     <v-main class="d-flex justify-center" style="width: 100vw; flex: 1;">
       <v-container>
         <slot></slot>
@@ -17,7 +16,7 @@
 
 <script>
 import DefaultSidebar from '@/components/sidebar/DefaultSidebar.vue';
-import { studentStore, authenticationRole } from '@/stores';
+import { authenticationRole } from '@/stores';
 import { mapState } from 'pinia';
 import StudentNavbar from '@/components/navbar/StudentNavbar.vue';
 export default {
@@ -31,7 +30,6 @@ export default {
   },
   computed: {
     ...mapState(authenticationRole, ['authentication']),
-    ...mapState(studentStore, ['student']),
   },
   data: () => ({
     drawer: true

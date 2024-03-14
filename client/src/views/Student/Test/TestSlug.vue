@@ -28,7 +28,7 @@
 <script>
 import { getTestInfo } from '@/services'
 import { mapState } from 'pinia';
-import { authenticationRole } from '@/stores';
+import { authenticationRole, studentStore } from '@/stores';
 
 export default {
     data: () => ({
@@ -36,9 +36,10 @@ export default {
     }),
     computed: {
         ...mapState(authenticationRole, ['authentication']),
+        ...mapState(studentStore, ['student']),
     },
     async mounted() {
-        const res = await getTestInfo(this.authentication.accessToken.token, this.$route.params.id)
+        const res = await getTestInfo(this.authentication.accessToken.token, this.student.class.classId, this.$route.params.id)
         if (res.success) {
             this.test = res.data
         }
