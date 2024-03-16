@@ -113,6 +113,10 @@ body {
   font-weight: bold;
 }
 
+.font-semi-bold {
+  font-weight: 600;
+}
+
 .bg-btn {
   background-color: var(--btn-color) !important;
   color: #484848 !important;
