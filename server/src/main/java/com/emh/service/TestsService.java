@@ -282,13 +282,6 @@ public class TestsService
 				.toList();
 	}
 
-	public TestInfoResponse getInfo(Integer testId)
-	{
-		return testsRepository.findById(testId)
-				.map(test -> EntityMapper.testInfoMapToResponse(test, new TestInfoResponse()))
-				.orElseThrow(NotFoundException::new);
-	}
-
 	public Boolean checkPassword(Integer testId, String password)
 	{
 		Tests tests = testsRepository.findById(testId)

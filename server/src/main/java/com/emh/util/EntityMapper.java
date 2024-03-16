@@ -109,6 +109,7 @@ public class EntityMapper
 		classesResponse.setDescription(classes.getDescription());
 		classesResponse.setStartDate(classes.getStartDate());
 		classesResponse.setEndDate(classes.getEndDate());
+		classesResponse.setTotalStudent(classes.getClassStudents().size());
 		return classesResponse;
 	}
 
@@ -138,8 +139,22 @@ public class EntityMapper
 		return testsResponse;
 	}
 
-	public static TestInfoResponse testInfoMapToResponse(final Tests tests, final TestInfoResponse testInfoResponse)
+	public static TestClassResponse testClassMapToResponse(final Tests tests, final TestClassResponse testsResponse)
 	{
+		testsResponse.setTestId(tests.getTestId());
+		testsResponse.setTestName(tests.getTestName());
+		testsResponse.setPassword(tests.getPassword());
+		testsResponse.setTotalQuestions(tests.getTotalQuestions());
+		testsResponse.setTime(tests.getTime());
+		testsResponse.setDescription(tests.getDescription());
+		testsResponse.setStatus(tests.getStatus());
+		testsResponse.setCreatedDate(tests.getCreatedDate());
+		return testsResponse;
+	}
+
+	public static TestClassInfoResponse testInfoMapToResponse(final TestClass testClass, final TestClassInfoResponse testInfoResponse)
+	{
+		Tests tests = testClass.getTests();
 		testInfoResponse.setTestId(tests.getTestId());
 		testInfoResponse.setTestName(tests.getTestName());
 		testInfoResponse.setTotalQuestions(tests.getTotalQuestions());
@@ -147,6 +162,10 @@ public class EntityMapper
 		testInfoResponse.setDescription(tests.getDescription());
 		testInfoResponse.setStatus(tests.getStatus());
 		testInfoResponse.setCreatedDate(tests.getCreatedDate());
+		if(testClass.getStartDate() != null)
+			testInfoResponse.setStartDate(testClass.getStartDate());;
+		if(testClass.getEndDate() != null)
+			testInfoResponse.setEndDate(testClass.getEndDate());
 		return testInfoResponse;
 	}
 

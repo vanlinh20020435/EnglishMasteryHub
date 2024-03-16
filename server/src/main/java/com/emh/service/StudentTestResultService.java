@@ -31,6 +31,7 @@ public class StudentTestResultService
 	private final UserRepository userRepository;
 	private final QuestAnswerResultRepository questAnswerResultRepository;
 	private final StudentRepository studentRepository;
+	private final ClassesRepository classesRepository;
 
 	public StudentTestResultService(final TestsRepository testsRepository,
 									final QuestionsRepository questionsRepository,
@@ -41,7 +42,8 @@ public class StudentTestResultService
 									final CustomUserDetailsService customUserDetailsService,
 									UserRepository userRepository,
 									QuestAnswerResultRepository questAnswerResultRepository,
-									StudentRepository studentRepository)
+									StudentRepository studentRepository,
+									ClassesRepository classesRepository)
 	{
 		this.testsRepository = testsRepository;
 		this.questionsRepository = questionsRepository;
@@ -53,6 +55,7 @@ public class StudentTestResultService
 		this.userRepository = userRepository;
 		this.questAnswerResultRepository = questAnswerResultRepository;
 		this.studentRepository = studentRepository;
+		this.classesRepository = classesRepository;
 	}
 
 	public List<StudentTestResultResponse> findAll()
@@ -77,27 +80,15 @@ public class StudentTestResultService
 				.orElseThrow(NotFoundException::new);
 		Student student = studentRepository.findById(studentTestResultRequest.getStudentId())
 				.orElseThrow(NotFoundException::new);
+		Classes classs = classesRepository.findById(studentTestResultRequest.getClassId())
+				.orElseThrow(NotFoundException::new);
 		studentTestResult.setTests(tests);
 		studentTestResult.setStudent(student);
+		studentTestResult.setClasss(classs);
 		EntityMapper.testResultMapToEntity(studentTestResultRequest, studentTestResult, tests, student);
 		studentTestResult = studentTestResultRepository.save(studentTestResult);
 		saveAnswersResult(studentTestResult, studentTestResultRequest);
 		return tests.getTestId();
-	}
-
-	public void update(final Integer testId, final TestsRequest testsDTO)
-	{
-		final Tests tests = testsRepository.findById(testId)
-				.orElseThrow(NotFoundException::new);
-		EntityMapper.testMapToEntity(testsDTO, tests);
-		testsRepository.save(tests);
-	}
-
-	public void delete(final Integer testId)
-	{
-		final Tests tests = testsRepository.findById(testId)
-				.orElseThrow(NotFoundException::new);
-		testsRepository.deleteById(testId);
 	}
 
 	private void saveAnswersResult(StudentTestResult studentTestResult, StudentTestResultRequest studentTestResultRequest) throws IOException

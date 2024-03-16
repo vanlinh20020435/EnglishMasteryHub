@@ -21,6 +21,9 @@ public class StudentTestResultRequest
 	private Integer time;
 
 	@NotNull
+	private Integer classId;
+
+	@NotNull
 	private Integer testId;
 
 	@NotNull

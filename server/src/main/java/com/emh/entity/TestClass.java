@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Date;
 
 
 @Entity
@@ -24,6 +25,12 @@ public class TestClass extends BaseEntity
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "test_id", nullable = false)
 	private Tests tests;
+
+	@Column
+	private Date startDate;
+
+	@Column
+	private Date endDate;
 }
 
 @Getter

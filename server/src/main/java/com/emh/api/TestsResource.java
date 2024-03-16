@@ -1,7 +1,7 @@
 package com.emh.api;
 
 import com.emh.payload.request.TestsRequest;
-import com.emh.payload.response.TestInfoResponse;
+import com.emh.payload.response.TestClassInfoResponse;
 import com.emh.payload.response.TestsResponse;
 import com.emh.service.TestsService;
 import com.emh.util.ReferencedException;
@@ -49,14 +49,6 @@ public class TestsResource
 			@PathVariable(name = "testId") final Integer testId)
 	{
 		return ResponseEntity.ok(testsService.get(testId));
-	}
-
-	@GetMapping("/tests-info/{testId}")
-	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
-	public ResponseEntity<TestInfoResponse> getTestsInfo(
-			@PathVariable(name = "testId") final Integer testId)
-	{
-		return ResponseEntity.ok(testsService.getInfo(testId));
 	}
 
 	@PostMapping

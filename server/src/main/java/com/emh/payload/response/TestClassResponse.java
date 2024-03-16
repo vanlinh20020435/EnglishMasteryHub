@@ -8,12 +8,14 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Getter
 @Setter
-public class TestInfoResponse
+public class TestClassResponse
 {
 
 	private Integer testId;
@@ -21,6 +23,9 @@ public class TestInfoResponse
 	@NotNull
 	@Size(max = 255)
 	private String testName;
+
+	@Size(max = 32)
+	private String password;
 
 	private Integer totalQuestions;
 
@@ -40,4 +45,15 @@ public class TestInfoResponse
 	private String creator;
 
 	private Boolean havePermission;
+
+	@NotNull
+	private List<QuestionsResponse> questions = new ArrayList<>();
+
+	@JsonSerialize(as = Date.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	private Date startDate;
+
+	@JsonSerialize(as = Date.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	private Date endDate;
 }

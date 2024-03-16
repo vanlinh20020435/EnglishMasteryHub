@@ -1,6 +1,7 @@
 package com.emh.service;
 
 import com.emh.entity.*;
+import com.emh.payload.request.TestClassRequest;
 import com.emh.payload.response.*;
 import com.emh.repos.ClassesRepository;
 import com.emh.repos.TestClassRepository;
@@ -31,16 +32,16 @@ public class TestClassService
 		this.testsRepository = testsRepository;
 	}
 
-	public List<TestsResponse> findAllByClass(Integer classId)
+	public List<TestClassResponse> findAllByClass(Integer classId)
 	{
 		final Classes classs = classesRepository.findById(classId)
 				.orElseThrow(NotFoundException::new);
 		return classs.getTestClasses().stream()
-				.map(testClass -> exportTest(testClass.getTests()))
+				.map(this::exportTestClass)
 				.toList();
 	}
 
-	public void create(Integer classId, Integer testId)
+	public void create(Integer classId, Integer testId, TestClassRequest testClassRequest)
 	{
 		TestClass testClass = new TestClass();
 		Classes classes = classesRepository.findById(classId)
@@ -52,6 +53,10 @@ public class TestClassService
 			throw new AppException("Test already exists");
 		testClass.setTests(tests);
 		testClass.setClasss(classes);
+		if(testClassRequest.getStartDate() != null)
+			testClass.setStartDate(testClassRequest.getStartDate());
+		if(testClassRequest.getEndDate() != null)
+			testClass.setEndDate(testClassRequest.getEndDate());
 		testClassRepository.save(testClass);
 	}
 
@@ -66,15 +71,20 @@ public class TestClassService
 	}
 
 
-	private TestsResponse exportTest(Tests tests)
+	private TestClassResponse exportTestClass(TestClass testClass)
 	{
-		TestsResponse response = new TestsResponse();
-		EntityMapper.testMapToResponse(tests, response);
+		Tests tests = testClass.getTests();
+		TestClassResponse response = new TestClassResponse();
+		EntityMapper.testClassMapToResponse(tests, response);
+		if(testClass.getStartDate() != null)
+			response.setStartDate(testClass.getStartDate());;
+		if(testClass.getEndDate() != null)
+			response.setEndDate(testClass.getEndDate());
 		exportQuestions(tests, response);
 		return response;
 	}
 
-	private void exportQuestions(Tests tests, TestsResponse testsResponse)
+	private void exportQuestions(Tests tests, TestClassResponse testsResponse)
 	{
 		if (tests.getQuestions() == null)
 			return;
@@ -153,12 +163,24 @@ public class TestClassService
 		parentQuestions.setSubQuestions(subQuest);
 	}
 
-	public List<TestInfoResponse> findAllInfoByClass(Integer classId)
+	public List<TestClassInfoResponse> findAllInfoByClass(Integer classId)
 	{
 		final Classes classs = classesRepository.findById(classId)
 				.orElseThrow(NotFoundException::new);
 		return classs.getTestClasses().stream()
-				.map(testClass -> EntityMapper.testInfoMapToResponse(testClass.getTests(), new TestInfoResponse()))
+				.map(testClass -> EntityMapper.testInfoMapToResponse(testClass, new TestClassInfoResponse()))
 				.toList();
+	}
+
+	public TestClassInfoResponse getTestInfo(Integer classId, Integer testId)
+	{
+		Classes classes = classesRepository.findById(classId)
+				.orElseThrow(NotFoundException::new);
+		Tests tests = testsRepository.findById(testId)
+				.orElseThrow(NotFoundException::new);
+		TestClass testClass = testClassRepository.findOneByClasssAndTests(classes, tests);
+		if(testClass == null)
+			throw new NotFoundException();
+		return EntityMapper.testInfoMapToResponse(testClass, new TestClassInfoResponse());
 	}
 }

@@ -49,4 +49,7 @@ public class Classes extends BaseEntity
 
 	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)
 	private Set<ClassFile> classFiles;
+
+	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)
+	private Set<StudentTestResult> classStudentTestResults;
 }
