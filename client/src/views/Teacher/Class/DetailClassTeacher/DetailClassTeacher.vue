@@ -149,7 +149,6 @@ export default {
       ],
     };
   },
-  props: {},
   computed: {
     ...mapState(authenticationRole, ["authentication"]),
   },
