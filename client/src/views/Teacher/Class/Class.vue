@@ -10,7 +10,7 @@
         class="d-flex flex-column class-list"
       >
         <div
-          v-if="listClasses.length > 0"
+          v-if="listClasses.length > 0 && !isLoading"
           style="width: 84%"
           class="d-flex justify-start align-self-center flex-wrap"
         >
@@ -51,7 +51,7 @@
             </v-card>
           </v-col>
         </div>
-        <v-row v-else style="height: 90%">
+        <v-row v-else-if="!isLoading" style="height: 90%">
           <v-col>
             <div class="d-flex flex-column align-center class-empty">
               <img
@@ -86,7 +86,7 @@ export default {
   data() {
     return {
       listClasses: [],
-      isLoading: false,
+      isLoading: true,
     };
   },
   props: {},
@@ -106,6 +106,7 @@ export default {
       if (result?.data) {
         this.listClasses = result.data;
       }
+      this.isLoading = false;
     },
     getClassAvatar(classData) {
       return classData && classData.avatar

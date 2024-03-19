@@ -46,7 +46,9 @@
                   {{ classData?.startDate }} - {{ classData?.endDate }}
                 </div>
               </v-row>
-              <v-row class="pt-3 pb-3 d-flex align-center justify-between">
+              <v-row
+                class="pt-3 pb-3 d-flex align-center justify-space-between"
+              >
                 <div style="flex: 1" class="d-flex align-center flex-row">
                   <img
                     src="@/assets/images/icon/ico_users.png"
@@ -78,6 +80,7 @@
             :key="index"
           >
             <v-card
+              @click="() => handleNavigateAction(action)"
               hover
               class="d-flex flex-column align-center justify-center class-detail_action"
               ><div
@@ -120,18 +123,27 @@ export default {
       dataAction: [
         {
           id: 1,
-          img: "ico_chambai",
-          title: "Chấm bài",
+          img: "ico_tailieu",
+          title: "Tài liệu học tập",
+          path: "study-document",
         },
         {
           id: 2,
-          img: "ico_giaobai",
-          title: "Giao bài",
+          img: "ico_chambai",
+          title: "Bài tập đã giao",
+          path: "",
         },
         {
           id: 3,
+          img: "ico_giaobai",
+          title: "Giao bài",
+          path: "",
+        },
+        {
+          id: 4,
           img: "ico_baocao",
           title: "Báo cáo học tập",
+          path: "",
         },
       ],
     };
@@ -164,6 +176,12 @@ export default {
     handleViewStudents() {
       this.$router.push(
         `/${this.authentication?.user?.role}/class/${this.$route.params.id}/students`
+      );
+    },
+    handleNavigateAction(action) {
+      this.$router.push(
+        `/${this.authentication?.user?.role}/class/${this.$route.params.id}/` +
+          action?.path
       );
     },
   },

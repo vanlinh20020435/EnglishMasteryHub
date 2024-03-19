@@ -11,6 +11,7 @@ import {
   CreateExam,
   DetailClassTeacher,
   ClassStudents,
+  StudyDocuments,
 } from "@/views/Teacher";
 import { authenticationRole } from "@/stores";
 import Login from "@/views/Login.vue";
@@ -19,6 +20,12 @@ import TeacherManager from "@/views/Admin/User/Teacher.vue";
 import Class from "@/views/Admin/Class/index.vue";
 import Event from "@/views/Admin/Event/index.vue";
 import ClassSlug from "@/views/Admin/Class/ClassSlug.vue";
+import Account from "@/views/Account/index.vue";
+import Student from "@/views/Student/index.vue";
+import News from "@/views/Student/News.vue";
+import Test from "@/views/Student/Test/index.vue";
+import Docs from "@/views/Student/Docs.vue";
+import TestSlug from "@/views/Student/Test/TestSlug.vue";
 const routes = [
   {
     path: "/login",
@@ -28,6 +35,11 @@ const routes = [
   {
     path: "/register",
     component: HomeView,
+    public: true,
+  },
+  {
+    path: "/account",
+    component: Account,
     public: true,
   },
   {
@@ -56,6 +68,10 @@ const routes = [
           {
             path: "students",
             component: ClassStudents,
+          },
+          {
+            path: "study-document",
+            component: StudyDocuments,
           },
         ],
       },
@@ -121,6 +137,29 @@ const routes = [
       {
         path: "event",
         component: Event,
+      },
+    ],
+  },
+  {
+    path: "/student",
+    redirect: "/student/news",
+    component: Student,
+    children: [
+      {
+        path: "news",
+        component: News,
+      },
+      {
+        path: "test",
+        component: Test,
+      },
+      {
+        path: "test/:id",
+        component: TestSlug,
+      },
+      {
+        path: "document",
+        component: Docs,
       },
     ],
   },

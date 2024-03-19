@@ -139,3 +139,7 @@ body {
 .pd-0 {
   padding: 0 !important;
 }
+
+.box-shadow {
+  box-shadow: 1px 2px 4px 0 rgba(21, 27, 38, 0.4);
+}

@@ -37,7 +37,11 @@
                 <h3>{{ user.name }}</h3>
                 <p class="text-caption mt-1">{{ user.email }}</p>
                 <v-divider class="my-3"></v-divider>
-                <v-btn rounded variant="text" prepend-icon="mdi-account">
+                <v-btn
+                  rounded
+                  variant="text"
+                  prepend-icon="mdi-account"
+                  @click="$router.replace('/account')">
                   Account
                 </v-btn>
                 <v-divider class="my-3"></v-divider>
@@ -75,7 +79,7 @@ export default {
     drawwing: Function,
   },
   computed: {
-    ...mapState(authenticationRole, ['clearStore']),
+    ...mapState(authenticationRole, ['clearAuth']),
   },
   data: () => ({
     isOpenLogout: false,
@@ -85,7 +89,7 @@ export default {
       this.isOpenLogout = false;
       localStorage.removeItem('accessToken');
       localStorage.removeItem('user');
-      this.clearStore();
+      this.clearAuth();
       this.$router.replace('/login');
     },
   },

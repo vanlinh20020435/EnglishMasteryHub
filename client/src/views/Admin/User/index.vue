@@ -24,7 +24,7 @@
     <v-data-table :loading="isLoadingData" :headers="headers" :items="data"
       :sort-by="[{ key: 'adminId', order: 'asc' }]">
       <template v-slot:item.gender="{ item }">
-        {{ item.gender ? 'Female' : 'Male' }}
+        {{ item.gender ? 'Male' : 'Female' }}
       </template>
 
       <template v-slot:item.status="{ item }">
@@ -58,50 +58,49 @@
     <v-form v-model="formValid" @submit.prevent="submitForm">
       <v-card>
         <v-card-title>
-          <span class="text-h5">hihi</span>
+          {{ isEdit ? `Chỉnh sửa ${formItem.name}` : 'Tạo mới' }}
         </v-card-title>
         <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12" md="12" sm="6">
-                <v-text-field v-model="formItem.name" :rules="requireRules" label="Name"></v-text-field>
-              </v-col>
-              <v-col cols="12" md="12" sm="6">
-                <v-text-field v-model="formItem.username" :rules="requireRules" label="Username"></v-text-field>
-              </v-col>
-              <v-col v-if="!isEdit" cols="12" md="12" sm="6">
-                <v-text-field v-model="formItem.password" :rules="requireRules" label="Password"></v-text-field>
-              </v-col>
-              <v-col cols="12" md="12" sm="6">
-                <v-text-field v-model="formItem.avatar" label="Avatar"></v-text-field>
-              </v-col>
-              <v-col cols="12" md="12" sm="6">
-                <v-text-field v-model="formItem.email" :rules="emailRules" label="Email"></v-text-field>
-              </v-col>
-              <v-col cols="12" md="6" sm="6">
-                <v-select label="Gender" v-model="formItem.gender" :items="genderSelector"></v-select>
-              </v-col>
-              <v-col cols="12" md="6" sm="6">
-                <v-dialog ref="dialog" v-model="isOpenDatePicker" :return-value.sync="datePicker" persistent
-                  width="290px">
+          <v-row>
+            <v-col cols="12" md="12" sm="6">
+              <v-text-field v-model="formItem.name" :rules="requireRules" label="Name"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="12" sm="6">
+              <v-text-field v-model="formItem.username" :rules="requireRules" label="Username"></v-text-field>
+            </v-col>
+            <v-col v-if="!isEdit" cols="12" md="12" sm="6">
+              <v-text-field v-model="formItem.password" :rules="requireRules" label="Password"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="12" sm="6">
+              <v-text-field v-model="formItem.avatar" label="Avatar"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="12" sm="6">
+              <v-text-field v-model="formItem.email" :rules="emailRules" label="Email"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6" sm="6">
+              <v-select label="Gender" v-model="formItem.gender" :rules="requireRules"
+                :items="genderSelector"></v-select>
+            </v-col>
+            <v-col cols="12" md="6" sm="6">
+              <v-dialog ref="dialog" v-model="isOpenDatePicker" :return-value.sync="datePicker" persistent
+                width="290px">
 
-                  <template v-slot:activator="{ attrs }">
-                    <v-text-field v-model="datePickerComputed" :rules="requireRules" label="Birthday" readonly
-                      v-bind="attrs" clearable @click="() => (isOpenDatePicker = true)"></v-text-field>
-                  </template>
-                  <v-date-picker v-model="datePicker" scrollable @update:model-value="() => (isOpenDatePicker = false)">
-                  </v-date-picker>
-                </v-dialog>
-              </v-col>
-            </v-row>
-          </v-container>
+                <template v-slot:activator="{ attrs }">
+                  <v-text-field v-model="datePickerComputed" label="Birthday" readonly v-bind="attrs" clearable
+                    @click="() => (isOpenDatePicker = true)"></v-text-field>
+                </template>
+                <v-date-picker v-model="datePicker" scrollable @update:model-value="() => (isOpenDatePicker = false)">
+                </v-date-picker>
+              </v-dialog>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue-darken-1" variant="text" @click="() => (isOpenForm = false)">
+          <v-btn variant="tonal" @click="() => (isOpenForm = false)">
             Cancel
           </v-btn>
-          <v-btn color="blue-darken-1" variant="text" type="submit">
+          <v-btn color="success" variant="flat" type="submit">
             Save
           </v-btn>
         </v-card-actions>
@@ -112,41 +111,39 @@
     <v-form v-model="formPasswordValid" @submit.prevent="submitChangePassword">
       <v-card>
         <v-card-title>
-          <span class="text-h5">Change password</span>
+          Đổi mật khẩu
         </v-card-title>
         <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12" md="12" sm="6">
-                <v-text-field v-model="passUpdating.password" :rules="requireRules" label="Password"></v-text-field>
-              </v-col>
-              <v-col cols="12" md="12" sm="6">
-                <v-text-field v-model="passUpdating.repeat" :rules="repeatRules" label="Repeat password"></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
+          <v-row>
+            <v-col cols="12" md="12" sm="6">
+              <v-text-field v-model="passUpdating.password" :rules="requireRules" label="Password"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="12" sm="6">
+              <v-text-field v-model="passUpdating.repeat" :rules="repeatRules" label="Repeat password"></v-text-field>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue-darken-1" variant="text" @click="() => (isOpenChangePassword = false)">
+          <v-btn variant="tonal" @click="() => (isOpenChangePassword = false)">
             Cancel
           </v-btn>
-          <v-btn color="blue-darken-1" variant="text" type="submit">
+          <v-btn color="success" variant="flat" type="submit">
             Save
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
   </v-dialog>
-  <PopUpYesNo msg="Bạn có chắc chắn muốn xoá?" :visible="isOpenDelete" :handleClickYes="deleteItem"
-    :handleClickNo="() => (isOpenDelete = false)" />
+  <PopUpYesNo :msg="`Bạn có chắc chắn muốn xoá admin ${delettingItem.name}?`" :visible="isOpenDelete"
+    :handleClickYes="deleteItem" :handleClickNo="() => (isOpenDelete = false)" />
   <PopUpYesNo :msg="`Bạn có chắc chắn muốn ${itemUpdating.status ? 'khóa' : 'mở khóa'}?`" :visible="isOpenLock"
     :handleClickYes="updateLock" :handleClickNo="() => (isOpenLock = false)" />
 </template>
 
 <script>
 import PopUpYesNo from '@/components/popup/PopUpYesNo.vue';
-import { getAdmins, searchAdmins, createAdmin, editAdmin, editAdminStatus, changeAdminPassword } from '@/services';
+import { getAdmins, searchAdmins, createAdmin, editAdmin, editAdminStatus, changeAdminPassword, deleteAdmin } from '@/services';
 import { authenticationRole, toastStore } from '@/stores';
 import { mapState } from 'pinia';
 
@@ -303,9 +300,17 @@ export default {
     },
     async createItem() {
       this.isLoadingForm = true;
+      const payload = {
+        username: this.formItem.username,
+        email: this.formItem.email,
+        name: this.formItem.name,
+        gender: this.formItem.gender,
+      }
+      if (this.formItem.avatar) payload.avatar = this.formItem.avatar
+      if (this.formItem.birthday) payload.birthday = this.formItem.birthday
       const res = await createAdmin(
         this.authentication?.accessToken?.token,
-        this.formItem
+        this.payload
       );
       this.isLoadingForm = false;
       if (res.success) {
@@ -323,31 +328,43 @@ export default {
         email: this.formItem.email,
         name: this.formItem.name,
         gender: this.formItem.gender,
-        avatar: this.formItem.avatar,
-        birthday: this.formItem.birthday,
-      };
+      }
+      if (this.formItem.avatar) payload.avatar = this.formItem.avatar
+      if (this.formItem.birthday) payload.birthday = this.formItem.birthday
       const res = await editAdmin(
         this.formItem.adminId,
         this.authentication?.accessToken?.token,
         payload
       );
-      this.isLoadingForm = false;
       if (res.success) {
         console.log(res);
-        this.isOpenForm = false;
         await this.fetchData();
       } else {
         //error
       }
+      this.isOpenForm = false;
+      this.isLoadingForm = false;
     },
-    deleteItem() { },
-    pickerFocussing(val) {
-      if (val) this.menu = true;
+    async deleteItem() {
+      this.isLoadingForm = true;
+      const res = await deleteAdmin(
+        this.authentication?.accessToken?.token,
+        this.delettingItem.adminId
+      );
+      if (res.success) {
+        console.log(res);
+        await this.fetchData();
+      } else {
+        //error
+      }
+      this.isOpenDelete = false
+      this.isLoadingForm = false;
     },
     openEdit(item) {
       this.isOpenForm = true;
       this.formItem = { ...item };
       this.isEdit = true;
+      this.datePickerComputed = this.formItem.birthday
     },
     openDelete(item) {
       this.isOpenDelete = true;
@@ -371,6 +388,9 @@ export default {
     datePicker(val) {
       this.datePickerComputed = val ? new Date(val).toLocaleDateString() : null;
     },
+    datePickerComputed(val) {
+      this.formItem.birthday = val
+    }
   },
 };
 </script>
