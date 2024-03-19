@@ -1,0 +1,15 @@
+.class-docs {
+  max-height: 90%;
+  overflow-y: auto;
+  flex: 1;
+
+  .class-docs_empty {
+    // width: 60%;
+
+    img {
+      width: 50% !important;
+      max-width: 27.5rem !important;
+      min-width: 20rem;
+    }
+  }
+}

@@ -33,17 +33,11 @@
             :items="filteredStateExams"
             :sort-by="[{ key: 'testId', order: 'asc' }]"
             :loading="isLoading"
+            hover
+            @click:row="(a, b) => handleClickItem(b.item)"
           >
             <template v-slot:top>
-              <!-- <v-toolbar-title>My CRUD</v-toolbar-title>
-                  <v-divider class="mx-4" inset vertical></v-divider> 
-              <v-spacer></v-spacer>-->
               <v-dialog v-model="dialog" max-width="500px">
-                <!-- <template v-slot:activator="{ props }">
-                  <v-btn color="primary" dark class="mb-2" v-bind="props">
-                    New Item
-                  </v-btn>
-                </template> -->
                 <v-card>
                   <v-card-title>
                     <span class="text-h5">{{ formTitle }}</span>
@@ -127,7 +121,7 @@
                   class="img_empty"
                 />
 
-                <h3 class="font-bold">Bạn chưa có bài kiểm tra nào!</h3>
+                <h3 class="font-bold">{{ msgEmptyExam }}</h3>
               </div>
             </template>
           </v-data-table>
@@ -188,24 +182,9 @@ export default {
       { title: "Thời gian (phút)", key: "time" },
       { title: "Số câu hỏi", key: "totalQuestions" },
       { title: "Ngày tạo", key: "created" },
-      { title: "Thao tác", key: "actions", sortable: false },
     ],
     desserts: [],
     editedIndex: -1,
-    editedItem: {
-      name: "",
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
-    },
-    defaultItem: {
-      name: "",
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
-    },
     stateExams: {
       data: [],
       loading: true,
@@ -214,8 +193,11 @@ export default {
       msg: "",
     },
     searchValue: "",
+    msgEmptyExam: "Bạn chưa có bài kiểm tra nào!",
   }),
-
+  props: {
+    isAll: Boolean,
+  },
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
@@ -245,6 +227,20 @@ export default {
       }
     },
   },
+  created() {
+    if (!this.isAll) {
+      const actionHeader = {
+        title: "Thao tác",
+        key: "actions",
+        sortable: false,
+      };
+      if (!this.headers.some((header) => header.key == "actions")) {
+        this.headers.push(actionHeader); // Add "Thao tác" if it's not already in the headers array
+      }
+    } else {
+      this.headers = this.headers.filter((header) => header.key != "actions"); // Remove "Thao tác" if it's present
+    }
+  },
 
   watch: {
     dialog(val) {
@@ -255,17 +251,46 @@ export default {
     },
     searchValue(newVal) {
       this.handleSearchInputChange(newVal);
+      if (!!newVal) {
+        this.msgEmptyExam = "Không tìm thấy bài kiểm tra nào!";
+      } else {
+        this.msgEmptyExam = "Bạn chưa có bài kiểm tra nào!";
+      }
+    },
+    isAll: {
+      immediate: true, // Run the handler immediately when the component is created
+      handler(newVal) {
+        // React to changes in the isAll prop
+        if (newVal) {
+          this.headers = this.headers.filter(
+            (header) => header.key != "actions"
+          ); // Remove "Thao tác" if it's present
+        } else {
+          const actionHeader = {
+            title: "Thao tác",
+            key: "actions",
+            sortable: false,
+          };
+          if (!this.headers.some((header) => header.key == "actions")) {
+            this.headers.push(actionHeader); // Add "Thao tác" if it's not already in the headers array
+          }
+        }
+        this.fetchDataExam();
+      },
     },
   },
-
-  mounted() {
-    this.fetchDataExam();
-  },
+  
+  // mounted() {
+  //   this.fetchDataExam();
+  // },
 
   methods: {
     async fetchDataExam() {
       this.isLoading = true;
-      const result = await apiCallerGet("/api/testss");
+      let urlFetch = !this.isAll
+        ? "/api/testss/find-by-user/" + this.authentication.user?.userId
+        : "/api/testss";
+      const result = await apiCallerGet(urlFetch);
       if (result?.data) {
         this.isLoading = false;
         this.stateExams.data = result.data;
@@ -330,6 +355,10 @@ export default {
     },
     handleSearchInputChange(valueSearch) {
       this.searchValue = valueSearch;
+    },
+
+    handleClickItem(item) {
+      console.log("item ==", item);
     },
   },
 };

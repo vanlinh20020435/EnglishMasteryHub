@@ -1,0 +1,29 @@
+.class-students {
+  .student-list {
+    background-color: white;
+    flex: 1;
+    border-radius: 0.5rem;
+    .student-item {
+      .student-avt {
+        img {
+          width: 4.375rem;
+          height: 4.375rem;
+          min-width: 4.375rem;
+          min-height: 4.375rem;
+          border-radius: 50%;
+        }
+      }
+
+      .student-name {
+        font-size: 1.125rem;
+      }
+
+      .student-lock {
+        img {
+          width: 1.75rem;
+          height: auto;
+        }
+      }
+    }
+  }
+}

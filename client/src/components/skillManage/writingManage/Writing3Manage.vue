@@ -56,6 +56,7 @@
                       placeholder="Gợi ý ..."
                       hide-no-data
                       clearable
+                      auto-grow
                     >
                     </v-textarea>
                   </v-col>
@@ -75,6 +76,7 @@
                       placeholder="Bài viết mẫu ..."
                       hide-no-data
                       clearable
+                      auto-grow
                     >
                     </v-textarea>
                   </v-col>
