@@ -86,10 +86,7 @@
               ><div
                 class="d-flex align-center justify-center class-detail_action_img"
               >
-                <img
-                  :src="`/src/assets/images/icon/` + action.img + '.png'"
-                  alt="Icon Action"
-                />
+                <img :src="action.img" alt="Icon Action" />
               </div>
 
               <div>{{ action?.title }}</div>
@@ -108,6 +105,10 @@ import classDefaultImage from "@/assets/images/class.png";
 
 import { authenticationRole } from "@/stores";
 import { mapState } from "pinia";
+import ico_tailieu from "@/assets/images/icon/ico_tailieu.png";
+import ico_chambai from "@/assets/images/icon/ico_chambai.png";
+import ico_giaobai from "@/assets/images/icon/ico_giaobai.png";
+import ico_baocao from "@/assets/images/icon/ico_baocao.png";
 
 export default {
   name: "DetailClassTeacher",
@@ -123,32 +124,31 @@ export default {
       dataAction: [
         {
           id: 1,
-          img: "ico_tailieu",
+          img: ico_tailieu,
           title: "Tài liệu học tập",
           path: "study-document",
         },
         {
           id: 2,
-          img: "ico_chambai",
+          img: ico_chambai,
           title: "Bài tập đã giao",
           path: "",
         },
         {
           id: 3,
-          img: "ico_giaobai",
+          img: ico_giaobai,
           title: "Giao bài",
           path: "",
         },
         {
           id: 4,
-          img: "ico_baocao",
+          img: ico_baocao,
           title: "Báo cáo học tập",
           path: "",
         },
       ],
     };
   },
-  props: {},
   computed: {
     ...mapState(authenticationRole, ["authentication"]),
   },
