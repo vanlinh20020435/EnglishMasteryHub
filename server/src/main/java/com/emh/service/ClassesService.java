@@ -13,7 +13,7 @@ import com.emh.specifications.FilterOperation;
 import com.emh.specifications.SearchCriteria;
 import com.emh.specifications.SearchForeignCriteria;
 import com.emh.specifications.SpecificationsBuilder;
-import com.emh.util.MapperUtils;
+import com.emh.util.EntityMapper;
 import com.emh.util.NotFoundException;
 import com.emh.util.ReferencedWarning;
 import org.apache.commons.lang3.ObjectUtils;
@@ -47,14 +47,14 @@ public class ClassesService
 	{
 		final List<Classes> classeses = classesRepository.findAll(Sort.by("classId"));
 		return classeses.stream()
-				.map(classes -> MapperUtils.classMapToResponse(classes, new ClassesResponse()))
+				.map(classes -> EntityMapper.classMapToResponse(classes, new ClassesResponse()))
 				.toList();
 	}
 
 	public ClassesResponse get(final Integer classId)
 	{
 		return classesRepository.findById(classId)
-				.map(classes -> MapperUtils.classMapToResponse(classes, new ClassesResponse()))
+				.map(classes -> EntityMapper.classMapToResponse(classes, new ClassesResponse()))
 				.orElseThrow(NotFoundException::new);
 	}
 
@@ -63,7 +63,7 @@ public class ClassesService
 		final Classes classes = new Classes();
 		Teacher teacher = teacherRepository.findById(classRequest.getTeacherId())
 				.orElseThrow(() -> new NotFoundException("teacher not found"));
-		MapperUtils.classMapToEntity(classRequest, classes, teacher);
+		EntityMapper.classMapToEntity(classRequest, classes, teacher);
 		return classesRepository.save(classes).getClassId();
 	}
 
@@ -73,7 +73,7 @@ public class ClassesService
 				.orElseThrow(NotFoundException::new);
 		Teacher teacher = teacherRepository.findById(classRequest.getTeacherId())
 				.orElseThrow(() -> new NotFoundException("teacher not found"));
-		MapperUtils.classMapToEntity(classRequest, classes, teacher);
+		EntityMapper.classMapToEntity(classRequest, classes, teacher);
 		classesRepository.save(classes);
 	}
 
@@ -91,7 +91,7 @@ public class ClassesService
 	{
 		Classes classes = classesRepository.findById(classId).orElseThrow(NotFoundException::new);
 		return classes.getClassStudents().stream()
-				.map(student -> MapperUtils.studentMapToResponse(student, new StudentResponse()))
+				.map(student -> EntityMapper.studentMapToResponse(student, new StudentResponse()))
 				.toList();
 	}
 
@@ -104,7 +104,7 @@ public class ClassesService
 			spec.with(new SearchForeignCriteria("teacher", "teacherId", FilterOperation.FOREIGN_KEY.toString(), teacherId, false));
 		final List<Classes> classes = classesRepository.findAll(spec.build());
 		return classes.stream()
-				.map(classs -> MapperUtils.classMapToResponse(classs, new ClassesResponse()))
+				.map(classs -> EntityMapper.classMapToResponse(classs, new ClassesResponse()))
 				.toList();
 	}
 }

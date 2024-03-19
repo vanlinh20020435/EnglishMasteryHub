@@ -15,7 +15,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class TestsResponse
+public class TestClassResponse
 {
 
 	private Integer testId;
@@ -48,4 +48,12 @@ public class TestsResponse
 
 	@NotNull
 	private List<QuestionsResponse> questions = new ArrayList<>();
+
+	@JsonSerialize(as = Date.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	private Date startDate;
+
+	@JsonSerialize(as = Date.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	private Date endDate;
 }

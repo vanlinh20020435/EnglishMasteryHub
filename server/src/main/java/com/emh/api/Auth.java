@@ -1,10 +1,16 @@
 package com.emh.api;
 
+import com.emh.entity.RefreshToken;
+import com.emh.entity.User;
 import com.emh.payload.request.AuthRequest;
+import com.emh.payload.request.TokenRefreshRequest;
 import com.emh.payload.response.JwtResponse;
 import com.emh.payload.response.MessageResponse;
+import com.emh.service.RefreshTokenService;
 import com.emh.service.UserDetailsImpl;
 import com.emh.util.JwtUtils;
+import com.emh.util.TokenRefreshException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -23,6 +29,8 @@ public class Auth
 {
 	@Autowired
 	AuthenticationManager authenticationManager;
+	@Autowired
+	RefreshTokenService refreshTokenService;
 
 	@Autowired
 	JwtUtils jwtUtils;
@@ -35,7 +43,8 @@ public class Auth
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 		String jwt = jwtUtils.generateJwtToken(userDetails);
-		return ResponseEntity.ok(new JwtResponse(jwt));
+		RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+		return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken()));
 	}
 
 	@PostMapping("/signout")
@@ -44,5 +53,21 @@ public class Auth
 	{
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		return ResponseEntity.ok(new MessageResponse("Log out successful!"));
+	}
+
+	@PostMapping("/refreshtoken")
+	public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request)
+	{
+		String requestRefreshToken = request.getRefreshToken();
+
+		return refreshTokenService.findByToken(requestRefreshToken)
+				.map(refreshTokenService::verifyExpiration)
+				.map(refreshTokenService::renewToken)
+				.map(refreshToken -> {
+					User user = refreshToken.getUser();
+					String token = jwtUtils.generateTokenFromUsername(user.getUsername());
+					return ResponseEntity.ok(new JwtResponse(token, refreshToken.getToken()));
+				})
+				.orElseThrow(() -> new TokenRefreshException("Refresh token is not in database!"));
 	}
 }
