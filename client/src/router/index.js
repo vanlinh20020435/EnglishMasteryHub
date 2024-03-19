@@ -9,6 +9,9 @@ import {
   ManageExam,
   ManageCurriculum,
   CreateExam,
+  DetailClassTeacher,
+  ClassStudents,
+  StudyDocuments,
 } from "@/views/Teacher";
 import { authenticationRole } from "@/stores";
 import Login from "@/views/Login.vue";
@@ -17,6 +20,12 @@ import TeacherManager from "@/views/Admin/User/Teacher.vue";
 import Class from "@/views/Admin/Class/index.vue";
 import Event from "@/views/Admin/Event/index.vue";
 import ClassSlug from "@/views/Admin/Class/ClassSlug.vue";
+import Account from "@/views/Account/index.vue";
+import Student from "@/views/Student/index.vue";
+import News from "@/views/Student/News.vue";
+import Test from "@/views/Student/Test/index.vue";
+import Docs from "@/views/Student/Docs.vue";
+import TestSlug from "@/views/Student/Test/TestSlug.vue";
 const routes = [
   {
     path: "/login",
@@ -26,6 +35,11 @@ const routes = [
   {
     path: "/register",
     component: HomeView,
+    public: true,
+  },
+  {
+    path: "/account",
+    component: Account,
     public: true,
   },
   {
@@ -45,6 +59,23 @@ const routes = [
         component: ManageClass,
       },
       {
+        path: "class/:id",
+        children: [
+          {
+            path: "",
+            component: DetailClassTeacher,
+          },
+          {
+            path: "students",
+            component: ClassStudents,
+          },
+          {
+            path: "study-document",
+            component: StudyDocuments,
+          },
+        ],
+      },
+      {
         path: "exam",
         children: [
           {
@@ -54,6 +85,16 @@ const routes = [
           {
             path: "add",
             component: CreateExam,
+          },
+          {
+            path: "my_exam",
+            component: ManageExam,
+            props: { isAll: false },
+          },
+          {
+            path: "all",
+            component: ManageExam,
+            props: { isAll: true },
           },
         ],
       },
@@ -100,6 +141,29 @@ const routes = [
     ],
   },
   {
+    path: "/student",
+    redirect: "/student/news",
+    component: Student,
+    children: [
+      {
+        path: "news",
+        component: News,
+      },
+      {
+        path: "test",
+        component: Test,
+      },
+      {
+        path: "test/:id",
+        component: TestSlug,
+      },
+      {
+        path: "document",
+        component: Docs,
+      },
+    ],
+  },
+  {
     path: "/:pathMatch(.*)*",
     redirect: "/login",
   },
@@ -111,7 +175,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  console.log("navigating...");
+  console.log("navigating...", to);
   const path = to.fullPath;
   const authenticationStore = authenticationRole();
   const { authentication } = authenticationStore;

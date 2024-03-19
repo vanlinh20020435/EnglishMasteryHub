@@ -1,6 +1,6 @@
 import { $axios } from "."
 
-const getClasses = async (token = null) => {
+export const getClasses = async (token = null) => {
     const path = '/api/class'
     var result = {
         success: false,
@@ -16,7 +16,7 @@ const getClasses = async (token = null) => {
     return result
 }
 
-const getClass = async (token = null, id = null) => {
+export const getClass = async (token = null, id = null) => {
     const path = `/api/class/${id}`
     var result = {
         success: false,
@@ -32,7 +32,7 @@ const getClass = async (token = null, id = null) => {
     return result
 }
 
-const getStudentsOfClass = async (token = null, id = null) => {
+export const getStudentsOfClass = async (token = null, id = null) => {
     const path = `/api/class/${id}/students/get-all`
     var result = {
         success: false,
@@ -48,7 +48,23 @@ const getStudentsOfClass = async (token = null, id = null) => {
     return result
 }
 
-const searchClasses = async (token = null, params) => {
+export const getTestsOfClass = async (token = null, id = null) => {
+    const path = `/api/class/${id}/tests/get-all`
+    var result = {
+        success: false,
+        data: null
+    }
+    try {
+        const response = await $axios.get(path, { headers: { 'Authorization': 'Bearer ' + token } })
+        result.data = response.data;
+        result.success = true
+    } catch (error) {
+        console.log(error);
+    }
+    return result
+}
+
+export const searchClasses = async (token = null, params) => {
     const path = '/api/class/search'
     var result = {
         success: false,
@@ -68,7 +84,7 @@ const searchClasses = async (token = null, params) => {
     return result
 }
 
-const createAdmin = async (token = null, payload = null) => {
+export const createAdmin = async (token = null, payload = null) => {
     const path = '/api/admins'
     var result = {
         success: false,
@@ -84,7 +100,7 @@ const createAdmin = async (token = null, payload = null) => {
     return result
 }
 
-const editAdmin = async (id = null, token = null, payload = null) => {
+export const editAdmin = async (id = null, token = null, payload = null) => {
     const path = '/api/admins'
     var result = {
         success: false,
@@ -99,5 +115,3 @@ const editAdmin = async (id = null, token = null, payload = null) => {
     }
     return result
 }
-
-export { getClasses, getClass, getStudentsOfClass, searchClasses, createAdmin, editAdmin }

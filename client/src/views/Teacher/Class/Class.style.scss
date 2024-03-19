@@ -1,0 +1,46 @@
+.class-container {
+  .class-empty {
+    img,
+    .v-img {
+      width: 70%;
+      object-fit: contain;
+      margin-bottom: 1.5rem;
+      max-width: 50rem;
+      max-height: 70%;
+    }
+  }
+
+  .class-box {
+    .class-img {
+      img {
+        object-fit: cover;
+        width: 165px;
+        height: 136px;
+        border-radius: 0.5rem;
+      }
+    }
+
+    .class-name {
+      background-image: linear-gradient(to right, #00e1a0, #00b9b7);
+      color: white;
+      border-radius: 2rem;
+    }
+  }
+
+  .class-list {
+    height: 100%;
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-image: url("@/assets/images/bg_class.png");
+      background-position: bottom center;
+      background-size: cover;
+      opacity: 0.4; /* Adjust the opacity value as needed (0.0 to 1.0) */
+      z-index: -1;
+    }
+  }
+}
