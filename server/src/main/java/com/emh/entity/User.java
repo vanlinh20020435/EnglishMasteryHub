@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.Set;
 
 
@@ -36,6 +37,12 @@ public class User extends BaseEntity
 	@Column(nullable = false)
 	private Integer gender;
 
+	@Column
+	private String avatar;
+
+	@Column
+	private Date birthday;
+
 	@Column(nullable = false, name = "\"role\"", length = 50)
 	private String role;
 
@@ -48,4 +55,7 @@ public class User extends BaseEntity
 	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
 	private Set<Student> userStudents;
 
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@JoinColumn(name = "refresh_token_id")
+	private RefreshToken refreshToken;
 }

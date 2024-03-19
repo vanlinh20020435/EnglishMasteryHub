@@ -15,7 +15,8 @@ public enum FilterOperation
 	NOT_IN("nin"),
 	BETWEEN("btn"),
 	CONTAINS("like"),
-	FOREIGN_KEY("foreign_KEY"),;
+	FOREIGN_KEY("foreign_KEY"),
+	;
 
 	private String value;
 

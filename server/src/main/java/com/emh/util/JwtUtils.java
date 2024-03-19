@@ -24,22 +24,22 @@ public class JwtUtils
 
 	public String generateTokenFromUsername(String username)
 	{
-		return Jwts.builder().setSubject(username).setIssuedAt(new Date())
-				.setExpiration(new Date((new Date()).getTime() + PropertyController.JWT_EXPIRATION_MS))
+		return Jwts.builder().subject(username).issuedAt(new Date())
+				.expiration(new Date((new Date()).getTime() + PropertyController.JWT_EXPIRATION_MS))
 				.signWith(getSigningKey(), SignatureAlgorithm.HS256)
 				.compact();
 	}
 
 	public String getUserNameFromJwtToken(String token)
 	{
-		return Jwts.parser().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody().getSubject();
+		return Jwts.parser().setSigningKey(getSigningKey()).build().parseSignedClaims(token).getPayload().getSubject();
 	}
 
 	public boolean validateJwtToken(String authToken)
 	{
 		try
 		{
-			Jwts.parser().setSigningKey(getSigningKey()).build().parseClaimsJws(authToken);
+			Jwts.parser().setSigningKey(getSigningKey()).build().parseSignedClaims(authToken);
 			return true;
 		}
 		catch (SignatureException e)
