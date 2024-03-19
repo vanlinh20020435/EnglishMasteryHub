@@ -8,7 +8,15 @@
     </v-snackbar>
 
     <v-container class="d-flex flex-column height-100 v-container__full">
-      <HeaderTitle title="Thêm bài kiểm tra mới" />
+      <HeaderTitle
+        title="Thêm bài kiểm tra mới"
+        textBtn="Quay lại"
+        :handleClickBtn="
+          () => {
+            this.$router.go(-1);
+          }
+        "
+      />
       <v-divider class="header_divider" :thickness="2"></v-divider>
       <v-form v-model="valid" @submit.prevent="handleSaveExam">
         <v-row class="d-flex justify-center">
