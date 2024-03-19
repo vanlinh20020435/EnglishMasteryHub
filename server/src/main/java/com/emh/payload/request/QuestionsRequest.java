@@ -18,7 +18,7 @@ public class QuestionsRequest
 
 	private String description;
 
-	private String explanation;
+	private String title;
 
 	@NotNull
 	@Size(max = 50)

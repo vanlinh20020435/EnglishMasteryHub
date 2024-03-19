@@ -2,10 +2,8 @@ package com.emh.api;
 
 import com.emh.payload.request.ClassFileRequest;
 import com.emh.payload.request.ClassesRequest;
-import com.emh.payload.response.ClassFileResponse;
-import com.emh.payload.response.ClassesResponse;
-import com.emh.payload.response.StudentResponse;
-import com.emh.payload.response.TestsResponse;
+import com.emh.payload.request.TestClassRequest;
+import com.emh.payload.response.*;
 import com.emh.service.ClassFileService;
 import com.emh.service.ClassesService;
 import com.emh.service.TestClassService;
@@ -93,20 +91,37 @@ public class ClassesResource
 	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	@ApiResponse(responseCode = "201")
 	public ResponseEntity<Void> addTestToClass(@PathVariable(name = "classId") final Integer classId,
-											   @PathVariable(name = "testId") final Integer testId)
+											   @PathVariable(name = "testId") final Integer testId,
+											   @RequestBody final TestClassRequest testClassRequest)
 	{
-		testClassService.create(classId, testId);
+		testClassService.create(classId, testId, testClassRequest);
 		return ResponseEntity.noContent().build();
 	}
 
 	@GetMapping("/{classId}/tests/get-all")
 	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	@ApiResponse(responseCode = "201")
-	public ResponseEntity<List<TestsResponse>> getAllTest(@PathVariable(name = "classId") final Integer classId)
+	public ResponseEntity<List<TestClassResponse>> getAllTest(@PathVariable(name = "classId") final Integer classId)
 	{
 		return ResponseEntity.ok(testClassService.findAllByClass(classId));
 	}
 
+	@GetMapping("/{classId}/tests-info/get-all")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
+	@ApiResponse(responseCode = "201")
+	public ResponseEntity<List<TestClassInfoResponse>> getAllTestInfo(@PathVariable(name = "classId") final Integer classId)
+	{
+		return ResponseEntity.ok(testClassService.findAllInfoByClass(classId));
+	}
+
+	@GetMapping("/{classId}/tests-info/{testId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
+	public ResponseEntity<TestClassInfoResponse> getTestsInfo(
+			@PathVariable(name = "classId") final Integer classId,
+			@PathVariable(name = "testId") final Integer testId)
+	{
+		return ResponseEntity.ok(testClassService.getTestInfo(classId, testId));
+	}
 
 	@DeleteMapping("/{classId}/tests/{testId}")
 	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
@@ -129,7 +144,7 @@ public class ClassesResource
 	}
 
 	@GetMapping("/{classId}/files/get-all")
-	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
 	@ApiResponse(responseCode = "201")
 	public ResponseEntity<List<ClassFileResponse>> getAllFiles(@PathVariable(name = "classId") final Integer classId)
 	{
@@ -148,7 +163,7 @@ public class ClassesResource
 	}
 
 	@GetMapping("/{classId}/students/get-all")
-	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
 	@ApiResponse(responseCode = "201")
 	public ResponseEntity<List<StudentResponse>> getAllStudents(@PathVariable(name = "classId") final Integer classId)
 	{

@@ -1,6 +1,7 @@
 package com.emh.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,20 +13,33 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class ClassesResponse
+public class TestClassInfoResponse
 {
 
-	private Integer classId;
+	private Integer testId;
 
 	@NotNull
-	@Size(max = 50)
-	private String className;
+	@Size(max = 255)
+	private String testName;
 
-	private String avatar;
+	private Integer totalQuestions;
 
+	private Integer time;
+
+	@NotNull
 	private String description;
 
-	private Integer totalStudent;
+	@NotNull
+	private Integer status;
+
+	@JsonSerialize(as = Date.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	@JsonProperty("created")
+	private Date createdDate;
+
+	private String creator;
+
+	private Boolean havePermission;
 
 	@JsonSerialize(as = Date.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
@@ -34,8 +48,4 @@ public class ClassesResponse
 	@JsonSerialize(as = Date.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date endDate;
-
-	@NotNull
-	private TeacherResponse teacher;
-
 }

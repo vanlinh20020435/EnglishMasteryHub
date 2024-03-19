@@ -14,6 +14,7 @@ import com.emh.repos.AdminRepository;
 import com.emh.repos.StudentRepository;
 import com.emh.repos.TeacherRepository;
 import com.emh.repos.UserRepository;
+import com.emh.util.EntityMapper;
 import com.emh.util.MapperUtils;
 import com.emh.util.NotFoundException;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +51,12 @@ public class UserService
 	{
 		User user = userRepository.findById(userId)
 				.orElseThrow(NotFoundException::new);
+		user.setUsername(userRequest.getUsername());
+		user.setEmail(userRequest.getEmail());
+		user.setName(userRequest.getName());
+		user.setGender(userRequest.getGender());
+		user.setAvatar(userRequest.getAvatar());
+		user.setBirthday(userRequest.getBirthday());
 		if (StringUtils.isNotBlank(userRequest.getPassword()))
 			userRequest.setPassword(new BCryptPasswordEncoder().encode(userRequest.getPassword()));
 		else
@@ -60,17 +67,17 @@ public class UserService
 			case ADMIN:
 				Admin admin = adminRepository.findFirstByUser(user);
 				AdminRequest adminRequest = MapperUtils.map(userRequest, AdminRequest.class);
-				MapperUtils.adminMapToEntity(adminRequest, admin, user);
+				EntityMapper.adminMapToEntity(adminRequest, admin, user);
 				adminRepository.save(admin);
 			case TEACHER:
 				Teacher teacher = teacherRepository.findFirstByUser(user);
 				TeacherRequest teacherRequest = MapperUtils.map(userRequest, TeacherRequest.class);
-				MapperUtils.teacherMapToEntity(teacherRequest, teacher, user);
+				EntityMapper.teacherMapToEntity(teacherRequest, teacher, user);
 				teacherRepository.save(teacher);
 			case STUDENT:
 				Student student = studentRepository.findFirstByUser(user);
 				StudentRequest studentRequest = MapperUtils.map(userRequest, StudentRequest.class);
-				MapperUtils.studentMapToEntity(studentRequest, student, user, student.getClasss());
+				EntityMapper.studentMapToEntity(studentRequest, student, user, student.getClasss());
 				studentRepository.save(student);
 		}
 	}

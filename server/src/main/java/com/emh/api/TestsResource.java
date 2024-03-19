@@ -1,6 +1,7 @@
 package com.emh.api;
 
 import com.emh.payload.request.TestsRequest;
+import com.emh.payload.response.TestClassInfoResponse;
 import com.emh.payload.response.TestsResponse;
 import com.emh.service.TestsService;
 import com.emh.util.ReferencedException;
@@ -35,8 +36,15 @@ public class TestsResource
 		return ResponseEntity.ok(testsService.findAll());
 	}
 
+	@GetMapping("/find-by-user/{userId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
+	public ResponseEntity<List<TestsResponse>> getAllTestss(@PathVariable(name = "userId") final Integer userId)
+	{
+		return ResponseEntity.ok(testsService.findAllByUserId(userId));
+	}
+
 	@GetMapping("/{testId}")
-	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	public ResponseEntity<TestsResponse> getTests(
 			@PathVariable(name = "testId") final Integer testId)
 	{
@@ -73,5 +81,13 @@ public class TestsResource
 		}
 		testsService.delete(testId);
 		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping("/{testId}/check-password")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
+	public ResponseEntity<Boolean> checkTestPassword(
+			@PathVariable(name = "testId") final Integer testId, @RequestParam String password)
+	{
+		return ResponseEntity.ok(testsService.checkPassword(testId, password));
 	}
 }
