@@ -28,17 +28,29 @@ export default {
         title: "Quản lý bài kiểm tra",
         value: "exam",
         icon: "mdi mdi-file-edit",
+        children: [
+          {
+            title: "Bài kiểm tra của tôi",
+            value: "my_exam",
+            icon: "",
+          },
+          {
+            title: "Tất cả",
+            value: "all",
+            icon: "",
+          },
+        ],
       },
       {
         title: "Quản lý lớp",
         value: "class",
         icon: "mdi-account-multiple",
       },
-      {
-        title: "Giáo trình",
-        value: "curriculum",
-        icon: "mdi mdi-book-open-blank-variant",
-      },
+      // {
+      //   title: "Giáo trình",
+      //   value: "curriculum",
+      //   icon: "mdi mdi-book-open-blank-variant",
+      // },
     ],
   }),
 };

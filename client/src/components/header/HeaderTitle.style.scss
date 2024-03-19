@@ -19,7 +19,8 @@
   margin: 1rem 0;
 }
 
-.header_search {
+.header_search,
+.header_selection {
   .v-input {
     .v-input__control {
       .v-field {
@@ -41,5 +42,31 @@
         display: none !important;
       }
     }
+  }
+}
+
+.header_selection {
+  .v-input {
+    .v-input__control {
+      .v-field {
+        height: 88%;
+        display: flex;
+        align-items: center;
+        align-self: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}
+
+.header-btn {
+  background-color: #efe841;
+  border: 1px solid white;
+  text-transform: initial;
+
+  .v-btn__content {
+    font-weight: 600;
+    color: white;
   }
 }
