@@ -18,6 +18,10 @@ spring:
             non_contextual_creation: true
         id:
           new_generator_mappings: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
 error:
   handling:
     http-status-in-json-response: true

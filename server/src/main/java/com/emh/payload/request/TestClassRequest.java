@@ -13,10 +13,10 @@ import java.util.Date;
 public class TestClassRequest
 {
 	@JsonSerialize(as = Date.class)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm")
 	private Date startDate;
 
 	@JsonSerialize(as = Date.class)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm")
 	private Date endDate;
 }

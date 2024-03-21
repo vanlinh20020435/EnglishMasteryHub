@@ -10,6 +10,7 @@ import com.emh.util.MapperUtils;
 import com.emh.util.NotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -36,9 +37,10 @@ public class ClassFileService
 				.toList();
 	}
 
-	public Integer create(Integer classId, ClassFileRequest classFileRequest)
+	public Integer create(Integer classId, ClassFileRequest classFileRequest) throws IOException
 	{
 		ClassFile classFile = MapperUtils.map(classFileRequest, ClassFile.class);
+		classFile.setUrl(FilesStorageService.moveFileUploadsToContent(classFileRequest.getUrl()));
 		Classes classes = classesRepository.findById(classId)
 				.orElseThrow(NotFoundException::new);
 		classFile.setClasss(classes);
