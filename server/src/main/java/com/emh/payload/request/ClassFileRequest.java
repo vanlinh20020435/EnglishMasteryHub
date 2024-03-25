@@ -17,4 +17,7 @@ public class ClassFileRequest
 
 	@Size(max = 255)
 	private String name;
+
+	@Size(max = 255)
+	private String documentName;
 }

@@ -25,6 +25,9 @@ public class ClassFileResponse
 	@Size(max = 255)
 	private String name;
 
+	@Size(max = 255)
+	private String documentName;
+
 	@JsonSerialize(as = Date.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@JsonProperty("created")
