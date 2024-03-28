@@ -12,4 +12,25 @@
       min-width: 20rem;
     }
   }
+
+  .docs-item {
+    background-color: white;
+    border-radius: 1rem;
+    min-height: 6.5rem;
+    position: relative;
+
+    .img_type {
+      position: absolute;
+      top: 8px;
+      left: -30px;
+      border-radius: 50%;
+      width: 90px;
+      height: 90px;
+    }
+  }
+}
+.input-file-custom {
+  .v-input__prepend {
+    display: none;
+  }
 }

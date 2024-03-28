@@ -17,7 +17,9 @@
         >
           <HeaderAction
             :handleToggleShowFull="() => handleToggleShowFullQuestion(index)"
-            :title="question.title ? question.title : `Question ${index + 1}`"
+            :title="
+              question.content ? question.content : `Question ${index + 1}`
+            "
             :handleDelete="() => handleDeleteQuestion(index)" />
           <v-row
             :class="{
@@ -35,7 +37,7 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.title"
+                :model-value="question.content"
                 @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
@@ -130,9 +132,9 @@ export default {
     questionSkill: Object,
   },
   created() {
-    this.questions = this.questionSkill.questions;
+    this.questions = this.questionSkill.subQuestions;
     // Initialize the showFullQuestion array with default visibility state for each question
-    this.showFullQuestion = Array(this.questions.length).fill(true);
+    this.showFullQuestion = Array(this.questions?.length).fill(true);
   },
   methods: {
     handleToggleShowFull() {
@@ -152,7 +154,7 @@ export default {
     },
     handleAddQuestion() {
       // Add a new question
-      const newIndex = this.questions.length + 1;
+      const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
         numOptions: 4,
@@ -174,7 +176,7 @@ export default {
     },
 
     updateTitleQuestion(questionIndex, event) {
-      this.questions[questionIndex].title = event.target.value;
+      this.questions[questionIndex].content = event.target.value;
     },
   },
 };
