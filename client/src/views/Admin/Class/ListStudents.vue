@@ -64,33 +64,31 @@
           <v-container>
             <v-row>
               <v-col cols="12" md="12" sm="6">
-                <v-text-field v-model="formItem.name" :rules="requireRules" label="Name"></v-text-field>
+                <v-text-field v-model="formItem.name" :rules="nameRules" label="Name*"></v-text-field>
               </v-col>
               <v-col cols="12" md="12" sm="6">
-                <v-text-field v-model="formItem.username" :rules="requireRules" label="Username"></v-text-field>
+                <v-text-field v-model="formItem.username" :rules="usernameRules" label="Username*"></v-text-field>
               </v-col>
               <v-col v-if="!isEdit" cols="12" md="12" sm="6">
-                <v-text-field v-model="formItem.password" :rules="requireRules" label="Password"></v-text-field>
+                <v-text-field v-model="formItem.password" :rules="passwordRules" label="Password*"></v-text-field>
               </v-col>
               <v-col cols="12" md="12" sm="6">
                 <v-text-field v-model="formItem.avatar" label="Avatar"></v-text-field>
               </v-col>
               <v-col cols="12" md="12" sm="6">
-                <v-text-field v-model="formItem.email" :rules="emailRules" label="Email"></v-text-field>
-              </v-col>
-              <v-col cols="12" md="12" sm="6">
-                <v-select label="Class" v-model="formItem.classId" :items="classSelector"></v-select>
+                <v-text-field v-model="formItem.email" :rules="emailRules" label="Email*"></v-text-field>
               </v-col>
               <v-col cols="12" md="6" sm="6">
-                <v-select label="Gender" v-model="formItem.gender" :items="genderSelector"></v-select>
+                <v-select label="Gender*" v-model="formItem.gender" :rules="genderRules"
+                  :items="genderSelector"></v-select>
               </v-col>
               <v-col cols="12" md="6" sm="6">
                 <v-dialog ref="dialog" v-model="isOpenDatePicker" :return-value.sync="datePicker" persistent
                   width="290px">
 
                   <template v-slot:activator="{ attrs }">
-                    <v-text-field v-model="datePickerComputed" :rules="requireRules" label="Birthday" readonly
-                      v-bind="attrs" clearable @click="() => (isOpenDatePicker = true)"></v-text-field>
+                    <v-text-field v-model="datePickerComputed" label="Birthday" readonly v-bind="attrs" clearable
+                      @click="() => (isOpenDatePicker = true)"></v-text-field>
                   </template>
                   <v-date-picker v-model="datePicker" scrollable @update:model-value="() => (isOpenDatePicker = false)">
                   </v-date-picker>
@@ -120,10 +118,12 @@
         <v-card-text>
           <v-row>
             <v-col cols="12" md="12" sm="6">
-              <v-text-field v-model="passUpdating.password" :rules="requireRules" label="Password"></v-text-field>
+              <v-text-field type="password" v-model="passUpdating.password" :rules="passwordRules"
+                label="Password"></v-text-field>
             </v-col>
             <v-col cols="12" md="12" sm="6">
-              <v-text-field v-model="passUpdating.repeat" :rules="repeatRules" label="Repeat password"></v-text-field>
+              <v-text-field type="password" v-model="passUpdating.repeat" :rules="repeatRules"
+                label="Repeat password"></v-text-field>
             </v-col>
           </v-row>
         </v-card-text>
@@ -155,13 +155,15 @@ import {
   editStudentStatus,
   changeStudentPassword,
   deleteStudent,
-  getClasses
 } from '@/services';
 import { authenticationRole, toastStore } from '@/stores';
 import { mapState } from 'pinia';
 export default {
   components: {
     PopUpYesNo,
+  },
+  props: {
+    classId: String
   },
   data: () => ({
     delettingItem: {},
@@ -192,8 +194,25 @@ export default {
       { value: 1, title: 'Male' },
       { value: 0, title: 'Female' },
     ],
-    classSelector: [],
-    requireRules: [
+    genderRules: [
+      (value) => {
+        if (value || value === 0) return true;
+        return 'Gender is required.';
+      },
+    ],
+    passwordRules: [
+      (value) => {
+        if (value || value === 0) return true;
+        return 'Password is required.';
+      },
+    ],
+    usernameRules: [
+      (value) => {
+        if (value || value === 0) return true;
+        return 'Username is required.';
+      },
+    ],
+    nameRules: [
       (value) => {
         if (value || value === 0) return true;
         return 'Name is required.';
@@ -202,7 +221,7 @@ export default {
     repeatRules: [
       (value) => {
         if (value || value === 0) return true;
-        return 'Name is required.';
+        return 'Password is required.';
       },
       (value) => {
         if (this.passUpdating?.password === value) return true;
@@ -236,14 +255,14 @@ export default {
     _timerId: null,
   }),
   async mounted() {
-    await this.fetchStudents();
+    await this.fetchData();
   },
   computed: {
     ...mapState(authenticationRole, ['authentication']),
     ...mapState(toastStore, ['updateToast']),
   },
   methods: {
-    async fetchStudents() {
+    async fetchData() {
       this.isLoadingStudent = true;
       const res = await getStudentsOfClass(
         this.authentication?.accessToken?.token,
@@ -280,9 +299,10 @@ export default {
       const updateStatus = this.itemUpdatingLock?.status ? 0 : 1
       const res = await editStudentStatus(this.itemUpdatingLock?.studentId, this.authentication?.accessToken?.token, updateStatus)
       if (res.success) {
-        await this.fetchStudents();
+        this.updateToast('success', `${updateStatus ? 'Mở khóa' : 'Khóa'} tài khoản thành công!`)
+        await this.fetchData();
       } else {
-        //error
+        this.updateToast('error', `${updateStatus ? 'Mở khóa' : 'Khóa'} tài khoản thất bại!`)
       }
       this.isOpenLock = false
       this.itemUpdatingLock = {}
@@ -290,9 +310,14 @@ export default {
     async submitChangePassword() {
       if (this.formPasswordValid) {
         const res = await changeStudentPassword(this.passUpdating?.id, this.authentication?.accessToken?.token, this.passUpdating?.password);
+        if (res.success) {
+          this.updateToast('success', "Đổi mật khẩu thành công!")
+          await this.fetchData();
+        } else {
+          this.updateToast('error', "Đổi mật khẩu thất bại!")
+        }
         this.isOpenChangePassword = false;
         this.passUpdating = {}
-        await this.fetchStudents();
       }
     },
     async submitForm() {
@@ -311,17 +336,27 @@ export default {
     },
     async createItem() {
       this.isLoadingForm = true;
+      const payload = {
+        username: this.formItem.username,
+        email: this.formItem.email,
+        name: this.formItem.name,
+        classId: this.classId,
+        password: this.formItem.password,
+        gender: this.formItem.gender,
+      };
+      if (this.formItem.avatar) payload.avatar = this.formItem.avatar
+      if (this.formItem.birthday) payload.birthday = this.formItem.birthday
       const res = await createStudent(
         this.authentication?.accessToken?.token,
-        this.formItem
+        payload
       );
       this.isLoadingForm = false;
       if (res.success) {
-        console.log(res);
+        this.updateToast('success', "Tạo Student thành công!")
         this.isOpenForm = false;
-        await this.fetchStudents();
+        await this.fetchData();
       } else {
-        //error
+        this.updateToast('error', "Tạo Student thất bại!")
       }
     },
     async editItem() {
@@ -330,11 +365,12 @@ export default {
         username: this.formItem.username,
         email: this.formItem.email,
         name: this.formItem.name,
+        classId: this.classId,
+        password: this.formItem.password,
         gender: this.formItem.gender,
-        avatar: this.formItem.avatar,
-        birthday: this.formItem.birthday,
-        classId: this.formItem.classId,
       };
+      if (this.formItem.avatar) payload.avatar = this.formItem.avatar
+      if (this.formItem.birthday) payload.birthday = this.formItem.birthday
       const res = await editStudent(
         this.formItem.studentId,
         this.authentication?.accessToken?.token,
@@ -342,11 +378,11 @@ export default {
       );
       this.isLoadingForm = false;
       if (res.success) {
-        console.log(res);
+        this.updateToast('success', "Sửa Student thành công!")
         this.isOpenForm = false;
-        await this.fetchStudents();
+        await this.fetchData();
       } else {
-        //error
+        this.updateToast('error', "Sửa Student thất bại!")
       }
     },
     async deleteItem() {
@@ -356,10 +392,10 @@ export default {
         this.delettingItem.studentId
       );
       if (res.success) {
-        console.log(res);
+        this.updateToast('success', "Xóa Student thành công!")
         await this.fetchData();
       } else {
-        //error
+        this.updateToast('error', "Xóa Student thất bại!")
       }
       this.isOpenDelete = false
       this.isLoadingForm = false;
@@ -390,11 +426,7 @@ export default {
         this.formItem = {};
         this.isEdit = false;
         this.datePicker = null;
-      } else {
-        const res = await getClasses(this.authentication?.accessToken?.token)
-        if (res.success) {
-          this.classSelector = res.data.map(cls => ({ title: cls.className, value: cls.classId }))
-        }
+        this.datePickerComputed = null
       }
     },
     datePicker(val) {

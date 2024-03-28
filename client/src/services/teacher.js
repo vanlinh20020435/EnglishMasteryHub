@@ -24,6 +24,7 @@ export const searchTeachers = async (token = null, params) => {
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result;
 };
@@ -54,6 +55,7 @@ export const apiCallerGet = async (
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result;
 };
@@ -80,6 +82,7 @@ export const apiCallerPost = async (
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result;
 };
@@ -103,6 +106,7 @@ export const apiCallerDelete = async (path, body) => {
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result;
 };
@@ -126,6 +130,7 @@ export const apiCallerPut = async (path, body) => {
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result;
 };
@@ -142,6 +147,7 @@ export const editTeacher = async (id = null, token = null, payload = null) => {
     result.success = true
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result
 }
@@ -158,6 +164,7 @@ export const editTeacherStatus = async (id = null, token = null, updateValue) =>
     result.success = true
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result
 }
@@ -174,6 +181,7 @@ export const changeTeacherPassword = async (id = null, token = null, password) =
     result.success = true
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result
 }
@@ -189,6 +197,7 @@ export const deleteTeacher = async (token = null, id = null) => {
     result.success = true
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result
 }

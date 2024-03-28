@@ -63,22 +63,22 @@
         <v-card-text>
           <v-row>
             <v-col cols="12" md="12" sm="6">
-              <v-text-field v-model="formItem.name" :rules="requireRules" label="Name"></v-text-field>
+              <v-text-field v-model="formItem.name" :rules="nameRules" label="Name*"></v-text-field>
             </v-col>
             <v-col cols="12" md="12" sm="6">
-              <v-text-field v-model="formItem.username" :rules="requireRules" label="Username"></v-text-field>
+              <v-text-field v-model="formItem.username" :rules="usernameRules" label="Username*"></v-text-field>
             </v-col>
             <v-col v-if="!isEdit" cols="12" md="12" sm="6">
-              <v-text-field v-model="formItem.password" :rules="requireRules" label="Password"></v-text-field>
+              <v-text-field v-model="formItem.password" :rules="passwordRules" label="Password*"></v-text-field>
             </v-col>
             <v-col cols="12" md="12" sm="6">
               <v-text-field v-model="formItem.avatar" label="Avatar"></v-text-field>
             </v-col>
             <v-col cols="12" md="12" sm="6">
-              <v-text-field v-model="formItem.email" :rules="emailRules" label="Email"></v-text-field>
+              <v-text-field v-model="formItem.email" :rules="emailRules" label="Email*"></v-text-field>
             </v-col>
             <v-col cols="12" md="6" sm="6">
-              <v-select label="Gender" v-model="formItem.gender" :rules="requireRules"
+              <v-select label="Gender*" v-model="formItem.gender" :rules="genderRules"
                 :items="genderSelector"></v-select>
             </v-col>
             <v-col cols="12" md="6" sm="6">
@@ -116,10 +116,12 @@
         <v-card-text>
           <v-row>
             <v-col cols="12" md="12" sm="6">
-              <v-text-field v-model="passUpdating.password" :rules="requireRules" label="Password"></v-text-field>
+              <v-text-field type="password" v-model="passUpdating.password" :rules="passwordRules"
+                label="Password"></v-text-field>
             </v-col>
             <v-col cols="12" md="12" sm="6">
-              <v-text-field v-model="passUpdating.repeat" :rules="repeatRules" label="Repeat password"></v-text-field>
+              <v-text-field type="password" v-model="passUpdating.repeat" :rules="repeatRules"
+                label="Repeat password"></v-text-field>
             </v-col>
           </v-row>
         </v-card-text>
@@ -188,7 +190,25 @@ export default {
       delettingItem: {},
       data: [],
       valid: false,
-      requireRules: [
+      genderRules: [
+        (value) => {
+          if (value || value === 0) return true;
+          return 'Gender is required.';
+        },
+      ],
+      passwordRules: [
+        (value) => {
+          if (value || value === 0) return true;
+          return 'Password is required.';
+        },
+      ],
+      usernameRules: [
+        (value) => {
+          if (value || value === 0) return true;
+          return 'Username is required.';
+        },
+      ],
+      nameRules: [
         (value) => {
           if (value || value === 0) return true;
           return 'Name is required.';
@@ -197,7 +217,7 @@ export default {
       repeatRules: [
         (value) => {
           if (value || value === 0) return true;
-          return 'Name is required.';
+          return 'Password is required.';
         },
         (value) => {
           if (this.passUpdating?.password === value) return true;
@@ -266,13 +286,16 @@ export default {
     },
     async updateLock() {
       const updateStatus = this.itemUpdating?.status ? 0 : 1
+      this.isOpenLock = false
+      this.isLoadingData = true;
       const res = await editAdminStatus(this.itemUpdating?.adminId, this.authentication?.accessToken?.token, updateStatus)
       if (res.success) {
+        this.updateToast('success', `${updateStatus ? 'Mở khóa' : 'Khóa'} tài khoản thành công!`)
         await this.fetchData();
       } else {
-        //error
+        this.updateToast('error', `${updateStatus ? 'Mở khóa' : 'Khóa'} tài khoản thất bại!`)
       }
-      this.isOpenLock = false
+      this.isLoadingData = false;
       this.itemUpdating = {}
     },
     async submitForm() {
@@ -287,15 +310,19 @@ export default {
           await this.createItem();
         }
         this.isOpenForm = false;
-        await this.fetchData();
       }
     },
     async submitChangePassword() {
       if (this.formPasswordValid) {
         const res = await changeAdminPassword(this.passUpdating?.id, this.authentication?.accessToken?.token, this.passUpdating?.password);
+        if (res.success) {
+          this.updateToast('success', "Đổi mật khẩu thành công!")
+          await this.fetchData();
+        } else {
+          this.updateToast('error', "Đổi mật khẩu thất bại!")
+        }
         this.isOpenChangePassword = false;
         this.passUpdating = {}
-        await this.fetchData();
       }
     },
     async createItem() {
@@ -304,21 +331,22 @@ export default {
         username: this.formItem.username,
         email: this.formItem.email,
         name: this.formItem.name,
+        password: this.formItem.password,
         gender: this.formItem.gender,
       }
       if (this.formItem.avatar) payload.avatar = this.formItem.avatar
       if (this.formItem.birthday) payload.birthday = this.formItem.birthday
       const res = await createAdmin(
         this.authentication?.accessToken?.token,
-        this.payload
+        payload
       );
       this.isLoadingForm = false;
       if (res.success) {
-        console.log(res);
         this.isOpenForm = false;
+        this.updateToast('success', "Tạo Admin thành công!")
         await this.fetchData();
       } else {
-        //error
+        this.updateToast('error', "Tạo Admin thất bại!")
       }
     },
     async editItem() {
@@ -337,10 +365,10 @@ export default {
         payload
       );
       if (res.success) {
-        console.log(res);
+        this.updateToast('success', "Sửa Admin thành công!")
         await this.fetchData();
       } else {
-        //error
+        this.updateToast('error', "Sửa Admin thất bại!")
       }
       this.isOpenForm = false;
       this.isLoadingForm = false;
@@ -352,10 +380,10 @@ export default {
         this.delettingItem.adminId
       );
       if (res.success) {
-        console.log(res);
+        this.updateToast('success', "Xóa Admin thành công!")
         await this.fetchData();
       } else {
-        //error
+        this.updateToast('error', "Xóa Admin thất bại!")
       }
       this.isOpenDelete = false
       this.isLoadingForm = false;
@@ -383,6 +411,7 @@ export default {
         this.formItem = {};
         this.isEdit = false;
         this.datePicker = null;
+        this.datePickerComputed = null
       }
     },
     datePicker(val) {

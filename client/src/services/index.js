@@ -33,6 +33,9 @@ export {
   getStudentsOfClass,
   getTestsOfClass,
   searchClasses,
+  createClass,
+  editClass,
+  deleteClass
 } from './class';
 export { login, getUserInfo } from './auth';
 export { getTests, getTest, getTestInfo, getTestsByClass } from './test';
