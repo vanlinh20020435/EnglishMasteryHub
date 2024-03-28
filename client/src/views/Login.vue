@@ -8,13 +8,13 @@
                             <img src="@/assets/images/logoemh.png" />
                         </v-col>
                         <v-col md="12">
-                            <v-text-field v-model="username" @change="onChange" :error="loginFailed" :rules="usernameRules"
-                                label="Username" hide-details="auto">
+                            <v-text-field v-model="username" @change="onChange" :error="loginFailed"
+                                :rules="usernameRules" label="Username" hide-details="auto">
                             </v-text-field>
                         </v-col>
                         <v-col md="12">
-                            <v-text-field v-model="password" @change="onChange" :error="loginFailed" :rules="passwordRules"
-                                label="Password" hide-details="auto">
+                            <v-text-field type="password" v-model="password" @change="onChange" :error="loginFailed"
+                                :rules="passwordRules" label="Password" hide-details="auto">
                             </v-text-field>
                         </v-col>
                         <v-col md="12">
