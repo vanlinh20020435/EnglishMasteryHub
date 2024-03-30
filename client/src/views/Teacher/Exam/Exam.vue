@@ -33,70 +33,10 @@
             :items="filteredStateExams"
             :sort-by="[{ key: 'testId', order: 'asc' }]"
             :loading="isLoading"
+            hover
+            @click:row="(a, b) => handleClickItem(b.item)"
           >
             <template v-slot:top>
-              <!-- <v-toolbar-title>My CRUD</v-toolbar-title>
-                  <v-divider class="mx-4" inset vertical></v-divider> 
-              <v-spacer></v-spacer>-->
-              <v-dialog v-model="dialog" max-width="500px">
-                <!-- <template v-slot:activator="{ props }">
-                  <v-btn color="primary" dark class="mb-2" v-bind="props">
-                    New Item
-                  </v-btn>
-                </template> -->
-                <v-card>
-                  <v-card-title>
-                    <span class="text-h5">{{ formTitle }}</span>
-                  </v-card-title>
-
-                  <v-card-text>
-                    <v-container>
-                      <v-row>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.name"
-                            label="Dessert name"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.calories"
-                            label="Calories"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.fat"
-                            label="Fat (g)"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.carbs"
-                            label="Carbs (g)"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.protein"
-                            label="Protein (g)"
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="blue-darken-1" variant="text" @click="close">
-                      Cancel
-                    </v-btn>
-                    <v-btn color="blue-darken-1" variant="text" @click="save">
-                      Save
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
               <PopUpYesNo
                 msg="Bạn có chắc chắn muốn xóa bài kiểm tra này?"
                 :visible="dialogDelete"
@@ -110,11 +50,15 @@
                 color="#00bd7e"
                 size="default"
                 class="me-2"
-                @click="editItem(item)"
+                @click.stop.prevent="editItem(item)"
               >
                 mdi-pencil
               </v-icon>
-              <v-icon color="red" size="default" @click="deleteItem(item)">
+              <v-icon
+                color="red"
+                size="default"
+                @click.stop.prevent="deleteItem(item)"
+              >
                 mdi-trash-can
               </v-icon>
             </template>
@@ -126,13 +70,28 @@
                   alt="Empty Exam"
                   class="img_empty"
                 />
-
-                <h3 class="font-bold">Bạn chưa có bài kiểm tra nào!</h3>
+                <h3 class="font-bold">{{ msgEmptyExam }}</h3>
               </div>
             </template>
           </v-data-table>
         </v-col>
       </v-row>
+      <PopUpYesNo
+        msg="Bạn không có quyền chỉnh sửa bài kiểm tra này!"
+        btnYes="Đồng ý"
+        :visible="openPopupEdit"
+        :handleClickYes="
+          () => {
+            this.openPopupEdit = false;
+          }
+        "
+        hideBtnNo
+        @update:visible="
+          (newValue) => {
+            this.openPopupEdit = newValue;
+          }
+        "
+      />
     </v-container>
   </v-card>
 </template>
@@ -152,6 +111,7 @@ export default {
     PopUpYesNo,
   },
   data: () => ({
+    openPopupEdit: false,
     isLoading: false,
     selected: [],
     dialog: false,
@@ -171,24 +131,9 @@ export default {
       { title: "Thời gian (phút)", key: "time" },
       { title: "Số câu hỏi", key: "totalQuestions" },
       { title: "Ngày tạo", key: "created" },
-      { title: "Thao tác", key: "actions", sortable: false },
     ],
     desserts: [],
     editedIndex: -1,
-    editedItem: {
-      name: "",
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
-    },
-    defaultItem: {
-      name: "",
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
-    },
     stateExams: {
       data: [],
       loading: true,
@@ -197,8 +142,12 @@ export default {
       msg: "",
     },
     searchValue: "",
+    msgEmptyExam: "Bạn chưa có bài kiểm tra nào!",
   }),
-
+  props: {
+    isAll: Boolean,
+    isAdmin: Boolean,
+  },
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
@@ -228,6 +177,20 @@ export default {
       }
     },
   },
+  created() {
+    if (!this.isAll || !!this.isAdmin) {
+      const actionHeader = {
+        title: "Thao tác",
+        key: "actions",
+        sortable: false,
+      };
+      if (!this.headers.some((header) => header.key == "actions")) {
+        this.headers.push(actionHeader); // Add "Thao tác" if it's not already in the headers array
+      }
+    } else {
+      this.headers = this.headers.filter((header) => header.key != "actions"); // Remove "Thao tác" if it's present
+    }
+  },
 
   watch: {
     dialog(val) {
@@ -238,26 +201,57 @@ export default {
     },
     searchValue(newVal) {
       this.handleSearchInputChange(newVal);
+      if (!!newVal) {
+        this.msgEmptyExam = "Không tìm thấy bài kiểm tra nào!";
+      } else {
+        this.msgEmptyExam = "Bạn chưa có bài kiểm tra nào!";
+      }
+    },
+    isAll: {
+      immediate: true, // Run the handler immediately when the component is created
+      handler(newVal) {
+        // React to changes in the isAll prop
+        if (newVal) {
+          this.headers = this.headers.filter(
+            (header) => header.key != "actions"
+          ); // Remove "Thao tác" if it's present
+        } else {
+          const actionHeader = {
+            title: "Thao tác",
+            key: "actions",
+            sortable: false,
+          };
+          if (!this.headers.some((header) => header.key == "actions")) {
+            this.headers.push(actionHeader); // Add "Thao tác" if it's not already in the headers array
+          }
+        }
+        this.fetchDataExam();
+      },
     },
   },
 
-  mounted() {
-    this.fetchDataExam();
-  },
+  // mounted() {
+  //   this.fetchDataExam();
+  // },
 
   methods: {
     async fetchDataExam() {
       this.isLoading = true;
-      const result = await apiCallerGet("/api/testss");
+      let urlFetch = this.isAdmin
+        ? "/api/testss"
+        : !this.isAll
+        ? "/api/testss/find-by-user/" + this.authentication.user?.userId
+        : "/api/testss";
+      const result = await apiCallerGet(urlFetch);
       if (result?.data) {
         this.isLoading = false;
         this.stateExams.data = result.data;
       }
     },
     editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
+      this.$router.push(
+        `/${this.authentication.user.role}/exam/edit/${item.testId}`
+      );
     },
 
     deleteItem(item) {
@@ -310,6 +304,10 @@ export default {
     },
     handleSearchInputChange(valueSearch) {
       this.searchValue = valueSearch;
+    },
+
+    handleClickItem(item) {
+      console.log("item ==", item);
     },
   },
 };

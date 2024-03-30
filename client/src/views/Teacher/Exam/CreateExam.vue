@@ -8,7 +8,15 @@
     </v-snackbar>
 
     <v-container class="d-flex flex-column height-100 v-container__full">
-      <HeaderTitle title="Thêm bài kiểm tra mới" />
+      <HeaderTitle
+        title="Thêm bài kiểm tra mới"
+        textBtn="Quay lại"
+        :handleClickBtn="
+          () => {
+            this.$router.go(-1);
+          }
+        "
+      />
       <v-divider class="header_divider" :thickness="2"></v-divider>
       <v-form v-model="valid" @submit.prevent="handleSaveExam">
         <v-row class="d-flex justify-center">
@@ -128,6 +136,8 @@
                         v-model="selectedTypeSkill"
                         hide-details
                         :items="filteredDataTypes"
+                        item-text="title"
+                        return-object
                       >
                       </v-autocomplete>
                     </v-col>
@@ -152,23 +162,148 @@
                         <v-toolbar-title>{{ skill.title }}</v-toolbar-title>
                       </v-toolbar>
                       <v-col
-                        v-if="selectedSkill == skill.title"
-                        v-for="(pronun1, index) in pronun1List"
-                        :key="index"
-                        class="pa-2"
+                        v-for="(question, indexQuestion) in questionList"
+                        :key="indexQuestion"
+                        class="pa-0"
                       >
-                        <Pronun1Manage
-                          :groupTitleQuestion="pronun1.typeSkill"
-                          :handleDeleteSkill="() => removePronun1(index)"
-                          :key="'pronun1_' + index"
-                          :questions="pronun1.questions"
-                          @deleteQuestion="
-                            handleDeleteQuestionInPronun1(index, $event)
+                        <!-- Pronunciation -->
+                        <v-col
+                          class="pa-2 pt-0"
+                          v-if="
+                            question.skill == skill.title.toLowerCase() &&
+                            question.skill == 'pronunciation'
                           "
-                          @updateGroupTitleQuestion="
-                            handleUpdateGroupTitleQuestion(index, $event)
+                          ><PronunManage
+                            :skillTypeSelected="selectedTypeSkill"
+                            :question="question"
+                            :handleDeleteSkill="
+                              () => removePronun1(indexQuestion)
+                            "
+                            @deleteQuestion="
+                              handleDeleteQuestionInPronun1(
+                                indexQuestion,
+                                $event
+                              )
+                            "
+                            @updateGroupTitleQuestion="
+                              handleUpdateGroupTitleQuestion(
+                                indexQuestion,
+                                $event
+                              )
+                            "
+                          />
+                        </v-col>
+                        <!-- Grammar -->
+                        <v-col
+                          class="pa-2 pt-0"
+                          v-if="
+                            question.skill == skill.title.toLowerCase() &&
+                            question.skill == 'grammar'
                           "
-                        ></Pronun1Manage>
+                          ><GrammarManage
+                            :skillTypeSelected="selectedTypeSkill"
+                            :question="question"
+                            :handleDeleteSkill="
+                              () => removePronun1(indexQuestion)
+                            "
+                            @deleteQuestion="
+                              handleDeleteQuestionInPronun1(
+                                indexQuestion,
+                                $event
+                              )
+                            "
+                            @updateGroupTitleQuestion="
+                              handleUpdateGroupTitleQuestion(
+                                indexQuestion,
+                                $event
+                              )
+                            "
+                          />
+                        </v-col>
+
+                        <!-- Reading -->
+                        <v-col
+                          class="pa-2 pt-0"
+                          v-if="
+                            question.skill == skill.title.toLowerCase() &&
+                            question.skill == 'reading'
+                          "
+                          ><ReadingManage
+                            :skillTypeSelected="selectedTypeSkill"
+                            :question="question"
+                            :handleDeleteSkill="
+                              () => removePronun1(indexQuestion)
+                            "
+                            @deleteQuestion="
+                              handleDeleteQuestionInPronun1(
+                                indexQuestion,
+                                $event
+                              )
+                            "
+                            @updateGroupTitleQuestion="
+                              handleUpdateGroupTitleQuestion(
+                                indexQuestion,
+                                $event
+                              )
+                            "
+                          />
+                        </v-col>
+
+                        <!-- Listening -->
+                        <v-col
+                          class="pa-2 pt-0"
+                          v-if="
+                            question.skill == skill.title.toLowerCase() &&
+                            question.skill == 'listening'
+                          "
+                          ><ListeningManage
+                            :skillTypeSelected="selectedTypeSkill"
+                            :question="question"
+                            :handleDeleteSkill="
+                              () => removePronun1(indexQuestion)
+                            "
+                            @deleteQuestion="
+                              handleDeleteQuestionInPronun1(
+                                indexQuestion,
+                                $event
+                              )
+                            "
+                            @updateGroupTitleQuestion="
+                              handleUpdateGroupTitleQuestion(
+                                indexQuestion,
+                                $event
+                              )
+                            "
+                          />
+                        </v-col>
+
+                        <!-- Writing -->
+                        <v-col
+                          class="pa-2 pt-0"
+                          v-if="
+                            question.skill == skill.title.toLowerCase() &&
+                            question.skill == 'writing'
+                          "
+                          ><WritingManage
+                            :skillTypeSelected="selectedTypeSkill"
+                            :question="question"
+                            :handleDeleteSkill="
+                              () => removePronun1(indexQuestion)
+                            "
+                            @deleteQuestion="
+                              handleDeleteQuestionInPronun1(
+                                indexQuestion,
+                                $event
+                              )
+                            "
+                            @updateGroupTitleQuestion="
+                              handleUpdateGroupTitleQuestion(
+                                indexQuestion,
+                                $event
+                              )
+                            "
+                          />
+                        </v-col>
                       </v-col> </v-col
                   ></v-row>
                 </v-col>
@@ -218,13 +353,7 @@
               class="mr-10"
               >Hủy</v-btn
             >
-            <v-btn
-              type="submit"
-              @click="() => handleSaveExam()"
-              color="#00bd7e"
-              theme="dark"
-              >Lưu</v-btn
-            >
+            <v-btn type="submit" color="#00bd7e" theme="dark">Lưu</v-btn>
           </v-row>
         </div>
       </v-form>
@@ -246,7 +375,13 @@
 <script>
 import { authenticationRole } from "@/stores";
 import HeaderTitle from "@/components/header/HeaderTitle.vue";
-import Pronun1Manage from "../../../components/pronunManage/Pronun1Manage.vue";
+import {
+  PronunManage,
+  GrammarManage,
+  ReadingManage,
+  WritingManage,
+  ListeningManage,
+} from "@/components/skillManage";
 import { apiCallerPost } from "@/services/teacher";
 import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
 
@@ -254,8 +389,12 @@ export default {
   name: "CreateExam",
   components: {
     HeaderTitle,
-    Pronun1Manage,
     PopUpYesNo,
+    PronunManage,
+    GrammarManage,
+    ReadingManage,
+    WritingManage,
+    ListeningManage,
   },
   data: () => ({
     dataExam: {
@@ -272,22 +411,22 @@ export default {
           {
             id: 1,
             title: "Listen to each audio and choose the word you hear",
+            option: 2,
           },
           {
             id: 2,
             title: "Choose the correct sound",
+            option: 2,
           },
           {
             id: 3,
             title: "Listen and write the words you hear",
+            option: 2,
           },
           {
             id: 4,
             title: "Listen and choose the correct intonation",
-          },
-          {
-            id: 5,
-            title: "Listen and stress the words",
+            option: 2,
           },
         ],
       },
@@ -298,22 +437,22 @@ export default {
           {
             id: 1,
             title: "Fill the blank with the correct form of the words",
+            option: 2,
           },
           {
             id: 2,
-            title: "Fill in the sentences with the suitable given words",
+            title: "Choose the underlined part that needs correction",
+            option: 2,
           },
           {
             id: 3,
             title: "Rewrite the sentences beginning with the given words",
+            option: 0,
           },
           {
             id: 4,
             title: "Choose the best option to complete each sentence",
-          },
-          {
-            id: 5,
-            title: "Put the words in the correct order",
+            option: 4,
           },
         ],
       },
@@ -323,23 +462,25 @@ export default {
         dataTypes: [
           {
             id: 1,
-            title: "Choose the best answer to each question",
+            title:
+              "Read the passage and choose the best answer to each question",
+            option: 4,
           },
           {
             id: 2,
             title: "Read the passage and answer the questions",
+            option: 0,
           },
           {
             id: 3,
-            title: "Match each definition with its corresponding word",
+            title: "Choose the suitable word(s) for each blank",
+            option: 4,
           },
           {
             id: 4,
-            title: "Choose a suitable heading for each paragraph",
-          },
-          {
-            id: 5,
-            title: "True/ False",
+            title:
+              "Read the passage and decide whether the statements are True or False",
+            option: 0,
           },
         ],
       },
@@ -350,18 +491,23 @@ export default {
           {
             id: 1,
             title: "Listen and answer the questions",
+            option: 0,
           },
           {
             id: 2,
             title: "Listen and fill in the sentences",
+            option: 0,
           },
           {
             id: 3,
-            title: "True/ False",
+            title:
+              "Listen and decide whether the following sentences are True or False. ",
+            option: 2,
           },
           {
             id: 4,
             title: "Listen and choose the best option",
+            option: 4,
           },
         ],
       },
@@ -372,22 +518,30 @@ export default {
           {
             id: 1,
             title: "Write complete sentences using the given words",
+            option: 0,
           },
           {
             id: 2,
             title: "Use the given words to make complete sentences",
+            option: 2,
           },
           {
             id: 3,
             title:
               "Write about the advantages and disadvantages of playing sports",
+            option: 2,
           },
         ],
       },
     ],
+
     selectedSkill: "",
-    selectedTypeSkill: "123",
-    pronun1List: [], // Array to store Pronun1Manage components
+    selectedTypeSkill: {
+      id: 1,
+      title: "",
+    },
+    selectedTypeQuestion: "",
+    questionList: [], // Array to store Pronun1Manage components
     required: [
       (v) => {
         if (v) return true;
@@ -401,7 +555,7 @@ export default {
     // Auto-select the first item's title
     if (this.dataSkills.length > 0) {
       this.selectedSkill = this.dataSkills[0].title;
-      this.selectedTypeSkill = this.dataSkills[0].dataTypes[0].title;
+      this.selectedTypeSkill = this.dataSkills[0].dataTypes[0];
     }
   },
   computed: {
@@ -427,75 +581,129 @@ export default {
 
       // If the selected item is found, set selectedTypeSkill to its type
       if (selectedItem) {
-        this.selectedTypeSkill = selectedItem?.dataTypes[0]?.title; // Assuming selectedItem has a 'type' property
+        this.selectedTypeSkill = selectedItem?.dataTypes[0]; // Assuming selectedItem has a 'type' property
       }
     },
   },
   methods: {
     handleAddSkill() {
-      // Add Pronun1Manage component to pronun1List array
+      // Add Pronun1Manage component to questionList array
+
       const questions = [
         {
-          title: "Question 1",
-          numOptions: 2,
-          options: Array.from({ length: 2 }, (_, i) => ({
-            // Create an array of options with the specified length
-            title: `Option ${i + 1}`,
-          })),
+          content: "Question 1",
+          numOptions: this.selectedTypeSkill.option,
+          options: Array.from(
+            { length: this.selectedTypeSkill.option },
+            (_, i) => ({
+              option: "",
+            })
+          ),
+          answers: [
+            {
+              answer: "",
+              explanation: "",
+            },
+          ],
         },
       ];
-      this.pronun1List.push({
-        typeSkill: this.selectedTypeSkill,
-        questions: questions, // Assign the questions array to the pronun1List item
+      const selectedItem = this.dataSkills.find(
+        (item) => item.title == this.selectedSkill
+      );
+
+      const selectedItemSkill = selectedItem.dataTypes.find(
+        (item) => item.title == this.selectedTypeSkill.title
+      );
+
+      this.questionList.push({
+        skill: this.selectedSkill.toLowerCase(),
+        type: selectedItemSkill?.id?.toString() || "1",
+        title: this.selectedTypeSkill.title,
+        subQuestions: questions, // Assign the questions array to the questionList item
       });
     },
     removePronun1(index) {
-      // Remove Pronun1Manage component at specified index from pronun1List array
-      this.pronun1List.splice(index, 1);
+      // Remove Pronun1Manage component at specified index from questionList array
+      this.questionList.splice(index, 1);
     },
     handleDeleteQuestionInPronun1(pronun1Index, questionIndex) {
-      // Remove the question at the specified index from the pronun1List array
-      this.pronun1List[pronun1Index].questions.splice(questionIndex, 1);
+      // Remove the question at the specified index from the questionList array
+      this.questionList[pronun1Index].subQuestions.splice(questionIndex, 1);
     },
     handleUpdateGroupTitleQuestion(index, updatedValue) {
-      // Update the groupTitleQuestion property in pronun1List at the specified index
-      this.pronun1List[index].typeSkill = updatedValue;
+      // Update the groupTitleQuestion property in questionList at the specified index
+
+      this.questionList[index].title = updatedValue;
       this.$emit("updateGroupTitleQuestion", updatedValue); // Emit the event
     },
     handleAddQuestion(pronun1Index) {
       // Find the Pronun1Manage component at the specified index
-      const pronun1 = this.pronun1List[pronun1Index];
+      const pronun1 = this.questionList[pronun1Index];
 
       // Create a new question object
       const newQuestion = {
-        title: `New Question`,
-        numOptions: 2,
-        options: Array.from({ length: 2 }, (_, i) => ({
-          // Create an array of options with the specified length
-          title: `Option ${i + 1}`,
-        })),
+        content: `New Question`,
+        numOptions: this.selectedTypeSkill.option,
+        options: Array.from(
+          { length: this.selectedTypeSkill.option },
+          (_, i) => ({
+            option: "",
+          })
+        ),
+        answers: [
+          {
+            answer: "",
+            explanation: "",
+          },
+        ],
       };
 
       // Push the new question to the questions array of the Pronun1Manage component
-      pronun1.questions.push(newQuestion);
+      pronun1.subQuestions.push(newQuestion);
     },
 
     async handleSaveExam() {
       if (!!this.valid) {
+        const convertQuestion = (question, questionParent) => ({
+          content: question?.content,
+          skill: questionParent?.skill,
+          type: `${questionParent?.type?.toString()}`,
+          answers: question?.answers.map((answer) => ({
+            answer: answer?.answer,
+            explanation: answer?.explanation || "",
+          })),
+          options: question.options.map((option) => ({
+            option: option?.option,
+          })),
+          files: !!question?.files?.type
+            ? [
+                {
+                  type: question?.files?.type,
+                  url: question?.files?.url,
+                  name: question?.files?.name,
+                },
+              ]
+            : [],
+        });
+
+        const convertedData = this.questionList.map((item) => ({
+          content: "",
+          description: "",
+          title: item?.title,
+          type: `${item?.type?.toString()}`,
+          skill: item?.skill,
+          time: 0,
+          subQuestions: item.subQuestions.map((question) =>
+            convertQuestion(question, item)
+          ),
+        }));
+
         const body = {
           testName: this.dataExam.testName,
           time: this.dataExam.time,
           status: "0",
           description: this.dataExam.description,
-          questions: [
-            {
-              content: "string",
-              description: "string",
-              explanation: "string",
-              type: "string",
-              skill: "String",
-            },
-          ],
+          questions: convertedData,
         };
 
         const result = await apiCallerPost(
@@ -516,3 +724,4 @@ export default {
 <style>
 @import "./Exam.style.scss";
 </style>
+../../../components/skillManage/pronunManage

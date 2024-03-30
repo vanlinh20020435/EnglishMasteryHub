@@ -14,6 +14,26 @@ export const getStudents = async (token = null) => {
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
+  }
+  return result;
+};
+
+export const getStudent = async (token = null, id = null) => {
+  const path = `/api/students/find-by-user/${id}`;
+  var result = {
+    success: false,
+    data: null,
+  };
+  try {
+    const response = await $axios.get(path, {
+      headers: { Authorization: 'Bearer ' + token },
+    });
+    result.data = response.data;
+    result.success = true;
+  } catch (error) {
+    console.log(error);
+    result.success = false
   }
   return result;
 };
@@ -37,6 +57,7 @@ export const searchStudents = async (token = null, params) => {
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result;
 };
@@ -55,24 +76,97 @@ export const createStudent = async (token = null, payload = null) => {
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result;
 };
 
-export const editAdmin = async (id = null, token = null, payload = null) => {
-  const path = '/api/admins';
+export const editStudent = async (id = null, token = null, payload = null) => {
+  const path = `/api/students/${id}`;
   var result = {
     success: false,
     data: null,
   };
   try {
-    const response = await $axios.put(path + `/${id}`, payload, {
+    const response = await $axios.put(path, payload, {
       headers: { Authorization: 'Bearer ' + token },
     });
     result.data = response.data;
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
+  }
+  return result;
+};
+
+export const editStudentStatus = async (
+  id = null,
+  token = null,
+  updateValue
+) => {
+  const path = `/api/students/${id}/update-status`;
+  var result = {
+    success: false,
+    data: null,
+  };
+  try {
+    const response = await $axios.put(
+      path,
+      {},
+      {
+        params: { status: updateValue },
+        headers: { Authorization: 'Bearer ' + token },
+      }
+    );
+    result.data = response.data;
+    result.success = true;
+  } catch (error) {
+    console.log(error);
+    result.success = false
+  }
+  return result;
+};
+
+export const changeStudentPassword = async (
+  id = null,
+  token = null,
+  password
+) => {
+  const path = `/api/students/${id}/update-password`;
+  var result = {
+    success: false,
+    data: null,
+  };
+  try {
+    const response = await $axios.put(
+      path,
+      {},
+      { params: { password }, headers: { Authorization: 'Bearer ' + token } }
+    );
+    result.data = response.data;
+    result.success = true;
+  } catch (error) {
+    console.log(error);
+    result.success = false
+  }
+  return result;
+};
+export const deleteStudent = async (token = null, id = null) => {
+  const path = `/api/students/${id}`;
+  var result = {
+    success: false,
+    data: null,
+  };
+  try {
+    const response = await $axios.delete(path, {
+      headers: { Authorization: 'Bearer ' + token },
+    });
+    result.data = response.data;
+    result.success = true;
+  } catch (error) {
+    console.log(error);
+    result.success = false
   }
   return result;
 };

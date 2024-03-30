@@ -12,6 +12,7 @@ export const getAdmins = async (token = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
@@ -34,11 +35,12 @@ export const searchAdmins = async (token = null, params) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
 
-export const createAdmin = async (token = null, payload = null) => {
+export const createAdmin = async (token = null, payload = {}) => {
     const path = '/api/admins'
     var result = {
         success: false,
@@ -50,6 +52,7 @@ export const createAdmin = async (token = null, payload = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
@@ -66,6 +69,7 @@ export const editAdmin = async (id = null, token = null, payload = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
@@ -82,6 +86,7 @@ export const editAdminStatus = async (id = null, token = null, updateValue) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
@@ -98,6 +103,24 @@ export const changeAdminPassword = async (id = null, token = null, password) => 
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
+    }
+    return result
+}
+
+export const deleteAdmin = async (token = null, id = null) => {
+    const path = `/api/admins/${id}`
+    var result = {
+        success: false,
+        data: null
+    }
+    try {
+        const response = await $axios.delete(path, { headers: { 'Authorization': 'Bearer ' + token } })
+        result.data = response.data;
+        result.success = true
+    } catch (error) {
+        console.log(error);
+        result.success = false
     }
     return result
 }

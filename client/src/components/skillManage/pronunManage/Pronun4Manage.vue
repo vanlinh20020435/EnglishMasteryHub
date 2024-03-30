@@ -1,31 +1,11 @@
 <template>
-  <v-col class="pa-0" style="border: 1px solid #00000020">
-    <HeaderAction
-      :handleToggleShowFull="handleToggleShowFull"
-      :title="groupTitleQuestion"
-      :handleDelete="handleDeleteSkill"
-    />
-    <v-col class="pa-0" :class="{ hide: !showFull, show: showFull }">
-      <v-row class="d-flex mt-3 pl-3">
-        <v-col cols="3">
-          <v-list-subheader>Nội dung nhóm câu hỏi</v-list-subheader>
-        </v-col>
-
-        <v-col cols="9">
-          <v-textarea
-            rows="1"
-            max-rows="4"
-            :rules="required"
-            placeholder="Tên bài kiểm tra"
-            hide-no-data
-            clearable
-            auto-grow
-            :model-value="groupTitleQuestion"
-            @input="updateGroupTitleQuestion"
-          >
-          </v-textarea>
-        </v-col>
-      </v-row>
+  <GroupQuestion
+    :questionSkill="questionSkill"
+    :groupTitleQuestion="groupTitleQuestion"
+    :handleDeleteSkill="handleDeleteSkill"
+    @updateGroupTitleQuestionOri="updateGroupTitleQuestion($event)"
+  >
+    <template v-slot:list-questions>
       <v-col class="d-flex flex-column align-center pa-3">
         <v-col
           cols="12"
@@ -36,7 +16,9 @@
         >
           <HeaderAction
             :handleToggleShowFull="() => handleToggleShowFullQuestion(index)"
-            :title="`Question ${index + 1}`"
+            :title="
+              question.content ? question.content : `Question ${index + 1}`
+            "
             :handleDelete="() => handleDeleteQuestion(index)"
           />
           <v-row
@@ -55,7 +37,8 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="`Question ${index + 1}`"
+                :model-value="question.content"
+                @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
               <v-row class="d-flex justify-center">
@@ -83,9 +66,22 @@
                   :key="indexOption"
                 >
                   <QuestionCheckbox
-                    isDescOption
                     :handleDeleteOption="
                       () => handleDeleteOption(index, indexOption - 1)
+                    "
+                    @update:option="
+                      (value) =>
+                        handleUpdateOption(index, indexOption - 1, value)
+                    "
+                    @update:updateExplanation="
+                      (value) =>
+                        handleChangeExplanation(index, indexOption - 1, value)
+                    "
+                    :questionIndex="index"
+                    :checked="question.options[indexOption - 1].checked"
+                    @checkboxChange="
+                      (value) =>
+                        handleCheckboxChange(index, indexOption - 1, value)
                     "
                   />
                 </v-col>
@@ -100,7 +96,7 @@
                   @click="() => handleAddOption(index)"
                   color="#00bd7e"
                   theme="dark"
-                  >Thêm câu hỏi</v-btn
+                  >Thêm item</v-btn
                 >
               </div>
             </v-col>
@@ -111,28 +107,31 @@
       <div color="#fff" class="mt-1 mb-4 d-flex pl-3 pr-3" style="border: none">
         <v-spacer></v-spacer>
         <v-btn
-          @click="() => handleAddQuestion(index)"
+          @click="() => handleAddQuestion()"
           color="#FBB03B"
           theme="dark"
           class="btn-add-question"
           >Thêm câu hỏi</v-btn
         >
-      </div>
-    </v-col>
-  </v-col>
+      </div></template
+    >
+  </GroupQuestion>
 </template>
 
 <script>
-import QuestionCheckbox from "../exams/checkBoxQuestion.vue";
-import HeaderAction from "../header/HeaderAction.vue";
+import GroupQuestion from "@/components/exams/GroupQuestion.vue";
+import HeaderAction from "@/components/header/HeaderAction.vue";
+import QuestionCheckbox from "@/components/exams/CheckBoxQuestion.vue";
 import { apiCallerPost } from "@/services/teacher";
+
 export default {
-  name: "Pronun1Manage",
+  name: "Pronun4Manage",
   components: {
+    GroupQuestion,
     HeaderAction,
     QuestionCheckbox,
   },
-  data: () => {
+  data() {
     return {
       showFull: true, // Track whether v-row is shown or hidden
       showFullQuestion: [], // Track whether v-row is shown or hidden
@@ -145,17 +144,19 @@ export default {
       selectedFile: null,
       selectedFileName: [],
       fileUpload: {},
+      questions: [],
     };
   },
   props: {
     handleDeleteSkill: Function,
     groupTitleQuestion: String,
     handleDeleteSkillQuestion: Function,
-    questions: Array,
+    questionSkill: Object,
   },
   created() {
+    this.questions = this.questionSkill.subQuestions;
     // Initialize the showFullQuestion array with default visibility state for each question
-    this.showFullQuestion = Array(this.questions.length).fill(true);
+    this.showFullQuestion = Array(this.questions?.length).fill(true);
   },
   methods: {
     handleToggleShowFull() {
@@ -169,20 +170,20 @@ export default {
       // Call the parent component method to delete the question at the specified index
       this.$emit("deleteQuestion", index);
     },
-    updateGroupTitleQuestion(event) {
+    updateGroupTitleQuestion(value) {
       // Emit the updated groupTitleQuestion value to the parent component
-      this.$emit("updateGroupTitleQuestion", event.target.value);
+      this.$emit("updateGroupTitleQuestion", value);
     },
-    handleAddQuestion(index) {
+    handleAddQuestion() {
       // Add a new question
-      const newIndex = this.questions.length + 1;
+      const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
         numOptions: 2,
         options: Array.from({ length: 2 }, (_, i) => ({
-          // Create an array of options with the specified length
-          title: `Option ${i + 1}`,
+          option: "",
         })),
+        answers: [],
       });
       this.$nextTick(() => {
         this.showFullQuestion[newIndex - 1] = true;
@@ -191,7 +192,7 @@ export default {
       this.$emit("addQuestion", newIndex);
     },
     handleDeleteOption(questionIndex, optionIndex) {
-      if (questionIndex >= 0 && questionIndex < this.questions.length) {
+      if (questionIndex >= 0 && questionIndex < this.questions?.length) {
         // Access the question object
         const question = this.questions[questionIndex];
 
@@ -211,14 +212,14 @@ export default {
     },
     handleAddOption(questionIndex) {
       // Check if questionIndex is valid
-      if (questionIndex >= 0 && questionIndex < this.questions.length) {
+      if (questionIndex >= 0 && questionIndex < this.questions?.length) {
         // Access the question object
         const question = this.questions[questionIndex];
 
         // Push a new option to the question's options array
         const newIndex = question.options.length + 1;
         question.options.push({
-          title: `Option ${newIndex}`,
+          option: "",
         });
 
         // Emit an event to notify the parent component about the addition
@@ -254,8 +255,48 @@ export default {
       const question = this.questions[questionIndex];
 
       question["files"] = this.fileUpload;
+    },
 
-      // For example, using axios:
+    handleUpdateOption(questionIndex, optionIndex, value) {
+      // Update the answer value in the corresponding question option
+      this.questions[questionIndex].options[optionIndex].option = value;
+    },
+
+    handleChangeExplanation(questionIndex, optionIndex, value) {
+      // Update the answer value in the corresponding question option
+      this.questions[questionIndex].options[optionIndex].explanation = value;
+    },
+
+    handleCheckboxChange(questionIndex, optionIndex, isChecked) {
+      const question = this.questions[questionIndex];
+      const option = question.options[optionIndex];
+      option.checked = isChecked;
+
+      // Update answers based on checkbox state
+      if (option.checked) {
+        // Checkbox checked, add to answers
+        question.answers.push({
+          answer: option.option,
+          explanation: option.explanation,
+        });
+      } else {
+        // Checkbox unchecked, remove from answers
+        const answerIndex = question.answers.findIndex(
+          (answer) => answer.answer == option.option
+        );
+
+        if (answerIndex != -1) {
+          question.answers.splice(answerIndex, 1);
+        }
+      }
+    },
+
+    updateTitleQuestion(questionIndex, event) {
+      this.questions[questionIndex].content = event.target.value;
+    },
+
+    updateExplanation(questionIndex, newValue) {
+      this.questions[questionIndex].answers[0].explanation = newValue;
     },
   },
 };
@@ -274,7 +315,6 @@ export default {
   opacity: 1;
   transition: max-height 0.3s ease-in, opacity 0.3s ease-in;
 }
-
 .btn-add-question .v-btn__content {
   color: #fff;
 }

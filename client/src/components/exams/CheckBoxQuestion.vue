@@ -2,7 +2,14 @@
   <v-col>
     <v-row class="d-flex">
       <v-col cols="1" class="pa-0">
-        <v-checkbox large class="checkbox-large" color="primary"> </v-checkbox>
+        <v-checkbox
+          large
+          class="checkbox-large"
+          color="primary"
+          :checked="checked"
+          @change="handleCheckboxChange"
+        >
+        </v-checkbox>
       </v-col>
       <v-col cols="10">
         <v-row>
@@ -11,6 +18,8 @@
             hide-no-data
             single-line
             variant="solo"
+            :model-value="option"
+            @input="updateOption($event.target.value)"
           >
           </v-text-field>
         </v-row>
@@ -22,6 +31,8 @@
             single-line
             hide-details
             placeholder="Giải thích đáp án"
+            :model-value="explanation"
+            @input="updateExplanation($event.target.value)"
           >
           </v-text-field>
         </v-row>
@@ -47,6 +58,10 @@ export default {
   props: {
     handleDeleteOption: Function,
     isDescOption: Boolean,
+    option: String,
+    explanation: String,
+    checked: Boolean,
+    optionItem: Object,
   },
   data: () => ({
     required: [
@@ -56,6 +71,18 @@ export default {
       },
     ],
   }),
+  methods: {
+    updateOption(value) {
+      this.$emit("update:option", value);
+    },
+    updateExplanation(value) {
+      this.$emit("update:updateExplanation", value);
+    },
+    handleCheckboxChange(event) {
+      // Emit input event with updated checkbox state]
+      this.$emit("checkboxChange", event.target.checked);
+    },
+  },
 };
 </script>
 

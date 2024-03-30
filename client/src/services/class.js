@@ -1,6 +1,6 @@
 import { $axios } from "."
 
-const getClasses = async (token = null) => {
+export const getClasses = async (token = null) => {
     const path = '/api/class'
     var result = {
         success: false,
@@ -12,11 +12,12 @@ const getClasses = async (token = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
 
-const getClass = async (token = null, id = null) => {
+export const getClass = async (token = null, id = null) => {
     const path = `/api/class/${id}`
     var result = {
         success: false,
@@ -28,11 +29,12 @@ const getClass = async (token = null, id = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
 
-const getStudentsOfClass = async (token = null, id = null) => {
+export const getStudentsOfClass = async (token = null, id = null) => {
     const path = `/api/class/${id}/students/get-all`
     var result = {
         success: false,
@@ -44,11 +46,29 @@ const getStudentsOfClass = async (token = null, id = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
 
-const searchClasses = async (token = null, params) => {
+export const getTestsOfClass = async (token = null, id = null) => {
+    const path = `/api/class/${id}/tests/get-all`
+    var result = {
+        success: false,
+        data: null
+    }
+    try {
+        const response = await $axios.get(path, { headers: { 'Authorization': 'Bearer ' + token } })
+        result.data = response.data;
+        result.success = true
+    } catch (error) {
+        console.log(error);
+        result.success = false
+    }
+    return result
+}
+
+export const searchClasses = async (token = null, params) => {
     const path = '/api/class/search'
     var result = {
         success: false,
@@ -64,12 +84,13 @@ const searchClasses = async (token = null, params) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
 
-const createAdmin = async (token = null, payload = null) => {
-    const path = '/api/admins'
+export const createClass = async (token = null, payload = null) => {
+    const path = '/api/class'
     var result = {
         success: false,
         data: null
@@ -80,24 +101,41 @@ const createAdmin = async (token = null, payload = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
 
-const editAdmin = async (id = null, token = null, payload = null) => {
-    const path = '/api/admins'
+export const editClass = async (token = null, id = null, payload = null) => {
+    const path = `/api/class/${id}`
     var result = {
         success: false,
         data: null
     }
     try {
-        const response = await $axios.put(path + `/${id}`, payload, { headers: { 'Authorization': 'Bearer ' + token } })
+        const response = await $axios.put(path, payload, { headers: { 'Authorization': 'Bearer ' + token } })
         result.data = response.data;
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
 
-export { getClasses, getClass, getStudentsOfClass, searchClasses, createAdmin, editAdmin }
+export const deleteClass = async (token = null, id = null) => {
+    const path = `/api/class/${id}`
+    var result = {
+        success: false,
+        data: null
+    }
+    try {
+        const response = await $axios.delete(path, { headers: { 'Authorization': 'Bearer ' + token } })
+        result.data = response.data;
+        result.success = true
+    } catch (error) {
+        console.log(error);
+        result.success = false
+    }
+    return result
+}

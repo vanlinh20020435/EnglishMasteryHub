@@ -2,9 +2,7 @@
   <v-card>
     <v-row>
       <v-col md="2">
-        <img
-          style="width: 100%; height: 100%"
-          src="../../../assets/images/class.png" />
+        <img style="width: 100%; height: 100%" src="../../../assets/images/class.png" />
       </v-col>
       <v-col md="10">
         <div>
@@ -20,15 +18,11 @@
     </v-row>
   </v-card>
   <v-tabs v-model="tab" bg-color="#00bd7e" style="margin-top: 16px">
-    <v-tab :value="0" :style="tab === 0 ? 'background: #039e6a' : ''"
-      >Danh sách học sinh</v-tab
-    >
-    <v-tab :value="1" :style="tab === 0 ? '' : 'background: #039e6a'"
-      >Danh sách bài kiểm tra</v-tab
-    >
+    <v-tab :value="0" :style="tab === 0 ? 'background: #039e6a' : ''">Danh sách học sinh</v-tab>
+    <v-tab :value="1" :style="tab === 0 ? '' : 'background: #039e6a'">Danh sách bài kiểm tra</v-tab>
   </v-tabs>
-  <ListStudents v-if="tab === 0" />
-  <ListExam v-else />
+  <ListStudents v-if="tab === 0" :classId="$route.params.id" />
+  <ListTest v-else />
 </template>
 
 <script>
@@ -36,9 +30,9 @@ import { getClass } from '@/services';
 import { authenticationRole, toastStore } from '@/stores';
 import { mapState } from 'pinia';
 import ListStudents from './ListStudents.vue';
-import ListExam from './ListExam.vue';
+import ListTest from './ListTest.vue';
 export default {
-  components: { ListStudents, ListExam },
+  components: { ListStudents, ListTest },
   data: () => ({
     tab: 0,
     classInfo: {},
@@ -66,3 +60,4 @@ export default {
   },
 };
 </script>
+./ListTest.vue

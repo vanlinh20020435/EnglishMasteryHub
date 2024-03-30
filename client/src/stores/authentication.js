@@ -5,7 +5,7 @@ export const authenticationRole = defineStore("authentication", () => {
   var locationUser = JSON.parse(localStorage.getItem("user"));
   var locationAccessToken = JSON.parse(localStorage.getItem("accessToken"));
   if (locationAccessToken?.expires < new Date()) {
-    console.log('token expires')
+    console.log("token expires");
     locationUser = {};
     locationAccessToken = {};
     localStorage.removeItem("accessToken");
@@ -32,12 +32,12 @@ export const authenticationRole = defineStore("authentication", () => {
     localStorage.setItem("user", JSON.stringify(authentication.value.user));
   }
 
-  function clearStore() {
+  function clearAuth() {
     authentication.value = {
       user: {},
-      accessToken: {}
-    }
+      accessToken: {},
+    };
   }
 
-  return { authentication, updateAuth, clearStore };
+  return { authentication, updateAuth, clearAuth };
 });
