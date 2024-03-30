@@ -1,38 +1,42 @@
-import { $axios } from "."
+import { $axios } from ".";
 
 export const getTests = async (token = null) => {
-    const path = '/api/testss'
-    var result = {
-        success: false,
-        data: null
-    }
-    try {
-        const response = await $axios.get(path, { headers: { 'Authorization': 'Bearer ' + token } })
-        result.data = response.data;
-        result.success = true
-    } catch (error) {
-        console.log(error);
+  const path = "/api/testss";
+  var result = {
+    success: false,
+    data: null,
+  };
+  try {
+    const response = await $axios.get(path, {
+      headers: { Authorization: "Bearer " + token },
+    });
+    result.data = response.data;
+    result.success = true;
+  } catch (error) {
+    console.log(error);
         result.success = false
-    }
-    return result
-}
+  }
+  return result;
+};
 
 export const getTest = async (token = null, testId = null) => {
-    const path = `/api/testss/${testId}`
-    var result = {
-        success: false,
-        data: null
-    }
-    try {
-        const response = await $axios.get(path, { headers: { 'Authorization': 'Bearer ' + token } })
-        result.data = response.data;
-        result.success = true
-    } catch (error) {
-        console.log(error);
+  const path = `/api/testss/${testId}`;
+  var result = {
+    success: false,
+    data: null,
+  };
+  try {
+    const response = await $axios.get(path, {
+      headers: { Authorization: "Bearer " + token },
+    });
+    result.data = response.data;
+    result.success = true;
+  } catch (error) {
+    console.log(error);
         result.success = false
-    }
-    return result
-}
+  }
+  return result;
+};
 
 export const getTestInfo = async (token = null, classId = null, testId = null) => {
     const path = `/api/class/${classId}/tests-info/${testId}`

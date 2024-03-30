@@ -131,21 +131,21 @@ export default {
         {
           id: 2,
           img: ico_chambai,
-          title: "Bài tập đã giao",
-          path: "",
+          title: "Bài kiểm tra đã giao",
+          path: "mark-exam",
         },
         {
           id: 3,
           img: ico_giaobai,
           title: "Giao bài",
-          path: "",
+          path: "assign-exam",
         },
-        {
-          id: 4,
-          img: ico_baocao,
-          title: "Báo cáo học tập",
-          path: "",
-        },
+        // {
+        //   id: 4,
+        //   img: ico_baocao,
+        //   title: "Báo cáo học tập",
+        //   path: "",
+        // },
       ],
     };
   },

@@ -61,6 +61,7 @@ export default {
     option: String,
     explanation: String,
     checked: Boolean,
+    optionItem: Object,
   },
   data: () => ({
     required: [
