@@ -36,12 +36,12 @@ public class RefreshTokenService
 		User user = userRepository.findById(userId)
 				.orElseThrow(NotFoundException::new);
 		boolean tokenExists = user.getRefreshToken() != null;
-		if(tokenExists)
+		if (tokenExists)
 			refreshToken.setId(user.getRefreshToken().getId());
 		refreshToken.setExpiryDate(Instant.now().plusMillis(PropertyController.JWT_REFRESH_EXPIRATION_MS));
 		refreshToken.setToken(generateToken());
 		refreshToken = refreshTokenRepository.save(refreshToken);
-		if(!tokenExists)
+		if (!tokenExists)
 		{
 			user.setRefreshToken(refreshToken);
 			userRepository.save(user);

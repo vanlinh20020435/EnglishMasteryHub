@@ -49,13 +49,13 @@ public class TestClassService
 		Tests tests = testsRepository.findById(testId)
 				.orElseThrow(NotFoundException::new);
 		TestClass old = testClassRepository.findOneByClasssAndTests(classes, tests);
-		if(old != null)
+		if (old != null)
 			throw new AppException("Test already exists");
 		testClass.setTests(tests);
 		testClass.setClasss(classes);
-		if(testClassRequest.getStartDate() != null)
+		if (testClassRequest.getStartDate() != null)
 			testClass.setStartDate(testClassRequest.getStartDate());
-		if(testClassRequest.getEndDate() != null)
+		if (testClassRequest.getEndDate() != null)
 			testClass.setEndDate(testClassRequest.getEndDate());
 		testClassRepository.save(testClass);
 	}
@@ -76,9 +76,10 @@ public class TestClassService
 		Tests tests = testClass.getTests();
 		TestClassResponse response = new TestClassResponse();
 		EntityMapper.testClassMapToResponse(tests, response);
-		if(testClass.getStartDate() != null)
-			response.setStartDate(testClass.getStartDate());;
-		if(testClass.getEndDate() != null)
+		if (testClass.getStartDate() != null)
+			response.setStartDate(testClass.getStartDate());
+		;
+		if (testClass.getEndDate() != null)
 			response.setEndDate(testClass.getEndDate());
 		exportQuestions(tests, response);
 		return response;
@@ -179,7 +180,7 @@ public class TestClassService
 		Tests tests = testsRepository.findById(testId)
 				.orElseThrow(NotFoundException::new);
 		TestClass testClass = testClassRepository.findOneByClasssAndTests(classes, tests);
-		if(testClass == null)
+		if (testClass == null)
 			throw new NotFoundException();
 		return EntityMapper.testInfoMapToResponse(testClass, new TestClassInfoResponse());
 	}

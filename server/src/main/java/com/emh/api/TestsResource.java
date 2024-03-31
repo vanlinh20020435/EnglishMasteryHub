@@ -1,7 +1,6 @@
 package com.emh.api;
 
 import com.emh.payload.request.TestsRequest;
-import com.emh.payload.response.TestClassInfoResponse;
 import com.emh.payload.response.TestsResponse;
 import com.emh.service.TestsService;
 import com.emh.util.ReferencedException;
@@ -63,7 +62,7 @@ public class TestsResource
 	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	public ResponseEntity<Integer> updateTests(
 			@PathVariable(name = "testId") final Integer testId,
-			@RequestBody @Valid final TestsRequest testsDTO)
+			@RequestBody @Valid final TestsRequest testsDTO) throws IOException
 	{
 		testsService.update(testId, testsDTO);
 		return ResponseEntity.ok(testId);

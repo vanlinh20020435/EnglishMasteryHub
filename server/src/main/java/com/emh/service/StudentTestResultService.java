@@ -3,7 +3,6 @@ package com.emh.service;
 import com.emh.entity.*;
 import com.emh.payload.request.QuestAnswerResultRequest;
 import com.emh.payload.request.StudentTestResultRequest;
-import com.emh.payload.request.TestsRequest;
 import com.emh.payload.response.QuestAnswerResultResponse;
 import com.emh.payload.response.StudentTestResultResponse;
 import com.emh.repos.*;
@@ -85,10 +84,29 @@ public class StudentTestResultService
 		studentTestResult.setTests(tests);
 		studentTestResult.setStudent(student);
 		studentTestResult.setClasss(classs);
-		EntityMapper.testResultMapToEntity(studentTestResultRequest, studentTestResult, tests, student);
+		EntityMapper.testResultMapToEntity(studentTestResultRequest, studentTestResult);
 		studentTestResult = studentTestResultRepository.save(studentTestResult);
 		saveAnswersResult(studentTestResult, studentTestResultRequest);
 		return tests.getTestId();
+	}
+
+	public void update(final Integer resultId, final StudentTestResultRequest studentTestResultRequest) throws IOException
+	{
+		StudentTestResult studentTestResult = studentTestResultRepository.findById(resultId)
+				.orElseThrow(NotFoundException::new);
+		Tests tests = testsRepository.findById(studentTestResultRequest.getTestId())
+				.orElseThrow(NotFoundException::new);
+		Student student = studentRepository.findById(studentTestResultRequest.getStudentId())
+				.orElseThrow(NotFoundException::new);
+		Classes classs = classesRepository.findById(studentTestResultRequest.getClassId())
+				.orElseThrow(NotFoundException::new);
+		studentTestResult.setTests(tests);
+		studentTestResult.setStudent(student);
+		studentTestResult.setClasss(classs);
+		EntityMapper.testResultMapToEntity(studentTestResultRequest, studentTestResult);
+		studentTestResult = studentTestResultRepository.save(studentTestResult);
+		questAnswerResultRepository.deleteAllByStudentTestResult(studentTestResult);
+		saveAnswersResult(studentTestResult, studentTestResultRequest);
 	}
 
 	private void saveAnswersResult(StudentTestResult studentTestResult, StudentTestResultRequest studentTestResultRequest) throws IOException

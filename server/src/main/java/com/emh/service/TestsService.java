@@ -9,6 +9,7 @@ import com.emh.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,7 +73,8 @@ public class TestsService
 		return tests.getTestId();
 	}
 
-	public void update(final Integer testId, final TestsRequest testsDTO)
+	@Transactional
+	public void update(final Integer testId, final TestsRequest testsDTO) throws IOException
 	{
 		final Tests tests = testsRepository.findById(testId)
 				.orElseThrow(NotFoundException::new);
@@ -80,6 +82,8 @@ public class TestsService
 			throw new ForbiddenException();
 		EntityMapper.testMapToEntity(testsDTO, tests);
 		testsRepository.save(tests);
+		questionsRepository.deleteAllByTests(tests);
+		saveQuestions(tests, testsDTO);
 	}
 
 	public void delete(final Integer testId)
