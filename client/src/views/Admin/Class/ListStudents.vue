@@ -5,7 +5,10 @@
       <v-spacer></v-spacer>
       <v-btn icon="mdi-filter" style="margin-right: 8px" :color="isOpenFilter ? '#00bd7e' : ''"
         @click="() => (isOpenFilter = !isOpenFilter)"></v-btn>
-      <v-btn class="mb-2" color="#00bd7e" dark variant="outlined" @click="isOpenForm = true">
+      <v-btn style="margin-right: 8px;" color="#00bd7e" dark variant="outlined" @click="isOpenImport = true">
+        Import
+      </v-btn>
+      <v-btn color="#00bd7e" dark variant="outlined" @click="isOpenForm = true">
         Tạo mới
       </v-btn>
     </v-toolbar>
@@ -72,8 +75,13 @@
               <v-col v-if="!isEdit" cols="12" md="12" sm="6">
                 <v-text-field v-model="formItem.password" :rules="passwordRules" label="Password*"></v-text-field>
               </v-col>
-              <v-col cols="12" md="12" sm="6">
-                <v-text-field v-model="formItem.avatar" label="Avatar"></v-text-field>
+              <v-col v-if="formItem.avatar" cols="12" md="12">
+                <v-text-field prepend-icon="mdi-paperclip" v-model="formItem.avatar" label="Avatar" clearable
+                  readonly></v-text-field>
+              </v-col>
+              <v-col v-else cols="12" md="12">
+                <v-file-input v-model="selectedImage" label="Avatar" accept="image/png, image/jpeg" hide-no-data
+                  show-size></v-file-input>
               </v-col>
               <v-col cols="12" md="12" sm="6">
                 <v-text-field v-model="formItem.email" :rules="emailRules" label="Email*"></v-text-field>
@@ -102,7 +110,7 @@
           <v-btn variant="tonal" @click="() => (isOpenForm = false)">
             Cancel
           </v-btn>
-          <v-btn color="success" variant="flat" type="submit">
+          <v-btn color="success" variant="flat" type="submit" :disabled="isLoadingFile">
             Save
           </v-btn>
         </v-card-actions>
@@ -139,6 +147,41 @@
       </v-card>
     </v-form>
   </v-dialog>
+  <v-dialog v-model="isOpenImport" max-width="500px">
+    <v-form v-model="formFileValid" @submit.prevent="submitImport">
+      <v-card>
+        <v-card-title>
+          Thêm danh sách học sinh
+        </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" md="12" sm="12">
+              <v-file-input v-model="selectedFile" :rule="fileRules" hide-no-data label="File danh sách học sinh"
+                accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,text/plain"
+                show-size variant="outlined"></v-file-input>
+            </v-col>
+            <v-col cols="12" md="12" sm="12" style="color: blueviolet; display: flex;">
+              <v-icon color="warning" style="margin-right: 4px;">mdi-alert</v-icon>
+              <div>
+                File bao gồm 2 cột fullname và gender.<br></br>
+                Đối với file định dạng csv/txt các cột chia bởi dấu ','.<br></br>
+                Mật khẩu mặc định là '123456'
+              </div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn variant="tonal" @click="() => (isOpenImport = false)">
+            Cancel
+          </v-btn>
+          <v-btn color="success" variant="flat" type="submit">
+            Upload
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-form>
+  </v-dialog>
   <PopUpYesNo :msg="`Bạn có chắc chắn muốn ${itemUpdatingLock.status ? 'khóa' : 'mở khóa'}?`" :visible="isOpenLock"
     :handleClickYes="updateLock" :handleClickNo="() => (isOpenLock = false)" />
   <PopUpYesNo :msg="`Bạn có chắc chắn muốn xoá học sinh ${delettingItem.name}?`" :visible="isOpenDelete"
@@ -155,6 +198,8 @@ import {
   editStudentStatus,
   changeStudentPassword,
   deleteStudent,
+  importStudent,
+  uploadFile
 } from '@/services';
 import { authenticationRole, toastStore } from '@/stores';
 import { mapState } from 'pinia';
@@ -166,6 +211,7 @@ export default {
     classId: String
   },
   data: () => ({
+    isOpenImport: false,
     delettingItem: {},
     isOpenChangePassword: false,
     formPasswordValid: false,
@@ -193,6 +239,12 @@ export default {
     genderSelector: [
       { value: 1, title: 'Male' },
       { value: 0, title: 'Female' },
+    ],
+    fileRules: [
+      (value) => {
+        if (value || value === 0) return true;
+        return 'File is required.';
+      },
     ],
     genderRules: [
       (value) => {
@@ -253,6 +305,10 @@ export default {
       email: '',
     },
     _timerId: null,
+    formFileValid: false,
+    selectedFile: null,
+    selectedImage: null,
+    isLoadingFile: false
   }),
   async mounted() {
     await this.fetchData();
@@ -413,6 +469,24 @@ export default {
       this.isOpenDelete = true;
       this.delettingItem = { ...item };
     },
+    async submitImport() {
+      try {
+        const result = await importStudent(
+          this.authentication?.accessToken?.token,
+          this.$route.params.id,
+          this.selectedFile[0]
+        );
+        if (result.success) {
+          await this.fetchData();
+          this.updateToast('success', "Thêm danh sách học sinh thành công!")
+        } else {
+          this.updateToast('error', "Lỗi file!")
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      this.isOpenImport = false
+    },
   },
   watch: {
     isOpenDelete(val) {
@@ -432,6 +506,35 @@ export default {
     datePicker(val) {
       this.datePickerComputed = val ? new Date(val).toLocaleDateString() : null;
     },
+    datePickerComputed(val) {
+      this.formItem.birthday = val;
+    },
+    async selectedFile(val) {
+      if (val) {
+        try {
+          this.isLoadingFile = true
+          const result = await uploadFile(
+            this.authentication?.accessToken?.token,
+            val[0]
+          )
+          if (result.success) {
+            this.formItem.avatar = result.data.url
+          } else {
+            this.selectedFile = null
+            this.updateToast('error', "Lỗi tải ảnh lên!")
+          }
+        } catch (error) {
+          this.selectedFile = null
+          console.log(error);
+        }
+        this.isLoadingFile = false
+      }
+    },
+    "formItem.avatar": function (val) {
+      if (!val) {
+        this.selectedImage = null
+      }
+    }
   },
 };
 </script>

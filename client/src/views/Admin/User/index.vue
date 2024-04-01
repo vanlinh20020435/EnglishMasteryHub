@@ -3,76 +3,40 @@
     <v-toolbar color="#ebebeba3" flat>
       <v-toolbar-title>Danh sách quản trị viên</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn
-        icon="mdi-filter"
-        style="margin-right: 8px"
-        :color="isOpenFilter ? '#00bd7e' : ''"
-        @click="() => (isOpenFilter = !isOpenFilter)"
-      ></v-btn>
-      <v-btn
-        class="mb-2"
-        color="#00bd7e"
-        dark
-        variant="outlined"
-        @click="isOpenForm = true"
-      >
+      <v-btn icon="mdi-filter" style="margin-right: 8px" :color="isOpenFilter ? '#00bd7e' : ''"
+        @click="() => (isOpenFilter = !isOpenFilter)"></v-btn>
+      <v-btn color="#00bd7e" dark variant="outlined" @click="isOpenForm = true">
         Tạo mới
       </v-btn>
     </v-toolbar>
     <v-row v-if="isOpenFilter" style="padding: 8px; margin-top: 8px">
       <v-col cols="12" md="4">
-        <v-text-field
-          v-model="filter.name"
-          label="Name"
-          @update:model-value="fetchFilter"
-          clearable
-        ></v-text-field>
+        <v-text-field v-model="filter.name" label="Name" @update:model-value="fetchFilter" clearable></v-text-field>
       </v-col>
       <v-col cols="12" md="4">
-        <v-text-field
-          v-model="filter.username"
-          label="Username"
-          @update:model-value="fetchFilter"
-          clearable
-        ></v-text-field>
+        <v-text-field v-model="filter.username" label="Username" @update:model-value="fetchFilter"
+          clearable></v-text-field>
       </v-col>
       <v-col cols="12" md="4">
-        <v-text-field
-          v-model="filter.email"
-          label="Email"
-          @update:model-value="fetchFilter"
-          clearable
-        ></v-text-field>
+        <v-text-field v-model="filter.email" label="Email" @update:model-value="fetchFilter" clearable></v-text-field>
       </v-col>
     </v-row>
-    <v-data-table
-      :loading="isLoadingData"
-      :headers="headers"
-      :items="data"
-      :sort-by="[{ key: 'adminId', order: 'asc' }]"
-    >
+    <v-data-table :loading="isLoadingData" :headers="headers" :items="data"
+      :sort-by="[{ key: 'adminId', order: 'asc' }]">
       <template v-slot:item.gender="{ item }">
         {{ item.gender ? "Male" : "Female" }}
       </template>
 
       <template v-slot:item.status="{ item }">
-        <v-chip
-          @click="() => openLock(item)"
-          variant="elevated"
-          :color="item.status ? 'success' : 'error'"
-          >{{ item.status ? "Active" : "Inactive" }}</v-chip
-        >
+        <v-chip @click="() => openLock(item)" variant="elevated" :color="item.status ? 'success' : 'error'">{{
+        item.status ? "Active" : "Inactive" }}</v-chip>
       </template>
 
       <template v-slot:item.avatar="{ item }">
         <v-avatar>
-          <v-img
-            alt="Avatar"
-            :src="
-              item.avatar ||
-              'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'
-            "
-          ></v-img>
+          <v-img alt="Avatar" :src="item.avatar ||
+        'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'
+        "></v-img>
         </v-avatar>
       </template>
 
@@ -80,11 +44,7 @@
         <v-icon class="me-2" color="primary" @click="() => openEdit(item)">
           mdi-pencil
         </v-icon>
-        <v-icon
-          class="me-2"
-          color="warning"
-          @click="() => openChangePassword(item)"
-        >
+        <v-icon class="me-2" color="warning" @click="() => openChangePassword(item)">
           mdi-key-variant
         </v-icon>
         <v-icon color="error" @click="() => openDelete(item)">
@@ -101,51 +61,38 @@
         </v-card-title>
         <v-card-text>
           <v-row>
-            <v-col cols="12" md="12" sm="6">
+            <v-col cols="12" md="12">
               <v-text-field v-model="formItem.name" :rules="nameRules" label="Name*"></v-text-field>
             </v-col>
-            <v-col cols="12" md="12" sm="6">
+            <v-col cols="12" md="12">
               <v-text-field v-model="formItem.username" :rules="usernameRules" label="Username*"></v-text-field>
             </v-col>
-            <v-col v-if="!isEdit" cols="12" md="12" sm="6">
+            <v-col v-if="!isEdit" cols="12" md="12">
               <v-text-field v-model="formItem.password" :rules="passwordRules" label="Password*"></v-text-field>
             </v-col>
-            <v-col cols="12" md="12" sm="6">
-              <v-text-field
-                v-model="formItem.avatar"
-                label="Avatar"
-              ></v-text-field>
+            <v-col v-if="formItem.avatar" cols="12" md="12">
+              <v-text-field prepend-icon="mdi-paperclip" v-model="formItem.avatar" label="Avatar" clearable
+                readonly></v-text-field>
             </v-col>
-            <v-col cols="12" md="12" sm="6">
+            <v-col v-else cols="12" md="12">
+              <v-file-input v-model="selectedFile" label="Avatar" accept="image/png, image/jpeg" hide-no-data
+                show-size></v-file-input>
+            </v-col>
+            <v-col cols="12" md="12">
               <v-text-field v-model="formItem.email" :rules="emailRules" label="Email*"></v-text-field>
             </v-col>
-            <v-col cols="12" md="6" sm="6">
+            <v-col cols="12" md="6">
               <v-select label="Gender*" v-model="formItem.gender" :rules="genderRules"
                 :items="genderSelector"></v-select>
             </v-col>
-            <v-col cols="12" md="6" sm="6">
-              <v-dialog
-                ref="dialog"
-                v-model="isOpenDatePicker"
-                :return-value.sync="datePicker"
-                persistent
-                width="290px"
-              >
+            <v-col cols="12" md="6">
+              <v-dialog ref="dialog" v-model="isOpenDatePicker" :return-value.sync="datePicker" persistent
+                width="290px">
                 <template v-slot:activator="{ attrs }">
-                  <v-text-field
-                    v-model="datePickerComputed"
-                    label="Birthday"
-                    readonly
-                    v-bind="attrs"
-                    clearable
-                    @click="() => (isOpenDatePicker = true)"
-                  ></v-text-field>
+                  <v-text-field v-model="datePickerComputed" label="Birthday" readonly v-bind="attrs" clearable
+                    @click="() => (isOpenDatePicker = true)"></v-text-field>
                 </template>
-                <v-date-picker
-                  v-model="datePicker"
-                  scrollable
-                  @update:model-value="() => (isOpenDatePicker = false)"
-                >
+                <v-date-picker v-model="datePicker" scrollable @update:model-value="() => (isOpenDatePicker = false)">
                 </v-date-picker>
               </v-dialog>
             </v-col>
@@ -156,7 +103,7 @@
           <v-btn variant="tonal" @click="() => (isOpenForm = false)">
             Cancel
           </v-btn>
-          <v-btn color="success" variant="flat" type="submit"> Save </v-btn>
+          <v-btn color="success" variant="flat" type="submit" :disabled="isLoadingFile"> Save </v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
@@ -187,18 +134,10 @@
       </v-card>
     </v-form>
   </v-dialog>
-  <PopUpYesNo
-    :msg="`Bạn có chắc chắn muốn xoá admin ${delettingItem.name}?`"
-    :visible="isOpenDelete"
-    :handleClickYes="deleteItem"
-    :handleClickNo="() => (isOpenDelete = false)"
-  />
-  <PopUpYesNo
-    :msg="`Bạn có chắc chắn muốn ${itemUpdating.status ? 'khóa' : 'mở khóa'}?`"
-    :visible="isOpenLock"
-    :handleClickYes="updateLock"
-    :handleClickNo="() => (isOpenLock = false)"
-  />
+  <PopUpYesNo :msg="`Bạn có chắc chắn muốn xoá admin ${delettingItem.name}?`" :visible="isOpenDelete"
+    :handleClickYes="deleteItem" :handleClickNo="() => (isOpenDelete = false)" />
+  <PopUpYesNo :msg="`Bạn có chắc chắn muốn ${itemUpdating.status ? 'khóa' : 'mở khóa'}?`" :visible="isOpenLock"
+    :handleClickYes="updateLock" :handleClickNo="() => (isOpenLock = false)" />
 </template>
 
 <script>
@@ -211,6 +150,7 @@ import {
   editAdminStatus,
   changeAdminPassword,
   deleteAdmin,
+  uploadFile
 } from "@/services";
 import { authenticationRole, toastStore } from "@/stores";
 import { mapState } from "pinia";
@@ -328,6 +268,8 @@ export default {
       },
       _timerId: null,
       isOpenFilter: false,
+      selectedFile: null,
+      isLoadingFile: false
     };
   },
   computed: {
@@ -505,6 +447,32 @@ export default {
     datePickerComputed(val) {
       this.formItem.birthday = val;
     },
+    async selectedFile(val) {
+      if (val) {
+        try {
+          this.isLoadingFile = true
+          const result = await uploadFile(
+            this.authentication?.accessToken?.token,
+            val[0]
+          )
+          if (result.success) {
+            this.formItem.avatar = result.data.url
+          } else {
+            this.selectedFile = null
+            this.updateToast('error', "Lỗi tải ảnh lên!")
+          }
+        } catch (error) {
+          this.selectedFile = null
+          console.log(error);
+        }
+        this.isLoadingFile = false
+      }
+    },
+    "formItem.avatar": function (val) {
+      if (!val) {
+        this.selectedFile = null
+      }
+    }
   },
 };
 </script>
