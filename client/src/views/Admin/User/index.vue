@@ -277,6 +277,24 @@ export default {
       nameRules: [
         (value) => {
           if (value || value === 0) return true;
+          return 'Gender is required.';
+        },
+      ],
+      passwordRules: [
+        (value) => {
+          if (value || value === 0) return true;
+          return 'Password is required.';
+        },
+      ],
+      usernameRules: [
+        (value) => {
+          if (value || value === 0) return true;
+          return 'Username is required.';
+        },
+      ],
+      nameRules: [
+        (value) => {
+          if (value || value === 0) return true;
           return "Name is required.";
         },
       ],

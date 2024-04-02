@@ -82,6 +82,7 @@ export const apiCallerPost = async (
     result.data = response.data;
     result.success = true;
   } catch (error) {
+    console.log(error);
     result.msg = error.response.data.message;
     result.success = false
   }
@@ -108,6 +109,7 @@ export const apiCallerDelete = async (path, body) => {
     result.success = true;
   } catch (error) {
     result.msg = error.response.data.message;
+    console.log(error);
     result.success = false
   }
   return result;
