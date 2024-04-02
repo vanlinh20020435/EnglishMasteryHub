@@ -12,8 +12,7 @@
         </v-toolbar>
         <v-row v-if="isOpenFilter" style="padding: 8px; margin-top: 8px">
             <v-col cols="12" md="12">
-                <v-text-field v-model="searchValue" label="Name" @update:model-value="fetchFilter"
-                    clearable></v-text-field>
+                <v-text-field v-model="searchValue" label="Name" clearable></v-text-field>
             </v-col>
         </v-row>
         <v-data-table style="overflow-y: auto" fixed-header :headers="headers" :items="filteredStateExams"
@@ -64,7 +63,7 @@ export default {
                 key: "testName",
                 sortable: false,
             },
-            { title: "Mô tả", key: "description", sortable: false },
+            { title: "Người tạo", key: "creator", sortable: false },
             {
                 title: "Thời gian (phút)", key: "time",
                 sortable: false,
@@ -76,7 +75,9 @@ export default {
             {
                 title: "Ngày tạo", key: "created",
                 sortable: false,
-            }, {
+            },
+            { title: "Mô tả", key: "description", sortable: false },
+            {
                 title: "Actions",
                 key: "actions",
                 sortable: false,

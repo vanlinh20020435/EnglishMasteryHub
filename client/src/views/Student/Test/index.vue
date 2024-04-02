@@ -1,5 +1,5 @@
 <template>
-    <v-list>
+    <v-list v-if="tests.length">
         <v-hover v-for="test in tests" v-slot="{ isHovering, props }">
             <v-card @click="$router.replace(`/student/test/${test.testId}`)" :class="{ 'on-hover': isHovering }"
                 :elevation="isHovering ? 4 : 2" v-bind="props" style="margin: 0 8px 8px">
@@ -20,6 +20,7 @@
             </v-card>
         </v-hover>
     </v-list>
+    <v-card v-else class="d-flex justify-center">Bạn không có bài kiểm tra nào</v-card>
 </template>
 
 <script>
