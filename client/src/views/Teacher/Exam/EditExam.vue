@@ -369,7 +369,7 @@
       </v-form>
     </v-container>
     <PopUpYesNo
-      msg="Tạo bài kiểm tra thành công"
+      msg="Chỉnh sửa bài kiểm tra thành công"
       :visible="dialogCreateSuccess"
       btnYes="Đồng ý"
       hideBtnNo
@@ -392,7 +392,7 @@ import {
   WritingManage,
   ListeningManage,
 } from "@/components/skillManage";
-import { apiCallerGet, apiCallerPost } from "@/services/teacher";
+import { apiCallerGet, apiCallerPost, apiCallerPut } from "@/services/teacher";
 import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
 
 export default {
@@ -688,59 +688,57 @@ export default {
     },
 
     async handleSaveExam() {
-    //   if (!!this.valid) {
-    //     const convertQuestion = (question, questionParent) => ({
-    //       content: question?.content,
-    //       skill: questionParent?.skill,
-    //       type: `${questionParent?.type?.toString()}`,
-    //       answers: question?.answers.map((answer) => ({
-    //         answer: answer?.answer,
-    //         explanation: answer?.explanation || "",
-    //       })),
-    //       options: question.options.map((option) => ({
-    //         option: option?.option,
-    //       })),
-    //       files: !!question?.files?.type
-    //         ? [
-    //             {
-    //               type: question?.files?.type,
-    //               url: question?.files?.url,
-    //               name: question?.files?.name,
-    //             },
-    //           ]
-    //         : [],
-    //     });
+      if (!!this.valid) {
+        const convertQuestion = (question, questionParent) => ({
+          content: question?.content,
+          skill: questionParent?.skill,
+          type: `${questionParent?.type?.toString()}`,
+          answers: question?.answers.map((answer) => ({
+            answer: answer?.answer,
+            explanation: answer?.explanation || "",
+          })),
+          options: question.options.map((option) => ({
+            option: option?.option,
+          })),
+          files: !!question?.files?.type
+            ? [
+                {
+                  type: question?.files?.type,
+                  url: question?.files?.url,
+                  name: question?.files?.name,
+                },
+              ]
+            : [],
+        });
 
-    //     const convertedData = this.questionList.map((item) => ({
-    //       content: "",
-    //       description: "",
-    //       title: item?.title,
-    //       type: `${item?.type?.toString()}`,
-    //       skill: item?.skill,
-    //       time: 0,
-    //       subQuestions: item.subQuestions.map((question) =>
-    //         convertQuestion(question, item)
-    //       ),
-    //     }));
+        const convertedData = this.dataExam.questions.map((item) => ({
+          content: "",
+          description: "",
+          title: item?.title,
+          type: `${item?.type?.toString()}`,
+          skill: item?.skill,
+          time: 0,
+          subQuestions: item.subQuestions.map((question) =>
+            convertQuestion(question, item)
+          ),
+        }));
 
-    //     const body = {
-    //       testName: this.dataExam.testName,
-    //       time: this.dataExam.time,
-    //       status: "0",
-    //       description: this.dataExam.description,
-    //       questions: convertedData,
-    //     };
+        const body = {
+          testName: this.dataExam.testName,
+          time: this.dataExam.time,
+          status: "0",
+          description: this.dataExam.description,
+          questions: convertedData,
+        };
 
-    //     const result = await apiCallerPost(
-    //       "/api/testss",
-    //       JSON.parse(localStorage?.getItem("accessToken"))?.token,
-    //       body
-    //     );
+        const urlAPI = "/api/testss/" + this.$route.params.id;
 
-    //     if (result.success) {
-    //       this.dialogCreateSuccess = true;
-    //     }
-    //   }
+        const result = await apiCallerPut(urlAPI, body);
+
+        if (result.success) {
+          this.dialogCreateSuccess = true;
+        }
+      }
     },
   },
 };
@@ -749,4 +747,3 @@ export default {
 <style>
 @import "./Exam.style.scss";
 </style>
-../../../components/skillManage/pronunManage

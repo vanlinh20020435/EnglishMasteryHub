@@ -68,6 +68,7 @@
                 >
                   <QuestionCheckbox
                     isDescOption
+                    :optionItem="question.options[indexOption - 1]"
                     :handleDeleteOption="
                       () => handleDeleteOption(index, indexOption - 1)
                     "
@@ -80,7 +81,12 @@
                         handleChangeExplanation(index, indexOption - 1, value)
                     "
                     :questionIndex="index"
-                    :checked="question.options[indexOption - 1].checked"
+                    :checked="
+                      question.options[indexOption - 1]?.checked ||
+                      (!!question.options[indexOption - 1]?.option &&
+                        question.options[indexOption - 1]?.option ==
+                          question?.answers[0]?.answer)
+                    "
                     @checkboxChange="
                       (value) =>
                         handleCheckboxChange(index, indexOption - 1, value)
@@ -159,8 +165,6 @@ export default {
     // Initialize the showFullQuestion array with default visibility state for each question
     this.questions = this.questionSkill.subQuestions;
 
-    console.log("this.questions ====", this.questions[0].options[0]);
-
     this.showFullQuestion = Array(this.questions?.length).fill(true);
   },
   methods: {
@@ -180,7 +184,6 @@ export default {
       this.$emit("updateGroupTitleQuestion", value);
     },
     handleAddQuestion() {
-      console.log("this.questions ====", this.questions);
       // Add a new question
       const newIndex = this.questions?.length + 1;
       this.questions.push({
@@ -282,8 +285,8 @@ export default {
       if (option.checked) {
         // Checkbox checked, add to answers
         question.answers[0] = {
-          answer: option.option,
-          explanation: option.explanation,
+          answer: option?.option,
+          explanation: option?.explanation,
         };
       } else {
         // Checkbox unchecked, remove from answers
