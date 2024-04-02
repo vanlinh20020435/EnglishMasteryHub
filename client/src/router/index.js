@@ -12,13 +12,17 @@ import {
   DetailClassTeacher,
   ClassStudents,
   StudyDocuments,
+  AssignExam,
+  MarkExam,
+  EditExam,
 } from "@/views/Teacher";
 import { authenticationRole } from "@/stores";
 import Login from "@/views/Login.vue";
 import StudentManager from "@/views/Admin/User/Student.vue";
 import TeacherManager from "@/views/Admin/User/Teacher.vue";
+import ExamManager from "@/views/Admin/Exam/index.vue";
+import CreateExamManager from "@/views/Admin/Exam/Create.vue";
 import Class from "@/views/Admin/Class/index.vue";
-import Event from "@/views/Admin/Event/index.vue";
 import ClassSlug from "@/views/Admin/Class/ClassSlug.vue";
 import Account from "@/views/Account/index.vue";
 import Student from "@/views/Student/index.vue";
@@ -73,6 +77,14 @@ const routes = [
             path: "study-document",
             component: StudyDocuments,
           },
+          {
+            path: "assign-exam",
+            component: AssignExam,
+          },
+          {
+            path: "mark-exam",
+            component: MarkExam,
+          },
         ],
       },
       {
@@ -85,6 +97,10 @@ const routes = [
           {
             path: "add",
             component: CreateExam,
+          },
+          {
+            path: "edit/:id",
+            component: EditExam,
           },
           {
             path: "my_exam",
@@ -137,6 +153,20 @@ const routes = [
       {
         path: "event",
         component: Event,
+      },
+      {
+        path: "exam",
+        children: [
+          {
+            path: "",
+            component: ExamManager,
+            props: { isAdmin: true },
+          },
+          {
+            path: "add",
+            component: CreateExamManager,
+          },
+        ],
       },
     ],
   },

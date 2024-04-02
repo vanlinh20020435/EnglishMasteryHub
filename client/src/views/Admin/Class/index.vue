@@ -10,7 +10,7 @@
         <v-divider vertical />
         <v-btn :color="listType ? '#00bd7e' : ''" icon="mdi-menu" @click="() => (listType = 1)" />
       </div>
-      <v-btn class="mb-2" color="#00bd7e" dark variant="outlined" @click="() => isOpenForm = true">
+      <v-btn color="#00bd7e" dark variant="outlined" @click="() => isOpenForm = true">
         Tạo mới
       </v-btn>
     </v-toolbar>

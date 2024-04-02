@@ -139,3 +139,24 @@ export const deleteClass = async (token = null, id = null) => {
     }
     return result
 }
+
+export const importStudent = async (token = null, id = null, file = null) => {
+    const path = `/api/students/import/${id}`
+    let result = {
+        success: false,
+        data: null,
+    };
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+        const response = await $axios.post(path, formData, {
+            headers: { 'Authorization': 'Bearer ' + token },
+        });
+        result.data = response.data;
+        result.success = true;
+    } catch (error) {
+        console.log(error);
+        result.success = false
+    }
+    return result;
+};

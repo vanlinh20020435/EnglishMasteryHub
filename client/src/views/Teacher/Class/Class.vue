@@ -51,7 +51,7 @@
             </v-card>
           </v-col>
         </div>
-        <v-row v-else-if="!isLoading" style="height: 90%">
+        <v-row v-else-if="!isLoading" class="ma-0" style="height: 90%">
           <v-col>
             <div class="d-flex flex-column align-center class-empty">
               <img
