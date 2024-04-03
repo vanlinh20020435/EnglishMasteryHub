@@ -23,7 +23,7 @@ import TeacherManager from "@/views/Admin/User/Teacher.vue";
 import Class from "@/views/Admin/Class/index.vue";
 import Event from "@/views/Admin/Event/index.vue";
 import ClassSlug from "@/views/Admin/Class/ClassSlug.vue";
-import { Account, EditAccount } from "@/views/Account";
+import { Account, EditAccount, UpdatePassword } from "@/views/Account";
 import Student from "@/views/Student/index.vue";
 import News from "@/views/Student/News.vue";
 import Test from "@/views/Student/Test/index.vue";
@@ -48,6 +48,11 @@ const routes = [
   {
     path: "/:role/account/edit",
     component: EditAccount,
+    public: true,
+  },
+  {
+    path: "/:role/account/update-password",
+    component: UpdatePassword,
     public: true,
   },
   {
