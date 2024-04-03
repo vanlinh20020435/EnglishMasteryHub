@@ -47,8 +47,9 @@
                   @click="
                     $router.push(`/${this.authentication.user.role}/account`)
                   "
+                  class="justify-start w-100"
                 >
-                  Account
+                  Hồ sơ
                 </v-btn>
                 <v-divider class="my-3"></v-divider>
                 <v-btn
@@ -57,7 +58,7 @@
                   prepend-icon="mdi-logout"
                   @click="isOpenLogout = true"
                 >
-                  Log out
+                  Đăng xuất
                 </v-btn>
               </div>
             </v-card-text>

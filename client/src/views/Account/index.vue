@@ -64,6 +64,23 @@
                   </div>
                 </div>
               </div>
+
+              <v-row class="d-flex justify-end mt-10">
+                <v-btn
+                  @click="
+                    () => {
+                      this.$router.push(
+                        `/${this.authentication?.user?.role}/account/update-password`
+                      );
+                    }
+                  "
+                  rounded
+                  type="submit"
+                  color="#00bd7e"
+                  theme="dark"
+                  >Đổi mật khẩu</v-btn
+                >
+              </v-row>
             </div>
           </div>
         </div>
