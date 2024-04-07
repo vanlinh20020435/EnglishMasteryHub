@@ -140,9 +140,9 @@ export default {
         },
         editItem(item) {
             console.log("Edit: ", item);
-            // this.$router.push(
-            //     `/${this.authentication.user.role}/exam/edit/${item.testId}`
-            // );
+            this.$router.push(
+                `/${this.authentication.user.role}/exam/edit/${item.testId}`
+            );
         },
         handleDelete(item) {
             this.isOnenDelete = true

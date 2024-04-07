@@ -160,3 +160,58 @@ export const importStudent = async (token = null, id = null, file = null) => {
     }
     return result;
 };
+
+export const addTestToClass = async (token = null, classId = null, testId = null, payload = {}) => {
+    const path = `/api/class/${classId}/tests/${testId}`
+    let result = {
+        success: false,
+        data: null,
+    };
+    try {
+        const response = await $axios.post(path, payload, {
+            headers: { 'Authorization': 'Bearer ' + token },
+        });
+        result.data = response.data;
+        result.success = true;
+    } catch (error) {
+        console.log(error);
+        result.success = false
+    }
+    return result;
+};
+
+export const deleteTestInClass = async (token = null, classId = null, testId = null) => {
+    const path = `/api/class/${classId}/tests/${testId}`
+    let result = {
+        success: false,
+        data: null,
+    };
+    try {
+        const response = await $axios.delete(path, {
+            headers: { 'Authorization': 'Bearer ' + token },
+        });
+        result.data = response.data;
+        result.success = true;
+    } catch (error) {
+        console.log(error);
+        result.success = false
+    }
+    return result;
+};
+
+export const getFilesByClass = async (token = null, classId) => {
+    const path = `/api/class/${classId}/files/get-all`
+    var result = {
+        success: false,
+        data: null
+    }
+    try {
+        const response = await $axios.get(path, { headers: { 'Authorization': 'Bearer ' + token } })
+        result.data = response.data;
+        result.success = true
+    } catch (error) {
+        console.log(error);
+        result.success = false
+    }
+    return result
+}

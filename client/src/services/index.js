@@ -36,10 +36,13 @@ export {
   createClass,
   editClass,
   deleteClass,
-  importStudent
+  importStudent,
+  addTestToClass,
+  deleteTestInClass,
+  getFilesByClass
 } from './class';
 export { login, getUserInfo } from './auth';
-export { getTests, getTest, getTestInfo, getTestsByClass } from './test';
+export { getTests, getTest, getTestByClass, getTestInfoByClass } from './test';
 
 export const uploadFile = async (token, file) => {
   let result = {
