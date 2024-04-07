@@ -8,84 +8,47 @@
     </v-snackbar>
 
     <v-container class="d-flex flex-column height-100 v-container__full">
-      <HeaderTitle
-        title="Chỉnh sửa bài kiểm tra"
-        textBtn="Quay lại"
-        :handleClickBtn="
-          () => {
-            this.$router.go(-1);
-          }
-        "
-      />
+      <HeaderTitle title="Chỉnh sửa bài kiểm tra" textBtn="Quay lại" :handleClickBtn="() => {
+        this.$router.go(-1);
+      }
+        " />
       <v-divider class="header_divider" :thickness="2"></v-divider>
       <v-form v-model="valid" @submit.prevent="handleSaveExam">
         <v-row class="d-flex justify-center">
-          <v-col
-            style="padding-right: 2%"
-            class="height-100 d-flex flex-column align-center"
-            cols="12"
-            md="8"
-          >
+          <v-col style="padding-right: 2%" class="height-100 d-flex flex-column align-center" cols="12" md="8">
             <v-col>
               <v-row class="d-flex align-center">
                 <v-col cols="3">
-                  <v-list-subheader class="label-required"
-                    >Tên bài kiểm tra</v-list-subheader
-                  >
+                  <v-list-subheader class="label-required">Tên bài kiểm tra</v-list-subheader>
                 </v-col>
 
                 <v-col cols="9">
-                  <v-text-field
-                    :rules="required"
-                    placeholder="Tên bài kiểm tra"
-                    hide-no-data
-                    clearable
-                    v-model="dataExam.testName"
-                  >
+                  <v-text-field :rules="required" placeholder="Tên bài kiểm tra" hide-no-data clearable
+                    v-model="dataExam.testName">
                   </v-text-field>
                 </v-col>
               </v-row>
 
               <v-row class="d-flex align-center">
                 <v-col cols="3">
-                  <v-list-subheader class="label-required"
-                    >Thời gian làm bài</v-list-subheader
-                  >
+                  <v-list-subheader class="label-required">Thời gian làm bài</v-list-subheader>
                 </v-col>
 
                 <v-col cols="9">
-                  <v-text-field
-                    :rules="required"
-                    v-model="dataExam.time"
-                    placeholder="Thời gian"
-                    hide-no-data
-                    clearable
-                    single-line
-                    type="number"
-                  >
+                  <v-text-field :rules="required" v-model="dataExam.time" placeholder="Thời gian" hide-no-data clearable
+                    single-line type="number">
                   </v-text-field>
                 </v-col>
               </v-row>
 
-              <v-row
-                v-if="!!dataExam?.totalQuestions"
-                class="d-flex align-center"
-              >
+              <v-row v-if="!!dataExam?.totalQuestions" class="d-flex align-center">
                 <v-col cols="3">
-                  <v-list-subheader class="label-required"
-                    >Tổng số câu hỏi</v-list-subheader
-                  >
+                  <v-list-subheader class="label-required">Tổng số câu hỏi</v-list-subheader>
                 </v-col>
 
                 <v-col cols="9">
-                  <v-text-field
-                    v-model="dataExam.totalQuestions"
-                    hide-no-data
-                    single-line
-                    type="number"
-                    variant="solo"
-                    readonly
-                  >
+                  <v-text-field v-model="dataExam.totalQuestions" hide-no-data single-line type="number" variant="solo"
+                    readonly>
                   </v-text-field>
                 </v-col>
               </v-row>
@@ -96,289 +59,174 @@
                 </v-col>
 
                 <v-col cols="9">
-                  <v-textarea
-                    placeholder="Mô tả"
-                    rows="4"
-                    max-rows="4"
-                    variant="filled"
-                    auto-grow
-                    v-model="dataExam.description"
-                    hide-no-data
-                    counter
-                    hide-details
-                  >
+                  <v-textarea placeholder="Mô tả" rows="4" max-rows="4" variant="filled" auto-grow
+                    v-model="dataExam.description" hide-no-data counter hide-details>
                   </v-textarea>
                 </v-col>
               </v-row>
             </v-col>
 
             <v-col style="padding-top: 5rem">
-              <v-col
-                class="d-flex flex-row align-center"
-                style="padding-bottom: 2rem"
-              >
+              <v-col class="d-flex flex-row align-center" style="padding-bottom: 2rem">
                 <v-col cols="9">
                   <v-row class="d-flex align-center">
                     <v-col cols="2">
                       <v-list-subheader>Dạng bài</v-list-subheader>
                     </v-col>
                     <v-col cols="4">
-                      <v-autocomplete
-                        v-model="selectedSkill"
-                        :items="dataSkills"
-                        hide-details
-                        auto-select-first
-                      >
+                      <v-autocomplete v-model="selectedSkill" :items="dataSkills" hide-details auto-select-first>
                       </v-autocomplete>
                     </v-col>
                     <v-col cols="6">
-                      <v-autocomplete
-                        v-model="selectedTypeSkill"
-                        hide-details
-                        :items="filteredDataTypes"
-                        item-text="title"
-                        return-object
-                      >
+                      <v-autocomplete v-model="selectedTypeSkill" hide-details :items="filteredDataTypes"
+                        item-text="title" return-object>
                       </v-autocomplete>
                     </v-col>
                   </v-row>
                 </v-col>
                 <v-col cols="3" class="d-flex justify-end">
-                  <v-btn @click="handleAddSkill" color="#00bd7e" theme="dark"
-                    >Thêm mới</v-btn
-                  >
+                  <v-btn @click="handleAddSkill" color="#00bd7e" theme="dark">Thêm mới</v-btn>
                 </v-col>
               </v-col>
 
               <v-row>
                 <v-col cols="12" class="listSkill">
-                  <v-row
-                    v-for="(skill, index) in dataSkills"
-                    :key="index"
-                    class="d-flex align-center"
-                  >
+                  <v-row v-for="(skill, index) in dataSkills" :key="index" class="d-flex align-center">
                     <v-col class="pa-0 mt-2 mb-3 toolbar-with-border">
                       <v-toolbar color="#fff" flat>
                         <v-toolbar-title>{{ skill.title }}</v-toolbar-title>
                       </v-toolbar>
-                      <v-col
-                        v-for="(question, indexQuestion) in dataExam.questions"
-                        :key="indexQuestion"
-                        class="pa-0"
-                      >
+                      <v-col v-for="(question, indexQuestion) in dataExam.questions" :key="indexQuestion" class="pa-0">
                         <!-- Pronunciation -->
-                        <v-col
-                          class="pa-2 pt-0"
-                          v-if="
-                            question.skill == skill.title.toLowerCase() &&
-                            question.skill == 'pronunciation'
-                          "
-                          ><PronunManage
-                            :skillTypeSelected="
-                              question?.title || selectedTypeSkill
-                            "
-                            :question="question"
-                            :handleDeleteSkill="
-                              () => removePronun1(indexQuestion)
-                            "
-                            @deleteQuestion="
-                              handleDeleteQuestionInPronun1(
-                                indexQuestion,
-                                $event
-                              )
-                            "
-                            @updateGroupTitleQuestion="
-                              handleUpdateGroupTitleQuestion(
-                                indexQuestion,
-                                $event
-                              )
-                            "
-                          />
+                        <v-col class="pa-2 pt-0" v-if="question.skill == skill.title.toLowerCase() &&
+        question.skill == 'pronunciation'
+        ">
+                          <PronunManage :skillTypeSelected="question?.title || selectedTypeSkill
+        " :question="question" :handleDeleteSkill="() => removePronun1(indexQuestion)
+        " @deleteQuestion="
+        handleDeleteQuestionInPronun1(
+          indexQuestion,
+          $event
+        )
+        " @updateGroupTitleQuestion="
+        handleUpdateGroupTitleQuestion(
+          indexQuestion,
+          $event
+        )
+        " />
                         </v-col>
                         <!-- Grammar -->
-                        <v-col
-                          class="pa-2 pt-0"
-                          v-if="
-                            question.skill == skill.title.toLowerCase() &&
-                            question.skill == 'grammar'
-                          "
-                          ><GrammarManage
-                            :skillTypeSelected="
-                              question?.title || selectedTypeSkill
-                            "
-                            :question="question"
-                            :handleDeleteSkill="
-                              () => removePronun1(indexQuestion)
-                            "
-                            @deleteQuestion="
-                              handleDeleteQuestionInPronun1(
-                                indexQuestion,
-                                $event
-                              )
-                            "
-                            @updateGroupTitleQuestion="
-                              handleUpdateGroupTitleQuestion(
-                                indexQuestion,
-                                $event
-                              )
-                            "
-                          />
+                        <v-col class="pa-2 pt-0" v-if="question.skill == skill.title.toLowerCase() &&
+        question.skill == 'grammar'
+        ">
+                          <GrammarManage :skillTypeSelected="question?.title || selectedTypeSkill
+        " :question="question" :handleDeleteSkill="() => removePronun1(indexQuestion)
+        " @deleteQuestion="
+        handleDeleteQuestionInPronun1(
+          indexQuestion,
+          $event
+        )
+        " @updateGroupTitleQuestion="
+        handleUpdateGroupTitleQuestion(
+          indexQuestion,
+          $event
+        )
+        " />
                         </v-col>
 
                         <!-- Reading -->
-                        <v-col
-                          class="pa-2 pt-0"
-                          v-if="
-                            question.skill == skill.title.toLowerCase() &&
-                            question.skill == 'reading'
-                          "
-                          ><ReadingManage
-                            :skillTypeSelected="
-                              question?.title || selectedTypeSkill
-                            "
-                            :question="question"
-                            :handleDeleteSkill="
-                              () => removePronun1(indexQuestion)
-                            "
-                            @deleteQuestion="
-                              handleDeleteQuestionInPronun1(
-                                indexQuestion,
-                                $event
-                              )
-                            "
-                            @updateGroupTitleQuestion="
-                              handleUpdateGroupTitleQuestion(
-                                indexQuestion,
-                                $event
-                              )
-                            "
-                          />
+                        <v-col class="pa-2 pt-0" v-if="question.skill == skill.title.toLowerCase() &&
+        question.skill == 'reading'
+        ">
+                          <ReadingManage :skillTypeSelected="question?.title || selectedTypeSkill
+        " :question="question" :handleDeleteSkill="() => removePronun1(indexQuestion)
+        " @deleteQuestion="
+        handleDeleteQuestionInPronun1(
+          indexQuestion,
+          $event
+        )
+        " @updateGroupTitleQuestion="
+        handleUpdateGroupTitleQuestion(
+          indexQuestion,
+          $event
+        )
+        " />
                         </v-col>
 
                         <!-- Listening -->
-                        <v-col
-                          class="pa-2 pt-0"
-                          v-if="
-                            question.skill == skill.title.toLowerCase() &&
-                            question.skill == 'listening'
-                          "
-                          ><ListeningManage
-                            :skillTypeSelected="
-                              question?.title || selectedTypeSkill
-                            "
-                            :question="question"
-                            :handleDeleteSkill="
-                              () => removePronun1(indexQuestion)
-                            "
-                            @deleteQuestion="
-                              handleDeleteQuestionInPronun1(
-                                indexQuestion,
-                                $event
-                              )
-                            "
-                            @updateGroupTitleQuestion="
-                              handleUpdateGroupTitleQuestion(
-                                indexQuestion,
-                                $event
-                              )
-                            "
-                          />
+                        <v-col class="pa-2 pt-0" v-if="question.skill == skill.title.toLowerCase() &&
+        question.skill == 'listening'
+        ">
+                          <ListeningManage :skillTypeSelected="question?.title || selectedTypeSkill
+        " :question="question" :handleDeleteSkill="() => removePronun1(indexQuestion)
+        " @deleteQuestion="
+        handleDeleteQuestionInPronun1(
+          indexQuestion,
+          $event
+        )
+        " @updateGroupTitleQuestion="
+        handleUpdateGroupTitleQuestion(
+          indexQuestion,
+          $event
+        )
+        " />
                         </v-col>
 
                         <!-- Writing -->
-                        <v-col
-                          class="pa-2 pt-0"
-                          v-if="
-                            question.skill == skill.title.toLowerCase() &&
-                            question.skill == 'writing'
-                          "
-                          ><WritingManage
-                            :skillTypeSelected="
-                              question?.title || selectedTypeSkill
-                            "
-                            :question="question"
-                            :handleDeleteSkill="
-                              () => removePronun1(indexQuestion)
-                            "
-                            @deleteQuestion="
-                              handleDeleteQuestionInPronun1(
-                                indexQuestion,
-                                $event
-                              )
-                            "
-                            @updateGroupTitleQuestion="
-                              handleUpdateGroupTitleQuestion(
-                                indexQuestion,
-                                $event
-                              )
-                            "
-                          />
+                        <v-col class="pa-2 pt-0" v-if="question.skill == skill.title.toLowerCase() &&
+        question.skill == 'writing'
+        ">
+                          <WritingManage :skillTypeSelected="question?.title || selectedTypeSkill
+        " :question="question" :handleDeleteSkill="() => removePronun1(indexQuestion)
+        " @deleteQuestion="
+        handleDeleteQuestionInPronun1(
+          indexQuestion,
+          $event
+        )
+        " @updateGroupTitleQuestion="
+        handleUpdateGroupTitleQuestion(
+          indexQuestion,
+          $event
+        )
+        " />
                         </v-col>
-                      </v-col> </v-col
-                  ></v-row>
+                      </v-col> </v-col></v-row>
                 </v-col>
               </v-row>
             </v-col>
           </v-col>
           <v-col class="height-100" cols="12" md="3">
-            <v-card
-              class="mx-auto card_tips"
-              max-width="344"
-              prepend-icon="mdi-lightbulb-on"
-              title="Tips: Hướng dẫn tạo dữ liệu !!!"
-            >
-              <v-card-text
-                >{Đáp án đúng}: Quy ước sử dụng cho các dạng bài điền từ, từ cần
+            <v-card class="mx-auto card_tips" max-width="344" prepend-icon="mdi-lightbulb-on"
+              title="Tips: Hướng dẫn tạo dữ liệu !!!">
+              <v-card-text>{Đáp án đúng}: Quy ước sử dụng cho các dạng bài điền từ, từ cần
                 điền sẽ nằm trong dấu {}, khi hiển thị đoạn {Đáp án đúng} sẽ
-                được thay thế bằng chỗ trống ____</v-card-text
-              >
-              <v-card-text
-                >{Đáp án đúng / đáp án khác}: Quy ước sử dụng cho các dạng bài
+                được thay thế bằng chỗ trống ____</v-card-text>
+              <v-card-text>{Đáp án đúng / đáp án khác}: Quy ước sử dụng cho các dạng bài
                 điền từ, nếu có nhiều hơn 1 đáp án, giữa các đáp án phân cách
-                bằng dấu /</v-card-text
-              >
-              <v-card-text
-                >[Nội dung hiển thị]: Quy ước sử dụng cho các dạng bài gạch
+                bằng dấu /</v-card-text>
+              <v-card-text>[Nội dung hiển thị]: Quy ước sử dụng cho các dạng bài gạch
                 chân. Phần nội dung trong [] sẽ được gạch chân khi hiển
-                thị.</v-card-text
-              >
+                thị.</v-card-text>
             </v-card>
           </v-col>
         </v-row>
-        <div
-          style="max-width: 95%"
-          color="#fff"
-          class="d-flex flex-row mt-15 pb-10"
-        >
+        <div style="max-width: 95%" color="#fff" class="d-flex flex-row mt-15 pb-10">
           <v-spacer></v-spacer>
           <v-row class="d-flex justify-end">
-            <v-btn
-              @click="
-                () => {
-                  this.$router.go(-1);
-                }
-              "
-              color="#F1F2F7"
-              theme="dark"
-              class="mr-10"
-              >Hủy</v-btn
-            >
+            <v-btn @click="() => {
+        this.$router.go(-1);
+      }
+        " color="#F1F2F7" theme="dark" class="mr-10">Hủy</v-btn>
             <v-btn type="submit" color="#00bd7e" theme="dark">Lưu</v-btn>
           </v-row>
         </div>
       </v-form>
     </v-container>
-    <PopUpYesNo
-      msg="Chỉnh sửa bài kiểm tra thành công"
-      :visible="dialogCreateSuccess"
-      btnYes="Đồng ý"
-      hideBtnNo
-      :handleClickYes="
-        () => {
-          this.$router.go(-1);
-        }
-      "
-    />
+    <PopUpYesNo msg="Chỉnh sửa bài kiểm tra thành công" :visible="dialogCreateSuccess" btnYes="Đồng ý" hideBtnNo
+      :handleClickYes="() => {
+        this.$router.go(-1);
+      }
+        " />
   </v-card>
 </template>
 
@@ -702,12 +550,12 @@ export default {
           })),
           files: !!question?.files?.type
             ? [
-                {
-                  type: question?.files?.type,
-                  url: question?.files?.url,
-                  name: question?.files?.name,
-                },
-              ]
+              {
+                type: question?.files?.type,
+                url: question?.files?.url,
+                name: question?.files?.name,
+              },
+            ]
             : [],
         });
 
@@ -744,6 +592,60 @@ export default {
 };
 </script>
 
-<style>
-@import "./Exam.style.scss";
+<style lang="scss">
+.exam_empty {
+  padding-top: 3%;
+
+  .img_empty {
+    width: 40%;
+    object-fit: contain;
+    margin-bottom: 1.5rem;
+    max-width: 20rem;
+    max-height: 70%;
+  }
+}
+
+.card_tips {
+  .v-card-title {
+    font-size: clamp(1rem, 1.2vw, 1.125rem);
+    white-space: pre;
+  }
+
+  .v-card-item {
+    .v-icon {
+      color: #ffc107;
+      opacity: 1;
+    }
+  }
+}
+
+.toolbar-with-border {
+  border: 1px solid #fd7e14;
+
+  .v-toolbar-title__placeholder {
+    font-size: 14px;
+  }
+}
+
+.create-exam {
+  .v-list-subheader__text {
+    white-space: pre-wrap !important;
+    overflow: visible;
+    word-wrap: break-word;
+    color: #4d4d4d;
+  }
+}
+
+.label-required .v-list-subheader__text {
+  position: relative;
+}
+
+.label-required .v-list-subheader__text::after {
+  position: absolute;
+  content: "*";
+  right: -20px;
+  color: red;
+  top: 0;
+  bottom: 0;
+}
 </style>

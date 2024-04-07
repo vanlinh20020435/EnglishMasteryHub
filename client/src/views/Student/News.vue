@@ -4,7 +4,7 @@
     </v-card>
     <div :class="`class-wrapper ${$vuetify.display.smAndDown ? 'sm' : ''}`">
         <v-avatar class="class-avatar">
-            <v-img class="class-avatar-img" alt="Avatar" :src="user?.avatar ||
+            <v-img class="class-avatar-img" alt="Avatar" :src="student?.avatar ||
         'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'
         "></v-img>
         </v-avatar>
@@ -25,28 +25,7 @@
     <v-card style="margin-bottom: 16px;">
         <v-card-title>Thông báo</v-card-title>
         <v-card-text>
-
-            <v-list>
-                <v-hover v-for="noti in notis" v-slot="{ isHovering, props }">
-                    <v-card @click="onclicknoti" :class="{ 'on-hover': isHovering }" :elevation="isHovering ? 4 : 2"
-                        v-bind="props" style="margin: 0 8px 8px">
-                        <v-list-item :key="noti.id" :subtitle="noti.id" :title="noti.id">
-                            <template v-slot:prepend>
-                                <v-avatar :color="notiTypeEnum[noti.type || 'notification'].color">
-                                    <v-icon color="white">{{ notiTypeEnum[noti.type || 'notification'].icon }}</v-icon>
-                                </v-avatar>
-                            </template>
-
-                            <template v-slot:append>
-                                <div style="display: flex; flex-direction: column; align-items: flex-end;">
-                                    <v-list-item-title>Thời gian làm bài: {{ noti.id }} phút</v-list-item-title>
-                                    <v-list-item-subtitle>Tổng số câu hỏi: {{ noti.id }} câu</v-list-item-subtitle>
-                                </div>
-                            </template>
-                        </v-list-item>
-                    </v-card>
-                </v-hover>
-            </v-list>
+            <Notification />
         </v-card-text>
     </v-card>
     <v-card>
@@ -74,8 +53,12 @@
 import { getStudentsOfClass } from '@/services'
 import { mapState } from 'pinia';
 import { authenticationRole, studentStore } from '@/stores';
+import Notification from '@/views/Student/Notification/index.vue'
 
 export default {
+    components: {
+        Notification
+    },
     data: () => ({
         test: {},
         students: [],
@@ -92,27 +75,10 @@ export default {
             { title: 'Birthday', key: 'birthday', sortable: false },
             { title: 'Gender', key: 'gender', sortable: false },
         ],
-        notis: [{ type: 'event' }, { type: 'notification' }, { type: 'exam' }]
     }),
     computed: {
         ...mapState(authenticationRole, ['authentication']),
-        ...mapState(studentStore, ['student']),
-        notiTypeEnum() {
-            return ({
-                notification: {
-                    color: 'primary',
-                    icon: 'mdi-bullhorn'
-                },
-                event: {
-                    color: 'warning',
-                    icon: 'mdi-star'
-                },
-                exam: {
-                    color: 'success',
-                    icon: 'mdi-clipboard-text'
-                }
-            })
-        }
+        ...mapState(studentStore, ['student'])
     },
     async mounted() {
         await this.getStudents()
@@ -123,8 +89,7 @@ export default {
             if (res.success) {
                 this.students = res.data
             }
-        },
-        onclicknoti() { }
+        }
     }
 }
 </script>

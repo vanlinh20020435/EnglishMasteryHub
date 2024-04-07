@@ -35,10 +35,36 @@ export {
   searchClasses,
   createClass,
   editClass,
-  deleteClass
+  deleteClass,
+  importStudent,
+  addTestToClass,
+  deleteTestInClass,
+  getFilesByClass
 } from './class';
 export { login, getUserInfo } from './auth';
-export { getTests, getTest, getTestInfo, getTestsByClass } from './test';
+export { getTests, getTest, getTestByClass, getTestInfoByClass } from './test';
+
+export const uploadFile = async (token, file) => {
+  let result = {
+    success: false,
+    data: null,
+  };
+  try {
+    const path = "/upload";
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await $axios.post(path, formData, {
+      headers: { 'Authorization': 'Bearer ' + token },
+    });
+
+    result.data = response.data;
+    result.success = true;
+  } catch (error) {
+    console.log(error);
+    result.success = false
+  }
+  return result;
+}
 
 const $axios = {
   ...axios.create({

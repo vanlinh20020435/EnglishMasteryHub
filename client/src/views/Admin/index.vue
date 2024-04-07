@@ -40,11 +40,6 @@ export default {
         icon: "mdi mdi-file-edit",
 
       }
-      // {
-      //     title: 'Quản lí sự kiện',
-      //     value: 'event',
-      //     icon: 'mdi-calendar-star',
-      // },
     ],
   }),
 };

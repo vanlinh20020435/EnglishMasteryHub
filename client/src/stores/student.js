@@ -5,7 +5,6 @@ export const studentStore = defineStore('student', () => {
   const student = ref({ class: {} });
   const cls = computed(() => student.value.class);
   async function updateStudent(newData) {
-    console.log('store');
     student.value = {
       ...student.value,
       ...newData,

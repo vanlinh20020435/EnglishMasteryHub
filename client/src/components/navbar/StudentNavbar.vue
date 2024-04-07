@@ -27,12 +27,14 @@
               <h3>{{ user.name }}</h3>
               <p class="text-caption mt-1">{{ user.email }}</p>
               <v-divider class="my-3"></v-divider>
-              <v-btn rounded variant="text" prepend-icon="mdi-account" @click="$router.replace('/account')">
-                Account
+              <v-btn rounded variant="text" prepend-icon="mdi-account" @click="
+          $router.push(`/${this.authentication.user.role}/account`)
+          " class="justify-start 2-100">
+                Hồ sơ
               </v-btn>
               <v-divider class="my-3"></v-divider>
               <v-btn rounded variant="text" prepend-icon="mdi-logout" @click="isOpenLogout = true">
-                Log out
+                Đăng xuất
               </v-btn>
             </div>
           </v-card-text>
@@ -55,9 +57,9 @@
 </template>
 
 <script>
-import PopUpYesNo from '@/components/popup/PopUpYesNo.vue';
-import { authenticationRole } from '@/stores';
-import { mapState } from 'pinia';
+import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
+import { authenticationRole } from "@/stores";
+import { mapState } from "pinia";
 export default {
   components: {
     PopUpYesNo,
@@ -67,7 +69,7 @@ export default {
     drawwing: Function,
   },
   computed: {
-    ...mapState(authenticationRole, ['clearAuth']),
+    ...mapState(authenticationRole, ["clearAuth"]),
   },
   data: () => ({
     isOpenLogout: false,
@@ -75,7 +77,7 @@ export default {
   }),
   created() {
     const path = this.$route.fullPath;
-    const pathSplit2 = path.split('/')[2];
+    const pathSplit2 = path.split("/")[2];
     const cases = {
       news: 1,
       test: 2,
@@ -86,11 +88,22 @@ export default {
   methods: {
     logout() {
       this.isOpenLogout = false;
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('user');
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
       this.clearAuth();
-      this.$router.replace('/login');
+      this.$router.replace("/login");
     },
   },
+  watch: {
+    $route(val) {
+      const current = val.path.split('/')[2]
+      const cases = {
+        news: 1,
+        test: 2,
+        document: 3,
+      };
+      this.tab = cases[current] || 1;
+    }
+  }
 };
 </script>

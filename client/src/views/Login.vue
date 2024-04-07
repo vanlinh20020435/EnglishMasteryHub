@@ -32,6 +32,11 @@ import { login, getUserInfo } from '@/services'
 import { authenticationRole, toastStore } from "@/stores";
 import { mapState } from "pinia";
 
+import avtStudentMale from "@/assets/images/avatar_student_male.jpg";
+import avtStudentFemale from "@/assets/images/avatar_student_female.jpg";
+import avtTeacherFemale from "@/assets/images/avatar_teacher_female.jpg";
+import avtTeacherMale from "@/assets/images/avatar_teacher_male.jpg";
+
 export default {
     data: () => ({
         loginFailed: false,
@@ -61,7 +66,8 @@ export default {
                     this.updateAuth({ accessToken: res.data.accessToken })
                     const userInfoRes = await getUserInfo(res.data.accessToken.token)
                     if (userInfoRes.success) {
-                        userInfoRes.data.role = userInfoRes.data.role.toLowerCase()
+                        userInfoRes.data.role = userInfoRes.data.role.toLowerCase();
+                        userInfoRes.data.avatar = userInfoRes.data.avatar ? userInfoRes.data.avatar : this.getAvtUser(userInfoRes.data);
                         this.updateAuth({ user: userInfoRes.data })
                         this.updateToast('success', "Login success!")
                         this.$router.replace(`/${this.authentication.user.role}`)
@@ -80,6 +86,26 @@ export default {
         onChange() {
             this.loginFailed = false
             this.userNotFound = false
+        },
+        getAvtUser(userInfo) {
+            let avatar = '';
+            switch (userInfo.role.toLowerCase()) {
+                case 'student':
+                    avatar = userInfo.gender ? avtStudentMale : avtStudentFemale;
+                    break;
+                case 'teacher':
+                case 'admin':
+                    avatar = avtTeacherMale; // Assuming male avatar for teacher and admin
+                    if (!userInfo.gender) {
+                        avatar = avtTeacherFemale; // Change to female avatar if gender is female
+                    }
+                    break;
+                default:
+                    // Handle other roles if needed
+                    break;
+            }
+
+            return avatar;
         }
     }
 }
