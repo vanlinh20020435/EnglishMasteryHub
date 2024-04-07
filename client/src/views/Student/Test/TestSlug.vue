@@ -1,5 +1,8 @@
 <template>
-    <v-card>
+    <v-card v-if="isLoading" class="d-flex justify-center">
+        <v-progress-circular :size="70" :width="7" color="success" indeterminate></v-progress-circular>
+    </v-card>
+    <v-card v-else>
         <div style="display: flex;">
             <div style="flex: 1">
                 <v-card-title style="font-size: 1.75rem;">{{ test.testName }}</v-card-title>
@@ -37,17 +40,20 @@ import { authenticationRole, studentStore } from '@/stores';
 
 export default {
     data: () => ({
-        test: {}
+        test: {},
+        isLoading: false
     }),
     computed: {
         ...mapState(authenticationRole, ['authentication']),
         ...mapState(studentStore, ['student']),
     },
     async mounted() {
+        this.isLoading = true
         const res = await getTestByClass(this.authentication.accessToken.token, this.student.class.classId, this.$route.params.id)
         if (res.success) {
             this.test = res.data
         }
+        this.isLoading = false
     }
 }
 </script>

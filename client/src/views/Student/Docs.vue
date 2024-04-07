@@ -4,8 +4,8 @@
     </v-card>
     <v-list v-else-if="filesInfo?.length" style="padding-top: 0; padding-bottom: 0;">
         <v-hover v-for="file in filesInfo" v-slot="{ isHovering, props }">
-            <v-card @click="fileClick" :class="{ 'on-hover': isHovering }" :elevation="isHovering ? 4 : 2"
-                v-bind="props" style="margin: 0 8px 8px">
+            <v-card @click="() => fileClick(file.url)" :class="{ 'on-hover': isHovering }"
+                :elevation="isHovering ? 4 : 2" v-bind="props" style="margin: 0 8px 8px">
                 <v-list-item :key="file.fileId" :subtitle="file.url" :title="file.name">
                     <template v-slot:prepend>
                         <v-avatar color="success">
@@ -48,8 +48,8 @@ export default {
         this.isLoading = false
     },
     methods: {
-        fileClick() {
-
+        fileClick(url) {
+            window.open(url, "_blank");
         }
     }
 }
