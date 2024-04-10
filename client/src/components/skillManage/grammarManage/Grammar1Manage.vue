@@ -1,84 +1,44 @@
 <template>
-	<GroupQuestion
-		:questionSkill="questionSkill"
-		:groupTitleQuestion="groupTitleQuestion"
-		:handleDeleteSkill="handleDeleteSkill"
-		@updateGroupTitleQuestionOri="updateGroupTitleQuestion($event)"
-	>
+	<GroupQuestion :questionSkill="questionSkill" :groupTitleQuestion="groupTitleQuestion"
+		:handleDeleteSkill="handleDeleteSkill" @updateGroupTitleQuestionOri="updateGroupTitleQuestion($event)">
 		<template v-slot:list-questions>
 			<v-col class="d-flex flex-column align-center pa-3">
-				<v-col
-					cols="12"
-					v-for="(question, index) in questions"
-					:key="index"
-					class="pa-0 mt-2 mb-2 ml-2 mr-2"
-					style="border: 1px solid #00bd7e"
-				>
-					<HeaderAction
-						:handleToggleShowFull="
-							() => handleToggleShowFullQuestion(index)
-						"
-						:title="
-							question.content
-								? question.content
-								: `Question ${index + 1}`
-						"
-						:handleDelete="() => handleDeleteQuestion(index)"
-					/>
+				<v-col cols="12" v-for="(question, index) in questions" :key="index" class="pa-0 mt-2 mb-2 ml-2 mr-2"
+					style="border: 1px solid #00bd7e">
+					<HeaderAction :handleToggleShowFull="() => handleToggleShowFullQuestion(index)
+						" :title="question.content
+							? question.content
+							: `Question ${index + 1}`
+							" :handleDelete="() => handleDeleteQuestion(index)" />
 
-					<v-row
-						:class="{
-							hide: !showFullQuestion[index],
-							show: showFullQuestion[index],
-						}"
-						class="d-flex mt-3 pl-3"
-					>
+					<v-row :class="{
+						hide: !showFullQuestion[index],
+						show: showFullQuestion[index],
+					}" class="d-flex mt-3 pl-3">
 						<v-col cols="12" class="mr-2">
-							<v-textarea
-								rows="1"
-								max-rows="4"
-								:rules="required"
-								placeholder="Câu hỏi"
-								hide-no-data
-								clearable
-								auto-grow
-								:model-value="question.content"
-								@input="
-									(event) => updateTitleQuestion(index, event)
-								"
-							>
+							<v-textarea rows="1" max-rows="4" :rules="required" placeholder="Câu hỏi" hide-no-data clearable auto-grow
+								:model-value="question?.content || `Question ${index + 1}`" @input="(event) => updateTitleQuestion(index, event)
+									">
 							</v-textarea>
 
 							<v-row class="d-flex justify-end">
 								<v-col cols="2" class="align-end">
-									<v-list-subheader class="d-flex justify-end"
-										>Giải thích</v-list-subheader
-									>
+									<v-list-subheader class="d-flex justify-end">Giải thích</v-list-subheader>
 								</v-col>
 
 								<v-col cols="9">
-									<v-textarea
-										rows="2"
-										max-rows="4"
-										placeholder="Giải thích ..."
-										hide-no-data
-										clearable
-										auto-grow
-										@click:clear="
-											() =>
-												handleClear(
-													'explanation',
-													index
-												)
-										"
-										@input="
-											(event) =>
+									<v-textarea rows="2" max-rows="4" placeholder="Giải thích ..." hide-no-data clearable auto-grow
+										:model-value="question?.answers[0]?.explanation || ''" @click:clear="() =>
+											handleClear(
+												'explanation',
+												index
+											)
+											" @input="(event) =>
 												updateExplanation(
 													index,
 													event.target.value
 												)
-										"
-									>
+												">
 									</v-textarea>
 								</v-col>
 							</v-row>
@@ -86,19 +46,10 @@
 					</v-row>
 				</v-col>
 			</v-col>
-			<div
-				color="#fff"
-				class="mt-1 mb-4 d-flex pl-3 pr-3"
-				style="border: none"
-			>
+			<div color="#fff" class="mt-1 mb-4 d-flex pl-3 pr-3" style="border: none">
 				<v-spacer></v-spacer>
-				<v-btn
-					@click="() => handleAddQuestion()"
-					color="#FBB03B"
-					theme="dark"
-					class="btn-add-question"
-					>Thêm câu hỏi</v-btn
-				>
+				<v-btn @click="() => handleAddQuestion()" color="#FBB03B" theme="dark" class="btn-add-question">Thêm câu
+					hỏi</v-btn>
 			</div>
 		</template>
 	</GroupQuestion>
@@ -164,7 +115,10 @@ export default {
 				options: Array.from({ length: 2 }, (_, i) => ({
 					option: "",
 				})),
-				answers: [],
+				answers: [{
+						answer: "",
+						explanation: ''
+				}],
 			});
 			this.$nextTick(() => {
 				this.showFullQuestion[newIndex - 1] = true;
@@ -212,7 +166,8 @@ export default {
 }
 
 .show {
-	height: auto; /* Adjust according to your content height */
+	height: auto;
+	/* Adjust according to your content height */
 	opacity: 1;
 	transition: max-height 0.3s ease-in, opacity 0.3s ease-in;
 }
