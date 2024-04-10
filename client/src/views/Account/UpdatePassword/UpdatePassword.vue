@@ -26,7 +26,7 @@
           @submit.prevent="handleSavePassword"
         >
           <div
-            class="d-flex flex-column align-center justify-center edit-password-container "
+            class="d-flex flex-column align-center justify-center edit-password-container"
           >
             <v-col cols="8" class="edit-info_item ml-13">
               <h3 class="edit-info_item-name font-semi-bold pl-5 pb-2">

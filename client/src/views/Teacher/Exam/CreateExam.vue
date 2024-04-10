@@ -437,7 +437,7 @@ export default {
           {
             id: 1,
             title: "Fill the blank with the correct form of the words",
-            option: 2,
+            option: 0,
           },
           {
             id: 2,

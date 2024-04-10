@@ -44,7 +44,7 @@
                 @click="
                   $router.push(`/${this.authentication.user.role}/account`)
                 "
-                class="justify-start 2-100"
+                class="justify-start w-100"
               >
                 Hồ sơ
               </v-btn>
