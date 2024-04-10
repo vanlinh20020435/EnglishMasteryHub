@@ -16,8 +16,8 @@
           <v-btn icon v-bind="props" style="margin-right: 16px">
             <v-avatar size="large">
               <v-img alt="Avatar" :src="user.avatar ||
-          'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'
-          "></v-img>
+                'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'
+                "></v-img>
             </v-avatar>
           </v-btn>
         </template>
@@ -28,8 +28,8 @@
               <p class="text-caption mt-1">{{ user.email }}</p>
               <v-divider class="my-3"></v-divider>
               <v-btn rounded variant="text" prepend-icon="mdi-account" @click="
-          $router.push(`/${this.authentication.user.role}/account`)
-          " class="justify-start 2-100">
+                $router.push(`/${this.authentication.user.role}/account`)
+                " class="justify-start 2-100">
                 Hồ sơ
               </v-btn>
               <v-divider class="my-3"></v-divider>
@@ -47,7 +47,7 @@
       <v-tabs v-model="tab" align-tabs="center" color="#00bd7e">
         <v-tab :value="1" @click="$router.replace('/student/news')">Bảng tin</v-tab>
         <v-tab :value="2" @click="$router.replace('/student/test')">Bài kiểm tra</v-tab>
-        <v-tab :value="3" @click="$router.replace('/student/document')">Giáo trình</v-tab>
+        <v-tab :value="3" @click="$router.replace('/student/document')">Tài liệu</v-tab>
       </v-tabs>
       <v-spacer />
     </v-container>
