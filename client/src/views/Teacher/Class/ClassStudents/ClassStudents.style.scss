@@ -4,6 +4,9 @@
     flex: 1;
     border-radius: 0.5rem;
     .student-item {
+      &:not(&:last-child) {
+        border-bottom: 1px solid #efefef;
+      }
       .student-avt {
         img {
           width: 4.375rem;

@@ -21,7 +21,7 @@
     <v-tab :value="0" :style="tab === 0 ? 'background: #039e6a' : ''">Danh sách học sinh</v-tab>
     <v-tab :value="1" :style="tab === 0 ? '' : 'background: #039e6a'">Danh sách bài kiểm tra</v-tab>
   </v-tabs>
-  <ListStudents v-if="tab === 0" />
+  <ListStudents v-if="tab === 0" :classId="$route.params.id" />
   <ListTest v-else />
 </template>
 

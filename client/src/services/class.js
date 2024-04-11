@@ -12,6 +12,7 @@ export const getClasses = async (token = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
@@ -28,6 +29,7 @@ export const getClass = async (token = null, id = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
@@ -44,6 +46,7 @@ export const getStudentsOfClass = async (token = null, id = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
@@ -60,6 +63,7 @@ export const getTestsOfClass = async (token = null, id = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
@@ -80,12 +84,13 @@ export const searchClasses = async (token = null, params) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
 
-export const createAdmin = async (token = null, payload = null) => {
-    const path = '/api/admins'
+export const createClass = async (token = null, payload = null) => {
+    const path = '/api/class'
     var result = {
         success: false,
         data: null
@@ -96,22 +101,41 @@ export const createAdmin = async (token = null, payload = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
 
-export const editAdmin = async (id = null, token = null, payload = null) => {
-    const path = '/api/admins'
+export const editClass = async (token = null, id = null, payload = null) => {
+    const path = `/api/class/${id}`
     var result = {
         success: false,
         data: null
     }
     try {
-        const response = await $axios.put(path + `/${id}`, payload, { headers: { 'Authorization': 'Bearer ' + token } })
+        const response = await $axios.put(path, payload, { headers: { 'Authorization': 'Bearer ' + token } })
         result.data = response.data;
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
+    }
+    return result
+}
+
+export const deleteClass = async (token = null, id = null) => {
+    const path = `/api/class/${id}`
+    var result = {
+        success: false,
+        data: null
+    }
+    try {
+        const response = await $axios.delete(path, { headers: { 'Authorization': 'Bearer ' + token } })
+        result.data = response.data;
+        result.success = true
+    } catch (error) {
+        console.log(error);
+        result.success = false
     }
     return result
 }

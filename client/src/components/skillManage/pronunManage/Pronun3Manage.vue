@@ -79,7 +79,7 @@ export default {
     questionSkill: Object,
   },
   created() {
-    this.questions = this.questionSkill.questions;
+    this.questions = this.questionSkill.subQuestions;
   },
   methods: {
     updateGroupTitleQuestion(value) {

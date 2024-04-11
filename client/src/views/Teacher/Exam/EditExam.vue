@@ -1,7 +1,7 @@
 <template>
   <v-card class="height-100 create-exam" style="overflow-y: auto">
     <v-snackbar color="success" location="top">
-      Thêm bài kiểm tra thành công
+      Chỉnh sửa bài kiểm tra thành công
       <template v-slot:actions>
         <v-btn color="#EFE841" variant="text"> Đóng </v-btn>
       </template>
@@ -9,7 +9,7 @@
 
     <v-container class="d-flex flex-column height-100 v-container__full">
       <HeaderTitle
-        title="Thêm bài kiểm tra mới"
+        title="Chỉnh sửa bài kiểm tra"
         textBtn="Quay lại"
         :handleClickBtn="
           () => {
@@ -162,7 +162,7 @@
                         <v-toolbar-title>{{ skill.title }}</v-toolbar-title>
                       </v-toolbar>
                       <v-col
-                        v-for="(question, indexQuestion) in questionList"
+                        v-for="(question, indexQuestion) in dataExam.questions"
                         :key="indexQuestion"
                         class="pa-0"
                       >
@@ -174,7 +174,9 @@
                             question.skill == 'pronunciation'
                           "
                           ><PronunManage
-                            :skillTypeSelected="selectedTypeSkill"
+                            :skillTypeSelected="
+                              question?.title || selectedTypeSkill
+                            "
                             :question="question"
                             :handleDeleteSkill="
                               () => removePronun1(indexQuestion)
@@ -201,7 +203,9 @@
                             question.skill == 'grammar'
                           "
                           ><GrammarManage
-                            :skillTypeSelected="selectedTypeSkill"
+                            :skillTypeSelected="
+                              question?.title || selectedTypeSkill
+                            "
                             :question="question"
                             :handleDeleteSkill="
                               () => removePronun1(indexQuestion)
@@ -229,7 +233,9 @@
                             question.skill == 'reading'
                           "
                           ><ReadingManage
-                            :skillTypeSelected="selectedTypeSkill"
+                            :skillTypeSelected="
+                              question?.title || selectedTypeSkill
+                            "
                             :question="question"
                             :handleDeleteSkill="
                               () => removePronun1(indexQuestion)
@@ -257,7 +263,9 @@
                             question.skill == 'listening'
                           "
                           ><ListeningManage
-                            :skillTypeSelected="selectedTypeSkill"
+                            :skillTypeSelected="
+                              question?.title || selectedTypeSkill
+                            "
                             :question="question"
                             :handleDeleteSkill="
                               () => removePronun1(indexQuestion)
@@ -285,7 +293,9 @@
                             question.skill == 'writing'
                           "
                           ><WritingManage
-                            :skillTypeSelected="selectedTypeSkill"
+                            :skillTypeSelected="
+                              question?.title || selectedTypeSkill
+                            "
                             :question="question"
                             :handleDeleteSkill="
                               () => removePronun1(indexQuestion)
@@ -382,11 +392,11 @@ import {
   WritingManage,
   ListeningManage,
 } from "@/components/skillManage";
-import { apiCallerPost } from "@/services/teacher";
+import { apiCallerGet, apiCallerPost } from "@/services/teacher";
 import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
 
 export default {
-  name: "CreateExam",
+  name: "EditExam",
   components: {
     HeaderTitle,
     PopUpYesNo,
@@ -402,6 +412,7 @@ export default {
       time: "",
       totalQuestions: "",
       description: "",
+      questions: [],
     },
     dataSkills: [
       {
@@ -541,7 +552,6 @@ export default {
       title: "",
     },
     selectedTypeQuestion: "",
-    questionList: [], // Array to store Pronun1Manage components
     required: [
       (v) => {
         if (v) return true;
@@ -585,13 +595,25 @@ export default {
       }
     },
   },
+  mounted() {
+    this.fetchDetailExam();
+  },
   methods: {
+    async fetchDetailExam() {
+      const urlAPI = "/api/testss/" + this.$route.params.id;
+
+      const result = await apiCallerGet(urlAPI);
+
+      if (result?.success) {
+        this.dataExam = result.data;
+      }
+    },
     handleAddSkill() {
-      // Add Pronun1Manage component to questionList array
+      // Add Pronun1Manage component to dataExam?.questions array
 
       const questions = [
         {
-          content: "Question 1",
+          title: "Question 1",
           numOptions: this.selectedTypeSkill.option,
           options: Array.from(
             { length: this.selectedTypeSkill.option },
@@ -615,34 +637,37 @@ export default {
         (item) => item.title == this.selectedTypeSkill.title
       );
 
-      this.questionList.push({
+      this.dataExam.questions.push({
         skill: this.selectedSkill.toLowerCase(),
-        type: selectedItemSkill?.id?.toString() || "1",
+        type: selectedItemSkill?.id || "1",
         title: this.selectedTypeSkill.title,
-        subQuestions: questions, // Assign the questions array to the questionList item
+        subQuestions: questions, // Assign the questions array to the dataExam?.questions item
       });
     },
     removePronun1(index) {
-      // Remove Pronun1Manage component at specified index from questionList array
-      this.questionList.splice(index, 1);
+      // Remove Pronun1Manage component at specified index from dataExam?.questions array
+      this.dataExam.questions.splice(index, 1);
     },
     handleDeleteQuestionInPronun1(pronun1Index, questionIndex) {
-      // Remove the question at the specified index from the questionList array
-      this.questionList[pronun1Index].subQuestions.splice(questionIndex, 1);
+      // Remove the question at the specified index from the dataExam?.questions array
+      this.dataExam.questions[pronun1Index].subQuestions?.splice(
+        questionIndex,
+        1
+      );
     },
     handleUpdateGroupTitleQuestion(index, updatedValue) {
-      // Update the groupTitleQuestion property in questionList at the specified index
+      // Update the groupTitleQuestion property in dataExam?.questions at the specified index
 
-      this.questionList[index].title = updatedValue;
+      this.dataExam.questions[index].title = updatedValue;
       this.$emit("updateGroupTitleQuestion", updatedValue); // Emit the event
     },
     handleAddQuestion(pronun1Index) {
       // Find the Pronun1Manage component at the specified index
-      const pronun1 = this.questionList[pronun1Index];
+      const pronun1 = this.dataExam.questions[pronun1Index];
 
       // Create a new question object
       const newQuestion = {
-        content: `New Question`,
+        title: `New Question`,
         numOptions: this.selectedTypeSkill.option,
         options: Array.from(
           { length: this.selectedTypeSkill.option },
@@ -663,59 +688,59 @@ export default {
     },
 
     async handleSaveExam() {
-      if (!!this.valid) {
-        const convertQuestion = (question, questionParent) => ({
-          content: question?.content,
-          skill: questionParent?.skill,
-          type: `${questionParent?.type?.toString()}`,
-          answers: question?.answers.map((answer) => ({
-            answer: answer?.answer,
-            explanation: answer?.explanation || "",
-          })),
-          options: question.options.map((option) => ({
-            option: option?.option,
-          })),
-          files: !!question?.files?.type
-            ? [
-                {
-                  type: question?.files?.type,
-                  url: question?.files?.url,
-                  name: question?.files?.name,
-                },
-              ]
-            : [],
-        });
+    //   if (!!this.valid) {
+    //     const convertQuestion = (question, questionParent) => ({
+    //       content: question?.content,
+    //       skill: questionParent?.skill,
+    //       type: `${questionParent?.type?.toString()}`,
+    //       answers: question?.answers.map((answer) => ({
+    //         answer: answer?.answer,
+    //         explanation: answer?.explanation || "",
+    //       })),
+    //       options: question.options.map((option) => ({
+    //         option: option?.option,
+    //       })),
+    //       files: !!question?.files?.type
+    //         ? [
+    //             {
+    //               type: question?.files?.type,
+    //               url: question?.files?.url,
+    //               name: question?.files?.name,
+    //             },
+    //           ]
+    //         : [],
+    //     });
 
-        const convertedData = this.questionList.map((item) => ({
-          content: "",
-          description: "",
-          title: item?.title,
-          type: `${item?.type?.toString()}`,
-          skill: item?.skill,
-          time: 0,
-          subQuestions: item.subQuestions.map((question) =>
-            convertQuestion(question, item)
-          ),
-        }));
+    //     const convertedData = this.questionList.map((item) => ({
+    //       content: "",
+    //       description: "",
+    //       title: item?.title,
+    //       type: `${item?.type?.toString()}`,
+    //       skill: item?.skill,
+    //       time: 0,
+    //       subQuestions: item.subQuestions.map((question) =>
+    //         convertQuestion(question, item)
+    //       ),
+    //     }));
 
-        const body = {
-          testName: this.dataExam.testName,
-          time: this.dataExam.time,
-          status: "0",
-          description: this.dataExam.description,
-          questions: convertedData,
-        };
+    //     const body = {
+    //       testName: this.dataExam.testName,
+    //       time: this.dataExam.time,
+    //       status: "0",
+    //       description: this.dataExam.description,
+    //       questions: convertedData,
+    //     };
 
-        const result = await apiCallerPost(
-          "/api/testss",
-          JSON.parse(localStorage?.getItem("accessToken"))?.token,
-          body
-        );
+    //     const result = await apiCallerPost(
+    //       "/api/testss",
+    //       JSON.parse(localStorage?.getItem("accessToken"))?.token,
+    //       body
+    //     );
 
-        if (result.success) {
-          this.dialogCreateSuccess = true;
-        }
-      }
+    //     if (result.success) {
+    //       this.dialogCreateSuccess = true;
+    //     }
+    //   }
     },
   },
 };

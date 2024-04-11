@@ -12,6 +12,9 @@ import {
   DetailClassTeacher,
   ClassStudents,
   StudyDocuments,
+  AssignExam,
+  MarkExam,
+  EditExam,
 } from "@/views/Teacher";
 import { authenticationRole } from "@/stores";
 import Login from "@/views/Login.vue";
@@ -73,6 +76,14 @@ const routes = [
             path: "study-document",
             component: StudyDocuments,
           },
+          {
+            path: "assign-exam",
+            component: AssignExam,
+          },
+          {
+            path: "mark-exam",
+            component: MarkExam,
+          },
         ],
       },
       {
@@ -85,6 +96,10 @@ const routes = [
           {
             path: "add",
             component: CreateExam,
+          },
+          {
+            path: "edit/:id",
+            component: EditExam,
           },
           {
             path: "my_exam",
@@ -137,6 +152,20 @@ const routes = [
       {
         path: "event",
         component: Event,
+      },
+      {
+        path: "exam",
+        children: [
+          {
+            path: "",
+            component: ManageExam,
+            props: { isAdmin: true },
+          },
+          {
+            path: "add",
+            component: CreateExam,
+          },
+        ],
       },
     ],
   },
