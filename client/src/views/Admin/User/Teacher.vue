@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
       <v-btn icon="mdi-filter" style="margin-right: 8px" :color="isOpenFilter ? '#00bd7e' : ''"
         @click="() => (isOpenFilter = !isOpenFilter)"></v-btn>
-      <v-btn class="mb-2" color="#00bd7e" dark variant="outlined" @click="isOpenForm = true">
+      <v-btn color="#00bd7e" dark variant="outlined" @click="isOpenForm = true">
         Tạo mới
       </v-btn>
     </v-toolbar>
@@ -71,8 +71,13 @@
             <v-col v-if="!isEdit" cols="12" md="12" sm="6">
               <v-text-field v-model="formItem.password" :rules="passwordRules" label="Password*"></v-text-field>
             </v-col>
-            <v-col cols="12" md="12" sm="6">
-              <v-text-field v-model="formItem.avatar" label="Avatar"></v-text-field>
+            <v-col v-if="formItem.avatar" cols="12" md="12">
+              <v-text-field prepend-icon="mdi-paperclip" v-model="formItem.avatar" label="Avatar" clearable
+                readonly></v-text-field>
+            </v-col>
+            <v-col v-else cols="12" md="12">
+              <v-file-input v-model="selectedFile" label="Avatar" accept="image/png, image/jpeg" hide-no-data
+                show-size></v-file-input>
             </v-col>
             <v-col cols="12" md="12" sm="6">
               <v-text-field v-model="formItem.email" :rules="emailRules" label="Email*"></v-text-field>
@@ -99,7 +104,7 @@
           <v-btn variant="tonal" @click="() => (isOpenForm = false)">
             Cancel
           </v-btn>
-          <v-btn color="success" variant="flat" type="submit">
+          <v-btn color="success" variant="flat" type="submit" :disabled="isLoadingFile">
             Save
           </v-btn>
         </v-card-actions>
@@ -152,6 +157,7 @@ import {
   changeTeacherPassword,
   editTeacher,
   deleteTeacher,
+  uploadFile
 } from '@/services';
 import { authenticationRole, toastStore } from '@/stores';
 import { mapState } from 'pinia';
@@ -251,6 +257,8 @@ export default {
       },
       _timerId: null,
       isOpenFilter: false,
+      selectedFile: null,
+      isLoadingFile: false
     };
   },
   computed: {
@@ -416,6 +424,35 @@ export default {
     datePicker(val) {
       this.datePickerComputed = val ? new Date(val).toLocaleDateString() : null;
     },
+    datePickerComputed(val) {
+      this.formItem.birthday = val;
+    },
+    async selectedFile(val) {
+      if (val) {
+        try {
+          this.isLoadingFile = true
+          const result = await uploadFile(
+            this.authentication?.accessToken?.token,
+            val[0]
+          )
+          if (result.success) {
+            this.formItem.avatar = result.data.url
+          } else {
+            this.selectedFile = null
+            this.updateToast('error', "Lỗi tải ảnh lên!")
+          }
+        } catch (error) {
+          this.selectedFile = null
+          console.log(error);
+        }
+        this.isLoadingFile = false
+      }
+    },
+    "formItem.avatar": function (val) {
+      if (!val) {
+        this.selectedFile = null
+      }
+    }
   },
 };
 </script>

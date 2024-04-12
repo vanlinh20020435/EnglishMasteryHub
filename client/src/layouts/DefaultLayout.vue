@@ -1,17 +1,12 @@
 <template>
   <v-layout>
-    <DefaultNavbar
-      :drawwing="() => (drawer = !drawer)"
-      :user="authentication.user" />
+    <DefaultNavbar :drawwing="() => (drawer = !drawer)" :user="authentication.user" />
     <DefaultSidebar :drawer="drawer" :menu="menu" />
-    <v-main class="d-flex justify-center" style="width: 100vw; height: 100vh">
-      <v-container
-        :class="
-          typeLayout == 'teacher'
-            ? 'v-container__full pd-0'
-            : 'v-container__full'
-        "
-        style="padding: 16px; background-color: #fff">
+    <v-main class="d-flex justify-center" style="width: 100vw; min-height: 100vh">
+      <v-container :class="typeLayout == 'teacher'
+      ? 'v-container__full pd-0'
+      : 'v-container__full'
+      " style="padding: 16px; background-color: #fff">
         <slot></slot>
       </v-container>
     </v-main>

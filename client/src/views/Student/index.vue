@@ -16,11 +16,10 @@ export default {
         student: {}
     }),
     async created() {
-        console.log('layout');
         const res = await getStudent(this.authentication.accessToken.token, this.authentication.user.userId)
         if (res.success) {
             this.student = res.data
-            this.updateStudent(res.data)
+            this.updateStudent(this.student)
         }
     }
 }

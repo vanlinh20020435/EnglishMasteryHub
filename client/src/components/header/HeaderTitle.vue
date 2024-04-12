@@ -58,6 +58,16 @@
 
         <v-btn
           rounded
+          @click="handleClickBtnLeft"
+          v-if="!!leftButton"
+          color="#FBB03B"
+          theme="dark"
+          class="header-btn font-bold mr-4"
+          >{{ dataBtnLeft.text }}
+        </v-btn>
+
+        <v-btn
+          rounded
           @click="handleClickBtn"
           v-if="!!textBtn"
           color="#FBB03B"
@@ -81,6 +91,9 @@ export default {
     itemSelection: Array,
     textBtn: Boolean,
     handleClickBtn: Function,
+    leftButton: Boolean,
+    dataBtnLeft: Object,
+    handleClickBtnLeft: Function,
   },
   data() {
     return {

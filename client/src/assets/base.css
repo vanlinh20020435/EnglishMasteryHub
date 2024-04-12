@@ -77,6 +77,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+img {
+  user-select: none;
+}
+
 /* COLORS TEXT */
 .color-primary {
   color: var(--primary-color);
@@ -147,4 +151,8 @@ body {
 
 .btn-delete-linear {
   background-image: var(--linear-color) !important;
+}
+
+.bg_white {
+  background-color: #fff;
 }

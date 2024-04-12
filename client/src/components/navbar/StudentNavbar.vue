@@ -16,8 +16,8 @@
           <v-btn icon v-bind="props" style="margin-right: 16px">
             <v-avatar size="large">
               <v-img alt="Avatar" :src="user.avatar ||
-          'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'
-          "></v-img>
+                'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'
+                "></v-img>
             </v-avatar>
           </v-btn>
         </template>
@@ -27,12 +27,20 @@
               <h3>{{ user.name }}</h3>
               <p class="text-caption mt-1">{{ user.email }}</p>
               <v-divider class="my-3"></v-divider>
-              <v-btn rounded variant="text" prepend-icon="mdi-account" @click="$router.replace('/account')">
-                Account
+              <v-btn
+                rounded
+                variant="text"
+                prepend-icon="mdi-account"
+                @click="
+                  $router.push(`/${this.authentication.user.role}/account`)
+                "
+                class="justify-start w-100"
+              >
+                Hồ sơ
               </v-btn>
               <v-divider class="my-3"></v-divider>
               <v-btn rounded variant="text" prepend-icon="mdi-logout" @click="isOpenLogout = true">
-                Log out
+                Đăng xuất
               </v-btn>
             </div>
           </v-card-text>
@@ -45,7 +53,7 @@
       <v-tabs v-model="tab" align-tabs="center" color="#00bd7e">
         <v-tab :value="1" @click="$router.replace('/student/news')">Bảng tin</v-tab>
         <v-tab :value="2" @click="$router.replace('/student/test')">Bài kiểm tra</v-tab>
-        <v-tab :value="3" @click="$router.replace('/student/document')">Giáo trình</v-tab>
+        <v-tab :value="3" @click="$router.replace('/student/document')">Tài liệu</v-tab>
       </v-tabs>
       <v-spacer />
     </v-container>
@@ -55,9 +63,9 @@
 </template>
 
 <script>
-import PopUpYesNo from '@/components/popup/PopUpYesNo.vue';
-import { authenticationRole } from '@/stores';
-import { mapState } from 'pinia';
+import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
+import { authenticationRole } from "@/stores";
+import { mapState } from "pinia";
 export default {
   components: {
     PopUpYesNo,
@@ -67,7 +75,7 @@ export default {
     drawwing: Function,
   },
   computed: {
-    ...mapState(authenticationRole, ['clearAuth']),
+    ...mapState(authenticationRole, ["clearAuth"]),
   },
   data: () => ({
     isOpenLogout: false,
@@ -75,7 +83,7 @@ export default {
   }),
   created() {
     const path = this.$route.fullPath;
-    const pathSplit2 = path.split('/')[2];
+    const pathSplit2 = path.split("/")[2];
     const cases = {
       news: 1,
       test: 2,
@@ -86,11 +94,22 @@ export default {
   methods: {
     logout() {
       this.isOpenLogout = false;
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('user');
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
       this.clearAuth();
-      this.$router.replace('/login');
+      this.$router.replace("/login");
     },
   },
+  watch: {
+    $route(val) {
+      const current = val.path.split('/')[2]
+      const cases = {
+        news: 1,
+        test: 2,
+        document: 3,
+      };
+      this.tab = cases[current] || 1;
+    }
+  }
 };
 </script>

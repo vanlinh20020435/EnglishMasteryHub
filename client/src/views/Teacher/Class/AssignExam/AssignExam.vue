@@ -125,6 +125,7 @@ vv
                 v-model="openDatePickerStart"
                 :return-value.sync="dateAssignStart"
                 persistent
+                auto
                 width="290px"
               >
                 <template v-slot:activator="{ startDate }">
@@ -161,6 +162,7 @@ vv
                 v-model="openDatePickerEnd"
                 :return-value.sync="dateAssignEnd"
                 persistent
+                auto
                 width="290px"
               >
                 <template v-slot:activator="{ endDate }">
@@ -238,6 +240,7 @@ export default {
     return {
       dataExams: [],
       isLoading: true,
+      valid: true,
       rules: {
         rulesSizeFileUpload: [
           (files) => {
