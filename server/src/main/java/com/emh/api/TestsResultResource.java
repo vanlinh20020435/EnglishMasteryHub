@@ -27,14 +27,16 @@ public class TestsResultResource
 	}
 
 	@GetMapping
-	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
-	public ResponseEntity<List<StudentTestResultResponse>> getAllResults()
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
+	public ResponseEntity<List<StudentTestResultResponse>> getAllResults(@RequestParam(required = true) final Integer classId,
+																		 @RequestParam(required = true) final Integer testId,
+																		 @RequestParam(required = false) final Integer studentId) throws Exception
 	{
-		return ResponseEntity.ok(testResultService.findAll());
+		return ResponseEntity.ok(testResultService.findAll(classId, testId, studentId));
 	}
 
 	@GetMapping("/{resultId}")
-	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
 	public ResponseEntity<StudentTestResultResponse> getResults(
 			@PathVariable(name = "resultId") final Integer resultId)
 	{

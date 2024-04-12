@@ -1,6 +1,7 @@
 package com.emh.api;
 
 import com.emh.payload.request.TestsRequest;
+import com.emh.payload.response.TestClassInfoResponse;
 import com.emh.payload.response.TestsResponse;
 import com.emh.service.TestsService;
 import com.emh.util.ReferencedException;
@@ -82,11 +83,11 @@ public class TestsResource
 		return ResponseEntity.noContent().build();
 	}
 
-	@GetMapping("/{testId}/check-password")
+	@GetMapping("/{testId}/verify")
 	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
-	public ResponseEntity<Boolean> checkTestPassword(
-			@PathVariable(name = "testId") final Integer testId, @RequestParam String password)
+	public ResponseEntity<TestsResponse> verify(
+			@PathVariable(name = "testId") final Integer testId, @RequestParam(required = false) String password)
 	{
-		return ResponseEntity.ok(testsService.checkPassword(testId, password));
+		return ResponseEntity.ok(testsService.verify(testId, password));
 	}
 }

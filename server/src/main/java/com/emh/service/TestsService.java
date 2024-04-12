@@ -286,12 +286,13 @@ public class TestsService
 				.toList();
 	}
 
-	public Boolean checkPassword(Integer testId, String password)
+	public TestsResponse verify(Integer testId, String password)
 	{
 		Tests tests = testsRepository.findById(testId)
 				.orElseThrow(NotFoundException::new);
-		if (StringUtils.isBlank(tests.getPassword()))
-			return true;
-		return tests.getPassword().equals(password);
+		String testPassword = tests.getPassword();
+		if(StringUtils.isNotEmpty(testPassword) && !testPassword.equals(password))
+			throw new ForbiddenException("Wrong password");
+		return exportTest(tests);
 	}
 }

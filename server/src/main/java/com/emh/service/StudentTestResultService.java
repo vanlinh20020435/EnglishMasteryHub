@@ -6,8 +6,14 @@ import com.emh.payload.request.StudentTestResultRequest;
 import com.emh.payload.response.QuestAnswerResultResponse;
 import com.emh.payload.response.StudentTestResultResponse;
 import com.emh.repos.*;
+import com.emh.specifications.FilterOperation;
+import com.emh.specifications.SearchCriteria;
+import com.emh.specifications.SearchForeignCriteria;
+import com.emh.specifications.SpecificationsBuilder;
 import com.emh.util.EntityMapper;
 import com.emh.util.NotFoundException;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -60,6 +66,21 @@ public class StudentTestResultService
 	public List<StudentTestResultResponse> findAll()
 	{
 		final List<StudentTestResult> testResults = studentTestResultRepository.findAll(Sort.by("id"));
+		return testResults.stream()
+				.map(this::exportResult)
+				.toList();
+	}
+
+	public List<StudentTestResultResponse> findAll(Integer classId, Integer testId, Integer studentId) throws Exception
+	{
+		SpecificationsBuilder<StudentTestResult> spec = new SpecificationsBuilder<>();
+		if (ObjectUtils.defaultIfNull(classId, 0) != 0)
+			spec.with(new SearchForeignCriteria("classs", "classId", FilterOperation.FOREIGN_KEY.toString(), classId, false));
+		if (ObjectUtils.defaultIfNull(testId, 0) != 0)
+			spec.with(new SearchForeignCriteria("tests", "testId", FilterOperation.FOREIGN_KEY.toString(), testId, false));
+		if (ObjectUtils.defaultIfNull(studentId, 0) != 0)
+			spec.with(new SearchForeignCriteria("student", "studentId", FilterOperation.FOREIGN_KEY.toString(), studentId, false));
+		final List<StudentTestResult> testResults = studentTestResultRepository.findAll(spec.build(), Sort.by("id"));
 		return testResults.stream()
 				.map(this::exportResult)
 				.toList();

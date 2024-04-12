@@ -4,6 +4,7 @@ import com.emh.entity.*;
 import com.emh.payload.request.*;
 import com.emh.payload.response.*;
 import com.emh.service.FilesStorageService;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 
@@ -162,6 +163,7 @@ public class EntityMapper
 		testInfoResponse.setDescription(tests.getDescription());
 		testInfoResponse.setStatus(tests.getStatus());
 		testInfoResponse.setCreatedDate(tests.getCreatedDate());
+		testInfoResponse.setPrivate(StringUtils.isNotEmpty(tests.getPassword()));
 		if (testClass.getStartDate() != null)
 			testInfoResponse.setStartDate(testClass.getStartDate());
 		;
