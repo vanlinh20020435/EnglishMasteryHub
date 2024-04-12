@@ -1,10 +1,18 @@
 <template>
-  <div>Do Exam</div>
+  <div>
+    <v-container>
+      <DoGrammar1 />
+    </v-container>
+  </div>
 </template>
 
 <script>
+import { DoGrammar1 } from '@/components/skillDoExam/grammarDoExam';
 export default {
   name: "DoExam",
+  components: {
+    DoGrammar1
+}
 };
 </script>
 
