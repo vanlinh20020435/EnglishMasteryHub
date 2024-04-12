@@ -189,7 +189,10 @@ export default {
         options: Array.from({ length: 2 }, (_, i) => ({
           option: "",
         })),
-        answers: [],
+        answers: [{
+          answer: "",
+          explanation: ''
+        }],
       });
       this.$nextTick(() => {
         this.showFullQuestion[newIndex - 1] = true;
