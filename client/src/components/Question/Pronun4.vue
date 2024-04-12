@@ -7,7 +7,7 @@
       <v-row>
         <v-col v-for="(sub, idx) in question.subQuestions">
           <p style="margin-bottom: 4px">{{ idx + 1 }}.</p>
-          <Audio :file="sub.url" color="success"></Audio>
+          <Audio :file="sub.files[0].url" color="success"></Audio>
         </v-col>
       </v-row>
     </v-card-text>
@@ -25,7 +25,6 @@ export default {
     question: Object,
   },
   mounted() {
-    console.log(this.question);
   },
 };
 </script>

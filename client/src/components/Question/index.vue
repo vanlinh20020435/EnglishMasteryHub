@@ -15,7 +15,6 @@ export default {
     question: Object,
   },
   mounted() {
-    console.log('hihihihihi: ', this.question);
   },
 };
 </script>

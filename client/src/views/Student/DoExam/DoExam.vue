@@ -1,6 +1,6 @@
 <template>
   <div v-if="test.testId">
-    <v-card>
+    <v-card :elevation="8" style="margin-bottom: 16px;">
       <v-card-title>{{ test.testName }}</v-card-title>
       <v-card-text>
         <v-row>
@@ -8,7 +8,7 @@
         </v-row>
       </v-card-text>
     </v-card>
-    <v-card>
+    <v-card :elevation="8">
       <v-form>
         <v-card-text>
           <v-row>
@@ -37,7 +37,6 @@ export default {
   mounted() {
     if (this.test.testId) {
       window.addEventListener('beforeunload', this.confirmLeave);
-      console.log(this.test);
     } else {
       this.$router.replace('/student')
     }
@@ -61,6 +60,23 @@ export default {
       }
     }
   },
+  caculateScore() {
+    let score = 0
+    this.questions.forEach(q => {
+      if (q.type === 3 && q.skill === 'writting') {
+        // writing 3
+        score += q.score
+      } else {
+        // remain
+        let total = 0
+        q.subQuestions.forEach(sq => {
+          total += sq.score
+        });
+        score += total
+      }
+    });
+    return score;
+  }
 };
 </script>
 
