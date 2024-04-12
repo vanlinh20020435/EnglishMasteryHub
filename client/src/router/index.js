@@ -20,8 +20,10 @@ import { authenticationRole } from "@/stores";
 import Login from "@/views/Login.vue";
 import StudentManager from "@/views/Admin/User/Student.vue";
 import TeacherManager from "@/views/Admin/User/Teacher.vue";
+import ExamManager from "@/views/Admin/Exam/index.vue";
+import CreateExamManager from "@/views/Admin/Exam/Create.vue";
+import EditExamManager from "@/views/Admin/Exam/Edit.vue";
 import Class from "@/views/Admin/Class/index.vue";
-import Event from "@/views/Admin/Event/index.vue";
 import ClassSlug from "@/views/Admin/Class/ClassSlug.vue";
 import { Account, EditAccount, UpdatePassword } from "@/views/Account";
 import Student from "@/views/Student/index.vue";
@@ -30,7 +32,6 @@ import Test from "@/views/Student/Test/index.vue";
 import Docs from "@/views/Student/Docs.vue";
 import TestSlug from "@/views/Student/Test/TestSlug.vue";
 import DoExam from "@/views/Student/DoExam/DoExam.vue";
-
 const routes = [
   {
     path: "/login",
@@ -170,12 +171,16 @@ const routes = [
         children: [
           {
             path: "",
-            component: ManageExam,
+            component: ExamManager,
             props: { isAdmin: true },
           },
           {
             path: "add",
-            component: CreateExam,
+            component: CreateExamManager,
+          },
+          {
+            path: "edit/:id",
+            component: EditExamManager,
           },
         ],
       },
@@ -197,6 +202,10 @@ const routes = [
       {
         path: "test/:id",
         component: TestSlug,
+      },
+      {
+        path: "exam",
+        component: DoExam,
       },
       {
         path: "test/:id/do-exam",
