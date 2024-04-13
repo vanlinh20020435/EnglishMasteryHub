@@ -693,6 +693,7 @@ export default {
           content: question?.content,
           skill: questionParent?.skill,
           type: `${questionParent?.type?.toString()}`,
+          description: question?.description,
           answers: question?.answers.map((answer) => ({
             answer: answer?.answer,
             explanation: answer?.explanation || "",

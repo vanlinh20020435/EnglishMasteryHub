@@ -28,7 +28,8 @@
 
 								<v-col cols="9">
 									<v-textarea rows="2" max-rows="4" placeholder="Giải thích ..." hide-no-data clearable auto-grow
-										:model-value="question?.answers[0]?.explanation || ''" @click:clear="() =>
+										:model-value="question?.answers[0]?.explanation || ''" 
+										@click:clear="() =>
 											handleClear(
 												'explanation',
 												index
@@ -116,8 +117,8 @@ export default {
 					option: "",
 				})),
 				answers: [{
-						answer: "",
-						explanation: ''
+					answer: "",
+					explanation: ''
 				}],
 			});
 			this.$nextTick(() => {
