@@ -13,7 +13,7 @@
 
 <script>
 export default {
-	name: "Grammar1DoExam",
+	name: "Grammar1Question",
 	data() {
 		return {
 		};
@@ -26,7 +26,7 @@ export default {
 
 		window.handleChange = (event, key) => {
 			let newValue = event.target.value;
-			if (newValue == this.dataQuestion.subQuestions[key].answers[0].answer) {
+			if (newValue.toLowerCase() == this.dataQuestion.subQuestions[key].answers[0].answer.toLowerCase()) {
 				this.dataQuestion.subQuestions[key].score = 1;
 			} else {
 				this.dataQuestion.subQuestions[key].score = 0;

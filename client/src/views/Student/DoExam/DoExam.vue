@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import Question from '@/components/Question/index.vue'
+import Question from '@/components/question/index.vue'
 import { authenticationRole, studentStore, testStore, toastStore } from '@/stores';
 import { mapState } from 'pinia';
 export default {

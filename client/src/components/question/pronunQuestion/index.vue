@@ -4,8 +4,8 @@
 </template>
 
 <script>
-import Pronun1 from '@/components/Question/PronunDoExam/Pronun1.vue';
-import Pronun4 from '@/components/Question/PronunDoExam/Pronun4.vue';
+import Pronun1 from '@/components/question/pronunQuestion/Pronun1.vue';
+import Pronun4 from '@/components/question/pronunQuestion/Pronun4.vue';
 export default {
   components: {
     Pronun1,
