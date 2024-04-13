@@ -19,15 +19,31 @@
         </v-card-text>
       </v-form>
     </v-card>
+    <v-card :elevation="8">
+      <v-form>
+        <v-card-text>
+          <v-row>
+            <v-col md="12" v-for="question in test.questions" :key="question.questionId">
+              <Question :question="question" />
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-form>
+    </v-card>
+    <v-card>
+      {{ position[0] }}|{{ position[1] }}
+    </v-card>
   </div>
   <div v-else>no test</div>
 </template>
 
 <script>
+import windowScroll from '@/utils/windowScroll'
 import Question from '@/components/question/index.vue'
 import { authenticationRole, studentStore, testStore, toastStore } from '@/stores';
 import { mapState } from 'pinia';
 export default {
+  mixins: [windowScroll('position')],
   components: {
     Question
   },
@@ -35,11 +51,7 @@ export default {
     ...mapState(testStore, ['test', 'clearTest']),
   },
   mounted() {
-    if (this.test.testId) {
-      window.addEventListener('beforeunload', this.confirmLeave);
-    } else {
-      this.$router.replace('/student')
-    }
+    window.addEventListener('beforeunload', this.confirmLeave);
   },
   methods: {
     confirmLeave(event) {
@@ -76,6 +88,9 @@ export default {
       }
     });
     return score;
+  },
+  unmounted() {
+    this.clearTest()
   }
 };
 </script>
