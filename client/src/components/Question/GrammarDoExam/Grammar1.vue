@@ -1,7 +1,6 @@
 <template>
 	<div class="d-flex flex-column">
 		<h3 class="font-semi-bold">{{ dataQuestion.title }}</h3>
-
 		<v-col>
 			<v-col class="d-flex" v-for="(subQuestion, index) in dataQuestion.subQuestions" :key="index">
 				<span class="mr-3">{{ index + 1 }}.</span>
@@ -13,20 +12,17 @@
 </template>
 
 <script>
-import { apiCallerGet } from '@/services/teacher';
-
 export default {
-	name: "DoGrammar1",
+	name: "Grammar1DoExam",
 	data() {
 		return {
-			dataQuestion: {},
 		};
 	},
 	props: {
-		// dataQuestion: Object,
+		dataQuestion: Object,
 	},
 	mounted() {
-		this.fetchDetailExam();
+		// this.fetchDetailExam();
 
 		window.handleChange = (event, key) => {
 			let newValue = event.target.value;
@@ -41,15 +37,6 @@ export default {
 	watch: {
 	},
 	methods: {
-		async fetchDetailExam() {
-			const urlAPI = "/api/testss/59/verify";
-
-			const result = await apiCallerGet(urlAPI);
-
-			if (result?.success) {
-				this.dataQuestion = result.data?.questions[0];
-			}
-		},
 		replacedSentence(sentence, index) {
 
 			// Regular expression to match placeholders enclosed in curly braces {}
@@ -68,15 +55,6 @@ export default {
 			// Convert the replaced HTML string to a DOM element
 			const tempDiv = document.createElement('div');
 			tempDiv.innerHTML = replaced;
-
-			// Add event listeners to each input element
-			// const inputs = tempDiv.querySelectorAll('.input-answer');
-			// inputs.forEach(input => {
-			// 	input.addEventListener('input', event => {
-			// 		console.log("123123");
-			// 		this.handleChange(event, index);
-			// 	});
-			// });
 
 			// Return the replaced HTML string
 			return tempDiv.innerHTML;
