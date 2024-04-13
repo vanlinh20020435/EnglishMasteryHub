@@ -208,6 +208,10 @@ const routes = [
         component: DoExam,
       },
       {
+        path: "test/:id/do-exam",
+        component: DoExam,
+      },
+      {
         path: "document",
         component: Docs,
       },

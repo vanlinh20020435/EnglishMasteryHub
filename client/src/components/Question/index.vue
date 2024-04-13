@@ -1,20 +1,25 @@
 <template>
-  <Pronun1 v-if="question?.type === '1'" :question="question"></Pronun1>
-  <Pronun4 v-else-if="question?.type === '4'" :question="question"></Pronun4>
+  <div>
+    <PronunDoExam v-if="question?.skill == 'pronunciation'" :question="question" />
+    <GrammarDoExam v-if="question?.skill == 'grammar'" :question="question" />
+  </div>
 </template>
 
 <script>
-import Pronun1 from '@/components/Question/Pronun1.vue';
-import Pronun4 from '@/components/Question/Pronun4.vue';
+import PronunDoExam from '@/components/Question/PronunDoExam/index.vue';
+import GrammarDoExam from '@/components/Question/GrammarDoExam/index.vue';
+
 export default {
+  name: 'QuestionDoExam',
   components: {
-    Pronun1,
-    Pronun4,
+    PronunDoExam,
+    GrammarDoExam
   },
   props: {
     question: Object,
   },
   mounted() {
+    console.log('question=====', this.question)
   },
-};
+}
 </script>
