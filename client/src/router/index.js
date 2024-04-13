@@ -30,8 +30,7 @@ import Student from "@/views/Student/index.vue";
 import News from "@/views/Student/News.vue";
 import Test from "@/views/Student/Test/index.vue";
 import Docs from "@/views/Student/Docs.vue";
-import TestSlug from "@/views/Student/Test/TestSlug.vue";
-import DoExam from "@/views/Student/DoExam/DoExam.vue";
+import TestSlug from "@/views/Student/Test/TestSlug/index.vue";
 const routes = [
   {
     path: "/login",
@@ -202,14 +201,6 @@ const routes = [
       {
         path: "test/:id",
         component: TestSlug,
-      },
-      {
-        path: "exam",
-        component: DoExam,
-      },
-      {
-        path: "test/:id/do-exam",
-        component: DoExam,
       },
       {
         path: "document",

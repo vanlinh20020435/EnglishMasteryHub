@@ -106,7 +106,6 @@ export default {
             const res = await getTestByStudent(this.authentication.accessToken.token, this.$route.params.id, this.password)
             if (res.success) {
                 this.updateTest(res.data)
-                this.$router.push('/student/exam')
             }
             this.isGoingDoExam = false
             return res

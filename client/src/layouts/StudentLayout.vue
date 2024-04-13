@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { authenticationRole } from '@/stores';
+import { authenticationRole, testStore } from '@/stores';
 import { mapState } from 'pinia';
 import StudentNavbar from '@/components/navbar/StudentNavbar.vue';
 export default {
@@ -28,21 +28,13 @@ export default {
   },
   computed: {
     ...mapState(authenticationRole, ['authentication']),
+    ...mapState(testStore, ['test']),
+    isExam() {
+      return this.test.testId
+    }
   },
   data: () => ({
     drawer: true,
-    isExam: false
   }),
-  created() {
-    const path = this.$route.fullPath;
-    const pathSplit2 = path.split("/")[2];
-    this.isExam = pathSplit2 === 'exam'
-  },
-  watch: {
-    $route(val) {
-      const current = val.path.split('/')[2]
-      this.isExam = current === 'exam'
-    }
-  }
 };
 </script>
