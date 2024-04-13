@@ -523,13 +523,13 @@ export default {
           {
             id: 2,
             title: "Use the given words to make complete sentences",
-            option: 2,
+            option: 0,
           },
           {
             id: 3,
             title:
               "Write about the advantages and disadvantages of playing sports",
-            option: 2,
+            option: 1,
           },
         ],
       },
@@ -668,6 +668,7 @@ export default {
           content: question?.content,
           skill: questionParent?.skill,
           type: `${questionParent?.type?.toString()}`,
+          description: question?.description,
           answers: question?.answers.map((answer) => ({
             answer: answer?.answer,
             explanation: answer?.explanation || "",
