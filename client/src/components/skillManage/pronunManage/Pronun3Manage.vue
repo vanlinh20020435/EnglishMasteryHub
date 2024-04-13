@@ -40,6 +40,7 @@
                 hide-no-data
                 clearable
                 auto-grow
+                @input="(event) => handleConvertAnswer(event.target.value, 0)"
               >
               </v-textarea>
             </v-col>
@@ -115,6 +116,21 @@ export default {
 
       question["files"] = this.fileUpload;
     },
+
+    handleConvertAnswer(newValue, questionIndex) {
+      let splitValues = newValue.split(", ");
+      let resultArray = [];
+      let optionsArray = [];
+
+      splitValues.forEach(value => {
+        optionsArray.push({option: ''})
+        resultArray.push({ answer: value });
+      });
+
+      this.questions[questionIndex].answers = resultArray;
+      this.questions[questionIndex].options = optionsArray;
+
+    }
   },
 };
 </script>

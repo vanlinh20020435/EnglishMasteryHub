@@ -204,7 +204,11 @@ const routes = [
         component: TestSlug,
       },
       {
-        path: "exam/:id",
+        path: "exam",
+        component: DoExam,
+      },
+      {
+        path: "test/:id/do-exam",
         component: DoExam,
       },
       {

@@ -42,7 +42,13 @@ export {
   getFilesByClass
 } from './class';
 export { login, getUserInfo } from './auth';
-export { getTests, getTest, getTestByClass, getTestInfoByClass } from './test';
+export {
+  getTests,
+  getTest,
+  getTestByClass,
+  getTestInfoByClass,
+  getTestByStudent
+} from './test';
 
 export const uploadFile = async (token, file) => {
   let result = {

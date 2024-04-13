@@ -4,12 +4,10 @@
     </v-card>
     <v-list v-else-if="tests.length" style="padding-top: 0; padding-bottom: 0;">
         <v-hover v-for="test in tests" v-slot="{ isHovering, props }">
-            <p style="color: #888;font-size: 14px;text-align: end; margin-right: 8px;">{{ test.startDate }} - {{
-        test.endDate }}
-            </p>
             <v-card @click="$router.replace(`/student/test/${test.testId}`)" :class="{ 'on-hover': isHovering }"
-                :elevation="isHovering ? 4 : 2" v-bind="props" style="margin: 0 8px 8px">
-                <v-list-item :key="test.testId" :subtitle="test.description" :title="test.testName">
+                :elevation="isHovering ? 8 : 4" v-bind="props" style="margin: 0 8px 16px">
+                <v-list-item height="70" :key="test.testId" :title="test.testName"
+                    :subtitle="test.startDate + ' - ' + test.endDate">
                     <template v-slot:prepend>
                         <v-avatar color="success">
                             <v-icon color="white">mdi-clipboard-text</v-icon>

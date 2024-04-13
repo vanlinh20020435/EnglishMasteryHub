@@ -1,6 +1,6 @@
 <template>
   <v-app v-if="cls?.classId">
-    <StudentNavbar :drawwing="() => (drawer = !drawer)" :user="authentication?.user" />
+    <StudentNavbar v-if="!isExam" :drawwing="() => (drawer = !drawer)" :user="authentication?.user" />
     <v-main class="d-flex justify-center" style="width: 100vw; flex: 1;">
       <v-container>
         <slot></slot>
@@ -15,13 +15,11 @@
 </template>
 
 <script>
-import DefaultSidebar from '@/components/sidebar/DefaultSidebar.vue';
 import { authenticationRole } from '@/stores';
 import { mapState } from 'pinia';
 import StudentNavbar from '@/components/navbar/StudentNavbar.vue';
 export default {
   components: {
-    DefaultSidebar,
     StudentNavbar,
   },
   props: {
@@ -32,7 +30,19 @@ export default {
     ...mapState(authenticationRole, ['authentication']),
   },
   data: () => ({
-    drawer: true
-  })
+    drawer: true,
+    isExam: false
+  }),
+  created() {
+    const path = this.$route.fullPath;
+    const pathSplit2 = path.split("/")[2];
+    this.isExam = pathSplit2 === 'exam'
+  },
+  watch: {
+    $route(val) {
+      const current = val.path.split('/')[2]
+      this.isExam = current === 'exam'
+    }
+  }
 };
 </script>
