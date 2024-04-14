@@ -120,7 +120,7 @@ export default {
     questionSkill: Object,
   },
   created() {
-    this.questions = this.questionSkill.questions;
+    this.questions = this.questionSkill.subQuestions;
   },
   methods: {
     updateGroupTitleQuestion(value) {
@@ -160,7 +160,7 @@ export default {
 
     handleAddOption(questionIndex) {
       // Check if questionIndex is valid
-      if (questionIndex >= 0 && questionIndex < this.questions.length) {
+      if (questionIndex >= 0 && questionIndex < this.questions?.length) {
         // Access the question object
         const question = this.questions[questionIndex];
 
@@ -177,7 +177,7 @@ export default {
       }
     },
     handleDeleteOption(questionIndex, optionIndex) {
-      if (questionIndex >= 0 && questionIndex < this.questions.length) {
+      if (questionIndex >= 0 && questionIndex < this.questions?.length) {
         // Access the question object
         const question = this.questions[questionIndex];
 

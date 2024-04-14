@@ -22,6 +22,7 @@
   --primary-color: #00bd7e;
   --text-color: #4d4d4d;
   --btn-color: #efe841;
+  --linear-color: linear-gradient(to right, #00b97f, #00b9b7);
 }
 
 /* semantic color variables for this project */
@@ -74,6 +75,10 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+  user-select: none;
 }
 
 /* COLORS TEXT */
@@ -142,4 +147,12 @@ body {
 
 .box-shadow {
   box-shadow: 1px 2px 4px 0 rgba(21, 27, 38, 0.4);
+}
+
+.btn-delete-linear {
+  background-image: var(--linear-color) !important;
+}
+
+.bg_white {
+  background-color: #fff;
 }

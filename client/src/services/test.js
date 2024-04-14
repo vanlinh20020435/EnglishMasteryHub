@@ -1,23 +1,45 @@
-import { $axios } from "."
+import { $axios } from ".";
 
 export const getTests = async (token = null) => {
-    const path = '/api/testss'
+    const path = "/api/testss";
     var result = {
         success: false,
-        data: null
-    }
+        data: null,
+    };
     try {
-        const response = await $axios.get(path, { headers: { 'Authorization': 'Bearer ' + token } })
+        const response = await $axios.get(path, {
+            headers: { Authorization: "Bearer " + token },
+        });
         result.data = response.data;
-        result.success = true
+        result.success = true;
     } catch (error) {
         console.log(error);
+        result.success = false
     }
-    return result
-}
+    return result;
+};
 
 export const getTest = async (token = null, testId = null) => {
-    const path = `/api/testss/${testId}`
+    const path = `/api/testss/${testId}`;
+    var result = {
+        success: false,
+        data: null,
+    };
+    try {
+        const response = await $axios.get(path, {
+            headers: { Authorization: "Bearer " + token },
+        });
+        result.data = response.data;
+        result.success = true;
+    } catch (error) {
+        console.log(error);
+        result.success = false
+    }
+    return result;
+};
+
+export const getTestByClass = async (token = null, classId = null, testId = null) => {
+    const path = `/api/class/${classId}/tests-info/${testId}`
     var result = {
         success: false,
         data: null
@@ -28,12 +50,13 @@ export const getTest = async (token = null, testId = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
 
-export const getTestInfo = async (token = null, classId = null, testId = null) => {
-    const path = `/api/testss/tests-info/${classId}/${testId}`
+export const getTestByStudent = async (token = null, testId = null, password) => {
+    const path = `/api/testss/${testId}/verify?password=${password}`
     var result = {
         success: false,
         data: null
@@ -44,11 +67,12 @@ export const getTestInfo = async (token = null, classId = null, testId = null) =
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
 
-export const getTestsByClass = async (token = null, classId) => {
+export const getTestInfoByClass = async (token = null, classId) => {
     const path = `/api/class/${classId}/tests-info/get-all`
     var result = {
         success: false,
@@ -60,6 +84,7 @@ export const getTestsByClass = async (token = null, classId) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
@@ -82,6 +107,7 @@ export const searchAdmins = async (token = null, params) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
@@ -98,6 +124,7 @@ export const createAdmin = async (token = null, payload = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
@@ -114,6 +141,7 @@ export const editAdmin = async (id = null, token = null, payload = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
@@ -130,6 +158,7 @@ export const editAdminStatus = async (id = null, token = null, updateValue) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
@@ -146,6 +175,7 @@ export const changeAdminPassword = async (id = null, token = null, password) => 
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }

@@ -437,7 +437,7 @@ export default {
           {
             id: 1,
             title: "Fill the blank with the correct form of the words",
-            option: 2,
+            option: 0,
           },
           {
             id: 2,
@@ -523,13 +523,13 @@ export default {
           {
             id: 2,
             title: "Use the given words to make complete sentences",
-            option: 2,
+            option: 0,
           },
           {
             id: 3,
             title:
               "Write about the advantages and disadvantages of playing sports",
-            option: 2,
+            option: 1,
           },
         ],
       },
@@ -591,7 +591,7 @@ export default {
 
       const questions = [
         {
-          title: "Question 1",
+          content: "Question 1",
           numOptions: this.selectedTypeSkill.option,
           options: Array.from(
             { length: this.selectedTypeSkill.option },
@@ -617,9 +617,9 @@ export default {
 
       this.questionList.push({
         skill: this.selectedSkill.toLowerCase(),
-        type: selectedItemSkill?.id || "1",
+        type: selectedItemSkill?.id?.toString() || "1",
         title: this.selectedTypeSkill.title,
-        questions: questions, // Assign the questions array to the questionList item
+        subQuestions: questions, // Assign the questions array to the questionList item
       });
     },
     removePronun1(index) {
@@ -628,7 +628,7 @@ export default {
     },
     handleDeleteQuestionInPronun1(pronun1Index, questionIndex) {
       // Remove the question at the specified index from the questionList array
-      this.questionList[pronun1Index].questions.splice(questionIndex, 1);
+      this.questionList[pronun1Index].subQuestions.splice(questionIndex, 1);
     },
     handleUpdateGroupTitleQuestion(index, updatedValue) {
       // Update the groupTitleQuestion property in questionList at the specified index
@@ -642,7 +642,7 @@ export default {
 
       // Create a new question object
       const newQuestion = {
-        title: `New Question`,
+        content: `New Question`,
         numOptions: this.selectedTypeSkill.option,
         options: Array.from(
           { length: this.selectedTypeSkill.option },
@@ -659,15 +659,16 @@ export default {
       };
 
       // Push the new question to the questions array of the Pronun1Manage component
-      pronun1.questions.push(newQuestion);
+      pronun1.subQuestions.push(newQuestion);
     },
 
     async handleSaveExam() {
       if (!!this.valid) {
         const convertQuestion = (question, questionParent) => ({
-          content: question?.title,
+          content: question?.content,
           skill: questionParent?.skill,
-          type: questionParent?.type,
+          type: `${questionParent?.type?.toString()}`,
+          description: question?.description,
           answers: question?.answers.map((answer) => ({
             answer: answer?.answer,
             explanation: answer?.explanation || "",
@@ -690,10 +691,10 @@ export default {
           content: "",
           description: "",
           title: item?.title,
-          type: item?.type,
+          type: `${item?.type?.toString()}`,
           skill: item?.skill,
           time: 0,
-          subQuestions: item.questions.map((question) =>
+          subQuestions: item.subQuestions.map((question) =>
             convertQuestion(question, item)
           ),
         }));
@@ -706,17 +707,15 @@ export default {
           questions: convertedData,
         };
 
-        console.log("body ===", body);
+        const result = await apiCallerPost(
+          "/api/testss",
+          JSON.parse(localStorage?.getItem("accessToken"))?.token,
+          body
+        );
 
-        // const result = await apiCallerPost(
-        //   "/api/testss",
-        //   JSON.parse(localStorage?.getItem("accessToken"))?.token,
-        //   body
-        // );
-
-        // if (result.success) {
-        //   this.dialogCreateSuccess = true;
-        // }
+        if (result.success) {
+          this.dialogCreateSuccess = true;
+        }
       }
     },
   },

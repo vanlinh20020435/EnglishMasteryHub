@@ -59,7 +59,7 @@
                   </div>
                 </div>
 
-                <div
+                <!-- <div
                   @click="handleViewStudents"
                   class="cursor-pointer d-flex align-center justify-center"
                 >
@@ -67,7 +67,7 @@
                     src="@/assets/images/icon/ico_arrow_right.png"
                     alt="Icon Arrow Right"
                   />
-                </div>
+                </div> -->
               </v-row>
             </v-col>
           </v-row>
@@ -108,7 +108,7 @@ import { mapState } from "pinia";
 import ico_tailieu from "@/assets/images/icon/ico_tailieu.png";
 import ico_chambai from "@/assets/images/icon/ico_chambai.png";
 import ico_giaobai from "@/assets/images/icon/ico_giaobai.png";
-import ico_baocao from "@/assets/images/icon/ico_baocao.png";
+import ico_hocsinh from "@/assets/images/icon/ico_hocsinh.png";
 
 export default {
   name: "DetailClassTeacher",
@@ -124,28 +124,34 @@ export default {
       dataAction: [
         {
           id: 1,
+          img: ico_hocsinh,
+          title: "Danh sách học sinh",
+          path: "students",
+        },
+        {
+          id: 2,
           img: ico_tailieu,
           title: "Tài liệu học tập",
           path: "study-document",
         },
         {
-          id: 2,
-          img: ico_chambai,
-          title: "Bài tập đã giao",
-          path: "",
-        },
-        {
           id: 3,
-          img: ico_giaobai,
-          title: "Giao bài",
-          path: "",
+          img: ico_chambai,
+          title: "Bài kiểm tra đã giao",
+          path: "mark-exam",
         },
         {
           id: 4,
-          img: ico_baocao,
-          title: "Báo cáo học tập",
-          path: "",
+          img: ico_giaobai,
+          title: "Giao bài",
+          path: "assign-exam",
         },
+        // {
+        //   id: 4,
+        //   img: ico_baocao,
+        //   title: "Báo cáo học tập",
+        //   path: "",
+        // },
       ],
     };
   },

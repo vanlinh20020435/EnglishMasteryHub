@@ -12,6 +12,7 @@ const login = async (username = null, password = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 }
@@ -29,6 +30,7 @@ const getUserInfo = async (token = null) => {
         result.success = true
     } catch (error) {
         console.log(error);
+        result.success = false
     }
     return result
 
