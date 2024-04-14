@@ -83,11 +83,12 @@ public class TestsResource
 		return ResponseEntity.noContent().build();
 	}
 
-	@GetMapping("/{testId}/verify")
+	@GetMapping("/verify")
 	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
 	public ResponseEntity<TestsResponse> verify(
-			@PathVariable(name = "testId") final Integer testId, @RequestParam(required = false) String password)
+			@RequestParam Integer testId, @RequestParam Integer classId,
+			@RequestParam(required = false) String password)
 	{
-		return ResponseEntity.ok(testsService.verify(testId, password));
+		return ResponseEntity.ok(testsService.verify(testId, classId, password));
 	}
 }

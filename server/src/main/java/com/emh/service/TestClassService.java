@@ -36,9 +36,11 @@ public class TestClassService
 	{
 		final Classes classs = classesRepository.findById(classId)
 				.orElseThrow(NotFoundException::new);
-		return classs.getTestClasses().stream()
+		List<TestClassResponse> responses = new ArrayList<>(classs.getTestClasses().stream()
 				.map(this::exportTestClass)
-				.toList();
+				.toList());
+		responses.sort((o1, o2) -> o1.getTestId().compareTo(o2.getTestId()));
+		return responses;
 	}
 
 	public void create(Integer classId, Integer testId, TestClassRequest testClassRequest)
@@ -168,9 +170,11 @@ public class TestClassService
 	{
 		final Classes classs = classesRepository.findById(classId)
 				.orElseThrow(NotFoundException::new);
-		return classs.getTestClasses().stream()
+		List<TestClassInfoResponse> responses = new ArrayList<>(classs.getTestClasses().stream()
 				.map(testClass -> EntityMapper.testInfoMapToResponse(testClass, new TestClassInfoResponse()))
-				.toList();
+				.toList());
+		responses.sort((o1, o2) -> o1.getTestId().compareTo(o2.getTestId()));
+		return responses;
 	}
 
 	public TestClassInfoResponse getTestInfo(Integer classId, Integer testId)
