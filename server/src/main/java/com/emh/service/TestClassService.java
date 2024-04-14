@@ -36,9 +36,11 @@ public class TestClassService
 	{
 		final Classes classs = classesRepository.findById(classId)
 				.orElseThrow(NotFoundException::new);
-		return classs.getTestClasses().stream()
+		List<TestClassResponse> responses = new ArrayList<>(classs.getTestClasses().stream()
 				.map(this::exportTestClass)
-				.toList();
+				.toList());
+		responses.sort((o1, o2) -> o1.getTestId().compareTo(o2.getTestId()));
+		return responses;
 	}
 
 	public void create(Integer classId, Integer testId, TestClassRequest testClassRequest)
@@ -49,13 +51,13 @@ public class TestClassService
 		Tests tests = testsRepository.findById(testId)
 				.orElseThrow(NotFoundException::new);
 		TestClass old = testClassRepository.findOneByClasssAndTests(classes, tests);
-		if(old != null)
+		if (old != null)
 			throw new AppException("Test already exists");
 		testClass.setTests(tests);
 		testClass.setClasss(classes);
-		if(testClassRequest.getStartDate() != null)
+		if (testClassRequest.getStartDate() != null)
 			testClass.setStartDate(testClassRequest.getStartDate());
-		if(testClassRequest.getEndDate() != null)
+		if (testClassRequest.getEndDate() != null)
 			testClass.setEndDate(testClassRequest.getEndDate());
 		testClassRepository.save(testClass);
 	}
@@ -76,9 +78,10 @@ public class TestClassService
 		Tests tests = testClass.getTests();
 		TestClassResponse response = new TestClassResponse();
 		EntityMapper.testClassMapToResponse(tests, response);
-		if(testClass.getStartDate() != null)
-			response.setStartDate(testClass.getStartDate());;
-		if(testClass.getEndDate() != null)
+		if (testClass.getStartDate() != null)
+			response.setStartDate(testClass.getStartDate());
+		;
+		if (testClass.getEndDate() != null)
 			response.setEndDate(testClass.getEndDate());
 		exportQuestions(tests, response);
 		return response;
@@ -167,9 +170,11 @@ public class TestClassService
 	{
 		final Classes classs = classesRepository.findById(classId)
 				.orElseThrow(NotFoundException::new);
-		return classs.getTestClasses().stream()
+		List<TestClassInfoResponse> responses = new ArrayList<>(classs.getTestClasses().stream()
 				.map(testClass -> EntityMapper.testInfoMapToResponse(testClass, new TestClassInfoResponse()))
-				.toList();
+				.toList());
+		responses.sort((o1, o2) -> o1.getTestId().compareTo(o2.getTestId()));
+		return responses;
 	}
 
 	public TestClassInfoResponse getTestInfo(Integer classId, Integer testId)
@@ -179,7 +184,7 @@ public class TestClassService
 		Tests tests = testsRepository.findById(testId)
 				.orElseThrow(NotFoundException::new);
 		TestClass testClass = testClassRepository.findOneByClasssAndTests(classes, tests);
-		if(testClass == null)
+		if (testClass == null)
 			throw new NotFoundException();
 		return EntityMapper.testInfoMapToResponse(testClass, new TestClassInfoResponse());
 	}

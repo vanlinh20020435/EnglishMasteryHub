@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @CrossOrigin("*")
@@ -137,7 +138,7 @@ public class ClassesResource
 	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	@ApiResponse(responseCode = "201")
 	public ResponseEntity<Integer> addFileToClass(@PathVariable(name = "classId") final Integer classId,
-												  @RequestBody @Valid final ClassFileRequest classFileRequest)
+												  @RequestBody @Valid final ClassFileRequest classFileRequest) throws IOException
 	{
 		final Integer fileId = classFileService.create(classId, classFileRequest);
 		return new ResponseEntity<>(fileId, HttpStatus.CREATED);

@@ -63,7 +63,7 @@ public class TestsResource
 	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	public ResponseEntity<Integer> updateTests(
 			@PathVariable(name = "testId") final Integer testId,
-			@RequestBody @Valid final TestsRequest testsDTO)
+			@RequestBody @Valid final TestsRequest testsDTO) throws IOException
 	{
 		testsService.update(testId, testsDTO);
 		return ResponseEntity.ok(testId);
@@ -83,11 +83,12 @@ public class TestsResource
 		return ResponseEntity.noContent().build();
 	}
 
-	@GetMapping("/{testId}/check-password")
+	@GetMapping("/verify")
 	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
-	public ResponseEntity<Boolean> checkTestPassword(
-			@PathVariable(name = "testId") final Integer testId, @RequestParam String password)
+	public ResponseEntity<TestsResponse> verify(
+			@RequestParam Integer testId, @RequestParam Integer classId,
+			@RequestParam(required = false) String password)
 	{
-		return ResponseEntity.ok(testsService.checkPassword(testId, password));
+		return ResponseEntity.ok(testsService.verify(testId, classId, password));
 	}
 }
