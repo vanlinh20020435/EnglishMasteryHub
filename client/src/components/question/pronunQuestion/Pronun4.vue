@@ -10,7 +10,7 @@
           <!-- <Audio :file="sub.files[0].url" color="success" :config="{ sound: true }"></Audio> -->
           <v-row>
             <v-col v-for="option in sub.options" md="6">
-              <v-checkbox @change="() => " v-model="temporaryAnswers[sub.questionId]" :label="option.option"
+              <v-checkbox v-model="temporaryAnswers[sub.questionId]" :label="option.option"
                 :value="option.option"></v-checkbox>
             </v-col>
           </v-row>

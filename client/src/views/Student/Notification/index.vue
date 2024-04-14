@@ -2,7 +2,7 @@
     <v-card v-if="isLoading" class="d-flex justify-center">
         <v-progress-circular :size="70" :width="7" color="success" indeterminate></v-progress-circular>
     </v-card>
-    <v-list v-else style="padding-top: 0; padding-bottom: 0;">
+    <v-list v-else-if="examNotis.length" style="padding-top: 0; padding-bottom: 0;">
         <v-card-title v-if="examNotis.length" style="padding-top: 0; padding-bottom: 0; font-size: 1rem;">Bài kiểm tra
             đang diễn
             ra</v-card-title>
@@ -13,9 +13,11 @@
             </v-card>
         </v-hover>
     </v-list>
+    <v-card-subtitle v-else>Bạn không có thông báo nào.</v-card-subtitle>
 </template>
 
 <script>
+import datetime from '@/utils/datetime';
 import { getTestInfoByClass } from '@/services'
 import { mapState } from 'pinia';
 import { authenticationRole, studentStore } from '@/stores';
@@ -43,7 +45,7 @@ export default {
         if (res.success) {
             exams = res.data
         }
-        this.examNotis = exams.filter(exam => new Date(exam.startDate) < new Date() && new Date() < new Date(exam.endDate))
+        this.examNotis = exams.filter(exam => datetime(exam.startDate).value < new Date() && new Date() < datetime(exam.endDate).value)
         this.isExamLoading = false
     },
     methods: {
