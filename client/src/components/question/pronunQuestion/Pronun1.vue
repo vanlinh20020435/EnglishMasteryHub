@@ -7,7 +7,7 @@
             <v-row>
                 <v-col md="12" lg="6" v-for="(sub, idx) in question.subQuestions" click>
                     <p style="margin-bottom: 4px">{{ idx + 1 }}.</p>
-                    <Audio :file="sub.files[0].url" color="success"></Audio>
+                    <!-- <Audio :file="sub.files[0].url" color="success"></Audio> -->
                 </v-col>
                 <v-col lg="6">
                     <v-row>
@@ -33,6 +33,7 @@ export default {
     },
     props: {
         question: Object,
+        questionResults: Object
     },
     data: () => ({
         test: 't1'

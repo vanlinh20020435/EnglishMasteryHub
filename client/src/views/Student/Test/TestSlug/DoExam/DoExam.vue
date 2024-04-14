@@ -5,6 +5,7 @@
       <v-card-text>
         <v-row>
           <v-col md="6">Số câu hỏi: {{ test.totalQuestions }}</v-col>
+          <v-col md="6"> </v-col>
         </v-row>
       </v-card-text>
     </v-card>
@@ -13,26 +14,15 @@
         <v-card-text>
           <v-row>
             <v-col md="12" v-for="question in test.questions" :key="question.questionId">
-              <Question :question="question" />
+              <Question :question="question" :questionResults="answersForm.questionResults" />
             </v-col>
           </v-row>
         </v-card-text>
       </v-form>
     </v-card>
-    <v-card :elevation="8">
-      <v-form>
-        <v-card-text>
-          <v-row>
-            <v-col md="12" v-for="question in test.questions" :key="question.questionId">
-              <Question :question="question" />
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-form>
-    </v-card>
-    <v-card>
-      {{ position[0] }}|{{ position[1] }}
-    </v-card>
+    <v-btn @click="scrollToTop" v-if="position[1] > 200" class="position-fixed" style="bottom: 16px; right: 16px"
+      icon="mdi-menu-up" color="success">
+    </v-btn>
   </div>
   <div v-else>no test</div>
 </template>
@@ -47,6 +37,17 @@ export default {
   components: {
     Question
   },
+  data: () => ({
+    answersForm: {
+      score: 0,
+      testDefaultScore: 0,
+      time: 0,
+      classId: 0,
+      testId: 0,
+      studentId: 0,
+      questionResults: []
+    }
+  }),
   computed: {
     ...mapState(testStore, ['test', 'clearTest']),
   },
@@ -61,6 +62,7 @@ export default {
     }
   },
   beforeUnmount() {
+    window.removeEventListener('DOMContentLoaded', this.confirmLeave);
     window.removeEventListener('beforeunload', this.confirmLeave);
   },
   beforeRouteLeave(to, from, next) {

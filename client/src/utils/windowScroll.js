@@ -25,6 +25,14 @@ export default function windowScrollPosition(propertyName) {
                 window.addEventListener('scroll', this._scrollListener)
             }
         },
+        methods: {
+            scrollToTop() {
+                window.scrollTo({
+                    top: 0,
+                    left: 0,
+                });
+            }
+        },
         beforeDestroy() {
             // Detach the listener when the component is gone
             window.removeEventListener('scroll', this._scrollListener)

@@ -1,6 +1,6 @@
 <template>
-  <Pronun1 v-if="question?.type === '1'" :question="question"></Pronun1>
-  <Pronun4 v-else-if="question?.type === '4'" :question="question"></Pronun4>
+  <Pronun1 v-if="question?.type === '1'" :question="question" :questionResults="questionResults"></Pronun1>
+  <Pronun4 v-else-if="question?.type === '4'" :question="question" :questionResults="questionResults"></Pronun4>
 </template>
 
 <script>
@@ -13,6 +13,7 @@ export default {
   },
   props: {
     question: Object,
+    questionResults: Object
   },
   mounted() {
   },
