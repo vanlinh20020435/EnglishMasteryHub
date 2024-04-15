@@ -1,5 +1,9 @@
 <template>
-    <v-card style="text-align: center" :flat="flat == undefined || flat == false ? false : true">
+    <v-btn v-if="config.sound" size="x-small" outlined class="ma-2" :color="color" @click.native="play"
+        :disabled="playing || !loaded" icon>
+        <v-icon>mdi-volume-high</v-icon>
+    </v-btn>
+    <v-card v-else style="text-align: center" :flat="flat == undefined || flat == false ? false : true">
         <v-card-text class="d-flex" style="padding: 8px 8px 0">
             <v-btn size="x-small" outlined icon class="ma-2" :color="color" @click.native="playing ? pause() : play()"
                 :disabled="!loaded">
@@ -14,8 +18,8 @@
             <v-slider style="flex: 2; margin-top: 8px; max-width: 150px" :track-size="1" :thumb-size="8"
                 v-model="playerVolume" :prepend-icon="volumeHighIcon" max="1" step="0.01" min="0"></v-slider>
         </v-card-text>
-        <audio id="player" ref="player" @ended="(e) => ended(e)" @canplay="(e) => canPlay(e)" :src="file"></audio>
     </v-card>
+    <audio id="player" ref="player" @ended="(e) => ended(e)" @canplay="(e) => canPlay(e)" :src="file"></audio>
 </template>
 <script>
 const formatTime = (second) =>
@@ -23,6 +27,10 @@ const formatTime = (second) =>
 
 export default {
     props: {
+        config: {
+            type: Object,
+            default: {}
+        },
         flat: {
             type: Boolean,
             default: false,
@@ -175,7 +183,7 @@ export default {
         _handleEnded() {
             this.paused = this.playing = false;
         },
-        init: function () {
+        init() {
             this.audio.addEventListener('timeupdate', this._handlePlayingUI);
             this.audio.addEventListener('loadeddata', this._handleLoaded);
             this.audio.addEventListener('pause', this._handlePlayPause);

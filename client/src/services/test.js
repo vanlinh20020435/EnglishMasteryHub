@@ -55,8 +55,8 @@ export const getTestByClass = async (token = null, classId = null, testId = null
     return result
 }
 
-export const getTestByStudent = async (token = null, testId = null, password) => {
-    const path = `/api/testss/${testId}/verify?password=${password}`
+export const getTestByStudent = async (token = null, testId = null, classId = null, password) => {
+    const path = `/api/testss/verify?password=${password}&testId=${testId}&classId=${classId}`
     var result = {
         success: false,
         data: null

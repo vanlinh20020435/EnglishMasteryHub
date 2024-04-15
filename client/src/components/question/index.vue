@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PronunQuestion v-if="question?.skill == 'pronunciation'" :question="question" />
+    <PronunQuestion v-if="question?.skill == 'pronunciation'" :question="question" :questionResults="questionResults" />
     <GrammarQuestion v-if="question?.skill == 'grammar'" :question="question" />
   </div>
 </template>
@@ -17,6 +17,7 @@ export default {
   },
   props: {
     question: Object,
+    questionResults: Object
   },
   mounted() {
   },
