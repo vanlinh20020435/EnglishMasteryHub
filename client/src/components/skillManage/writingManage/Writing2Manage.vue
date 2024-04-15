@@ -14,7 +14,7 @@
           }" class="d-flex mt-3 pl-3">
             <v-col cols="12" class="mr-2">
               <v-textarea rows="1" max-rows="4" :rules="required" placeholder="Câu hỏi" hide-no-data clearable auto-grow
-                :model-value="question.content" @input="(event) => updateTitleQuestion(index, event)">
+                :model-value="question?.content || `Question ${index + 1}`" @input="(event) => updateTitleQuestion(index, event)">
               </v-textarea>
 
               <v-col class="pt-1 pb-0">

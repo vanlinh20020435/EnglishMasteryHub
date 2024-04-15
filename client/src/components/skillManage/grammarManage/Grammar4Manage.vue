@@ -37,7 +37,7 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.content"
+                :model-value="question?.content || `Question ${index + 1}`"
                 @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
@@ -56,10 +56,6 @@
                     @update:option="
                       (value) =>
                         handleUpdateOption(index, indexOption - 1, value)
-                    "
-                    @update:updateExplanation="
-                      (value) =>
-                        handleChangeExplanation(index, indexOption - 1, value)
                     "
                     :questionIndex="index"
                     :checked="
@@ -89,6 +85,7 @@
                       hide-no-data
                       clearable
                       auto-grow
+                      :model-value="question?.answers[0]?.explanation || ''"
                       @input="
                         (event) => updateExplanation(index, event.target.value)
                       "
@@ -168,6 +165,8 @@ export default {
     this.questions = this.questionSkill.subQuestions;
     // Initialize the showFullQuestion array with default visibility state for each question
     this.showFullQuestion = Array(this.questions?.length).fill(true);
+
+
   },
   methods: {
     handleToggleShowFull() {
@@ -261,10 +260,10 @@ export default {
       // Update answers based on checkbox state
       if (option.checked) {
         // Checkbox checked, add to answers
-        question.answers.push({
+        question.answers[0] = {
           answer: option.option,
           explanation: option.explanation,
-        });
+        };
       } else {
         // Checkbox unchecked, remove from answers
         const answerIndex = question.answers.findIndex(
