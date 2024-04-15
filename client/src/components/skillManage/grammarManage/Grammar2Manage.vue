@@ -38,7 +38,7 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.content"
+                :model-value="question?.content || `Question ${index + 1}`"
                 @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
@@ -60,6 +60,7 @@
                       auto-grow
                       @click:clear="() => handleClear('answer', index)"
                       variant="solo"
+                      :model-value="question?.answers[0]?.answer || ''"
                       @input="
                         (event) => updateAnswer(index, event.target.value)
                       "
@@ -86,6 +87,7 @@
                       @change="
                         (event) => updateExplanation(index, event.target.value)
                       "
+                      :model-value="question?.answers[0]?.explanation || ''"
                     >
                     </v-textarea>
                   </v-col>
@@ -181,7 +183,17 @@ export default {
       this.$emit("addQuestion", newIndex);
     },
     updateTitleQuestion(questionIndex, event) {
-      this.questions[questionIndex].content = event.target.value;
+      const valueTitle = event.target.value;
+      this.questions[questionIndex].content = valueTitle;
+
+      const regex = /\[(.*?)\]/g;
+      let matches = Array.from(valueTitle.matchAll(regex), m => m[1]);
+      this.questions[questionIndex]?.options.forEach((option, index) => {
+        option.option = matches[index] || '';
+      });
+
+      this.questions[questionIndex].options = 
+      this.questions[questionIndex].options.filter((option, index) => matches[index] !== undefined);
     },
     updateAnswer(questionIndex, newValue) {
       this.questions[questionIndex].answers[0].answer = newValue;
