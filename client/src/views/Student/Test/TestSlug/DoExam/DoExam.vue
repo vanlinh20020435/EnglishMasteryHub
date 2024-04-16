@@ -1,5 +1,5 @@
 <template>
-  <div v-if="test.testId">
+  <div class="do-exam-container" v-if="test.testId">
     <v-card :elevation="8" style="margin-bottom: 16px;">
       <v-card-title>{{ test.testName }}</v-card-title>
       <v-card-text>
@@ -13,8 +13,8 @@
       <v-form>
         <v-card-text>
           <v-row>
-            <v-col md="12" v-for="question in test.questions" :key="question.questionId">
-              <Question :question="question" :questionResults="answersForm.questionResults" />
+            <v-col md="12" v-for="(question, index) in test.questions" :key="question.questionId">
+              <Question :question="question" :questionResults="answersForm.questionResults" :indexQuestion="index" />
             </v-col>
           </v-row>
         </v-card-text>

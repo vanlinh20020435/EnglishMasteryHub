@@ -424,11 +424,11 @@ export default {
             title: "Listen to each audio and choose the word you hear",
             option: 2,
           },
-          {
-            id: 2,
-            title: "Choose the correct sound",
-            option: 2,
-          },
+          // {
+          //   id: 2,
+          //   title: "Choose the correct sound",
+          //   option: 2,
+          // },
           {
             id: 3,
             title: "Listen and write the words you hear",
@@ -448,12 +448,12 @@ export default {
           {
             id: 1,
             title: "Fill the blank with the correct form of the words",
-            option: 2,
+            option: 0,
           },
           {
             id: 2,
             title: "Choose the underlined part that needs correction",
-            option: 2,
+            option: 4,
           },
           {
             id: 3,
@@ -502,12 +502,12 @@ export default {
           {
             id: 1,
             title: "Listen and answer the questions",
-            option: 0,
+            option: 1,
           },
           {
             id: 2,
             title: "Listen and fill in the sentences",
-            option: 0,
+            option: 1,
           },
           {
             id: 3,
@@ -534,13 +534,13 @@ export default {
           {
             id: 2,
             title: "Use the given words to make complete sentences",
-            option: 2,
+            option: 0,
           },
           {
             id: 3,
             title:
               "Write about the advantages and disadvantages of playing sports",
-            option: 2,
+            option: 1,
           },
         ],
       },
@@ -701,12 +701,12 @@ export default {
           options: question.options.map((option) => ({
             option: option?.option?.trim(),
           })),
-          files: !!question?.files?.type || question?.files[0]?.type
+          files: !!question?.files?.type || question?.files?.[0]?.type
             ? [
                 {
-                  type: question?.files?.type || question?.files[0]?.type,
-                  url: question?.files?.url || question?.files[0]?.url,
-                  name: question?.files?.name || question?.files[0]?.name,
+                  type: question?.files?.type || question?.files?.[0]?.type,
+                  url: question?.files?.url || question?.files?.[0]?.url,
+                  name: question?.files?.name || question?.files?.[0]?.name,
                 },
               ]
             : [],
@@ -722,12 +722,12 @@ export default {
           subQuestions: item.subQuestions.map((question) =>
             convertQuestion(question, item)
           ),
-          files: !!item?.files?.type || item?.files[0]?.type
+          files: !!item?.files?.type || item?.files?.[0]?.type
             ? [
                 {
-                  type: item?.files?.type || item?.files[0]?.type,
-                  url: item?.files?.url || item?.files[0]?.url,
-                  name: item?.files?.name || item?.files[0]?.name,
+                  type: item?.files?.type || item?.files?.[0]?.type,
+                  url: item?.files?.url || item?.files?.[0]?.url,
+                  name: item?.files?.name || item?.files?.[0]?.name,
                 },
               ]
             : [],

@@ -139,10 +139,8 @@ export default {
       const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
-        numOptions: 2,
-        options: Array.from({ length: 2 }, (_, i) => ({
-          option: "",
-        })),
+        numOptions: 0,
+        options: [],
         answers: [{
           answer: "",
           explanation: ''
