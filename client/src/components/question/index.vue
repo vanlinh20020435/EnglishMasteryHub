@@ -1,7 +1,7 @@
 <template>
   <div>
     <PronunQuestion v-if="question?.skill == 'pronunciation'" :question="question" :questionResults="questionResults" />
-    <GrammarQuestion v-if="question?.skill == 'grammar'" :question="question" />
+    <GrammarQuestion v-if="question?.skill == 'grammar'" :question="question" :questionResults="questionResults" :indexQuestion="indexQuestion" />
   </div>
 </template>
 
@@ -17,7 +17,8 @@ export default {
   },
   props: {
     question: Object,
-    questionResults: Object
+    questionResults: Object,
+    indexQuestion: Number,
   },
   mounted() {
   },

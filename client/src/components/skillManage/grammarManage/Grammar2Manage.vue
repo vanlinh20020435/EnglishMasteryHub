@@ -39,7 +39,7 @@
                 clearable
                 auto-grow
                 :model-value="question?.content || `Question ${index + 1}`"
-                @input="(event) => updateTitleQuestion(index, event)"
+                @change="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
               <v-col>
@@ -165,8 +165,8 @@ export default {
       const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
-        numOptions: 2,
-        options: Array.from({ length: 2 }, (_, i) => ({
+        numOptions: 4,
+        options: Array.from({ length: 4 }, (_, i) => ({
           option: "",
         })),
         answers: [
@@ -187,13 +187,18 @@ export default {
       this.questions[questionIndex].content = valueTitle;
 
       const regex = /\[(.*?)\]/g;
-      let matches = Array.from(valueTitle.matchAll(regex), m => m[1]);
+      let matches = Array.from(valueTitle.matchAll(regex), m => m[1]?.trim());
+      console.log('matches =====', matches);
+      
+
       this.questions[questionIndex]?.options.forEach((option, index) => {
         option.option = matches[index] || '';
       });
+      console.log('this.questions[questionIndex].options ====', this.questions[questionIndex].options);
 
       this.questions[questionIndex].options = 
       this.questions[questionIndex].options.filter((option, index) => matches[index] !== undefined);
+    
     },
     updateAnswer(questionIndex, newValue) {
       this.questions[questionIndex].answers[0].answer = newValue;

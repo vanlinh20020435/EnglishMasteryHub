@@ -43,7 +43,7 @@ import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
 import { mapState } from "pinia";
 import { authenticationRole } from "@/stores";
 import { apiCallerGet, apiCallerDelete } from "@/services/teacher";
-import { removeVietnameseDiacritics } from "@/base/Validate";
+import { removeVietnameseDiacritics } from "@/base/helper";
 
 export default {
     components: {
