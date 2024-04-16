@@ -3,27 +3,34 @@
     <v-card-title>
       {{ question.title }}
     </v-card-title>
-    <v-card-text class="">
-      <v-row>
-        <v-col lg="6" v-for="(sub, idx) in question.subQuestions" click>
-          <p style="margin-bottom: 4px">{{ idx + 1 }}. {{ sub.content }}</p>
-          <!-- <Audio :file="sub.files[0].url" color="success" :config="{ sound: true }"></Audio> -->
-          <v-row>
-            <v-col v-for="option in sub.options" md="6">
-              <v-checkbox v-model="temporaryAnswers[sub.questionId]" :label="option.option"
-                :value="option.option"></v-checkbox>
-            </v-col>
-          </v-row>
-        </v-col>
-        <v-col lg="6">
-        </v-col>
-      </v-row>
+    <v-card-text>
+      <div v-for="(sub, idx) in question.subQuestions">
+        <p style="margin-bottom: 4px">{{ idx + 1 }}. {{ sub.content }}</p>
+        <v-row v-if="$vuetify.display.smAndDown">
+          <v-col cols="12" style="padding-bottom: 0;">
+            <Audio :file="sub.files[0].url" color="success" :config="{ sound: true }"></Audio>
+          </v-col>
+          <v-col cols="12" style="padding-top: 0;">
+            <v-checkbox v-for="option in sub.options" hide-details v-model="sub.selected" :label="option.option"
+              :value="option.option"></v-checkbox>
+          </v-col>
+        </v-row>
+        <v-row v-else>
+          <v-col cols="6">
+            <v-checkbox v-for="option in sub.options" hide-details v-model="sub.selected" :label="option.option"
+              :value="option.option"></v-checkbox>
+          </v-col>
+          <v-col cols="6">
+            <Audio :file="sub.files[0].url" color="success" :config="{ sound: true }"></Audio>
+          </v-col>
+        </v-row>
+      </div>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
-import Audio from '@/components/Audio.vue';
+import Audio from "@/components/Audio.vue";
 
 export default {
   components: {
@@ -31,48 +38,42 @@ export default {
   },
   props: {
     question: Object,
-    questionResults: Object
-  },
-  computed: {
-    temporaryAnswers() {
-      const instance = {}
-      this.question?.subQuestions.forEach(item => {
-        instance[item.questionId] = null
-      })
-      return instance
-    },
-    temporaryAnswerWatchers() {
-      const instance = {}
-      this.question?.subQuestions.forEach(item => {
-        instance[`this.temporaryAnswers.${item.questionId}`] = {
-          handler(newVal, oldVal) {
-            console.log(newVal);
-          },
-          deep: true,
-        }
-      })
-      return instance
-    },
+    questionResults: Object,
   },
   mounted() {
-    const subquestionResults = this.question.subQuestions.map(item => ({
-      questionId: item.questionId,
-      answers: [],
-      rightAnswer: null,
-      score: 0,
-      defaultScore: 1,
-    }))
-    this.questionResults.push(...subquestionResults)
+    this.question.subQuestions.forEach(sub => {
+      const subquestionResult = {
+        questionId: sub.questionId,
+        answers: [],
+        rightAnswer: null,
+        score: 0,
+        defaultScore: 1,
+      }
+      this.questionResults.push(subquestionResult)
+    })
   },
   methods: {
-    clickedCheckbox(qid) {
-      let q = this.question.subQuestions.find(item => item.questionId === qid)
-      let qr = this.questionResults.find(item => item.questionId === qid)
-      console.log(this.temporaryAnswers[qid], q.answers);
-      if (q.answers.find(answer => answer.answer === this.temporaryAnswers[qid])) {
-        // alert('hihi')
-      }
+    caculatePoint(data) {
+      data.forEach((sub) => {
+        const qr = this.questionResults.find(q => q.questionId === sub.questionId)
+        qr.answers = [sub.selected]
+        if (sub.selected === sub.answers[0].answer) {
+          qr.rightAnswer = true
+          qr.score = 1
+        } else {
+          qr.rightAnswer = false
+          qr.score = 0
+        }
+      });
     }
   },
+  watch: {
+    'question.subQuestions': {
+      handler: function (val) {
+        this.caculatePoint(val)
+      },
+      deep: true
+    }
+  }
 };
 </script>
