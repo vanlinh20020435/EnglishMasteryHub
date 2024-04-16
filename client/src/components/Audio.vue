@@ -1,24 +1,32 @@
 <template>
-    <v-btn v-if="config.sound" size="x-small" outlined class="ma-2" :color="color" @click.native="play"
-        :disabled="playing || !loaded" icon>
-        <v-icon>mdi-volume-high</v-icon>
-    </v-btn>
-    <v-card v-else style="text-align: center" :flat="flat == undefined || flat == false ? false : true">
-        <v-card-text class="d-flex" style="padding: 8px 8px 0">
-            <v-btn size="x-small" outlined icon class="ma-2" :color="color" @click.native="playing ? pause() : play()"
-                :disabled="!loaded">
-                <v-icon v-if="!playing || paused">{{ playIcon }}</v-icon>
-                <v-icon v-else>{{ pauseIcon }}</v-icon>
-            </v-btn>
-            <div class="d-flex" style="flex: 7; margin-top: 8px; margin-right: 16px">
-                <v-slider :track-size="1" :thumb-size="12" v-model="percentage"
-                    @update:modelValue="setPosition"></v-slider>
-                <p style="margin-top: 8px">{{ currentTime }} / {{ duration }}</p>
-            </div>
-            <v-slider style="flex: 2; margin-top: 8px; max-width: 150px" :track-size="1" :thumb-size="8"
-                v-model="playerVolume" :prepend-icon="volumeHighIcon" max="1" step="0.01" min="0"></v-slider>
-        </v-card-text>
-    </v-card>
+    <div v-if="config.sound" class="d-flex" style="text-align: center"
+        :flat="flat == undefined || flat == false ? false : true">
+        <v-btn size="x-small" outlined icon class="ma-2" :color="color" @click.native="play"
+            :disabled="playing || !loaded">
+            <v-icon v-if="!playing || paused">mdi-volume-low</v-icon>
+            <v-icon v-else>mdi-volume-high</v-icon>
+        </v-btn>
+        <div class="d-flex" style="flex: 7; margin-top: 8px; margin-right: 16px">
+            <v-slider hide-details="" :track-size="1" :thumb-size="12" v-model="percentage"
+                @update:modelValue="setPosition" readonly></v-slider>
+        </div>
+        <v-slider hide-details="" style="flex: 2; margin-top: 8px; max-width: 150px" :track-size="1" :thumb-size="8"
+            v-model="playerVolume" :prepend-icon="volumeHighIcon" max="1" step="0.01" min="0"></v-slider>
+    </div>
+    <div v-else class="d-flex" style="text-align: center" :flat="flat == undefined || flat == false ? false : true">
+        <v-btn size="x-small" outlined icon class="ma-2" :color="color" @click.native="playing ? pause() : play()"
+            :disabled="!loaded">
+            <v-icon v-if="!playing || paused">{{ playIcon }}</v-icon>
+            <v-icon v-else>{{ pauseIcon }}</v-icon>
+        </v-btn>
+        <div class="d-flex" style="flex: 7; margin-top: 8px; margin-right: 16px">
+            <v-slider hide-details="" :track-size="1" :thumb-size="12" v-model="percentage"
+                @update:modelValue="setPosition"></v-slider>
+            <p style="margin-top: 8px">{{ currentTime }} / {{ duration }}</p>
+        </div>
+        <v-slider hide-details="" style="flex: 2; margin-top: 8px; max-width: 150px" :track-size="1" :thumb-size="8"
+            v-model="playerVolume" :prepend-icon="volumeHighIcon" max="1" step="0.01" min="0"></v-slider>
+    </div>
     <audio id="player" ref="player" @ended="(e) => ended(e)" @canplay="(e) => canPlay(e)" :src="file"></audio>
 </template>
 <script>
