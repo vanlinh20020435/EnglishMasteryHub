@@ -37,7 +37,7 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.content"
+                :model-value="question?.content || `Question ${index + 1}`"
                 @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
@@ -72,7 +72,18 @@
                       hide-no-data
                       clearable
                       hide-details
-                    >
+                      :model-value="question?.answers[0]?.explanation || ''" 
+										  @click:clear="() =>
+											handleClear(
+												'explanation',
+												index
+											)" 
+                      @input="(event) =>
+												updateExplanation(
+													index,
+													event.target.value
+												)"
+                      >
                     </v-textarea>
                   </v-col>
                 </v-row>
@@ -181,6 +192,9 @@ export default {
     updateTitleQuestion(questionIndex, event) {
       this.questions[questionIndex].content = event.target.value;
     },
+    updateExplanation(questionIndex, newValue) {
+			this.questions[questionIndex].answers[0].explanation = newValue;
+		},
   },
 };
 </script>

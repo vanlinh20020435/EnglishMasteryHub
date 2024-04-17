@@ -1,17 +1,18 @@
 <template>
 	<div class="d-flex flex-column">
-		<h3 class="font-semi-bold">{{ dataQuestion.title }}</h3>
+		<h3 class="font-semi-bold text-lg">Bài {{ indexQuestion + 1 }}: {{ dataQuestion.title }}</h3>
 		<v-col>
 			<v-col class="d-flex" v-for="(subQuestion, index) in dataQuestion.subQuestions" :key="index">
-				<span class="mr-3">{{ index + 1 }}.</span>
+				<span class="mr-3 font-semi-bold">{{ index + 1 }}.</span>
 				<div v-html="replacedSentence(subQuestion?.content, index)"></div>
-				<input type="text">
 			</v-col>
 		</v-col>
 	</div>
 </template>
 
 <script>
+import { formatOriginalText } from '@/base/helper.js';
+
 export default {
 	name: "Grammar1Question",
 	data() {
@@ -20,21 +21,47 @@ export default {
 	},
 	props: {
 		dataQuestion: Object,
+		indexQuestion: Number,
+		questionResults: Object
 	},
 	mounted() {
-		// this.fetchDetailExam();
+		const subquestionResults = this.dataQuestion.subQuestions.map(item => ({
+			questionId: item.questionId,
+			answers: [],
+			rightAnswer: null,
+			score: 0,
+			defaultScore: 1,
+		}))
 
-		window.handleChange = (event, key) => {
+		this.questionResults.push(...subquestionResults)
+
+		window.handleChange = (event, subQuestionIndex) => {
 			let newValue = event.target.value;
-			if (newValue.toLowerCase() == this.dataQuestion.subQuestions[key].answers[0].answer.toLowerCase()) {
-				this.dataQuestion.subQuestions[key].score = 1;
+      let subQuestionSelected = this.dataQuestion.subQuestions?.[subQuestionIndex];
+      let subQuestionInResult = this.questionResults.find(item => item?.questionId == subQuestionSelected?.questionId);
+
+			const matchFound = subQuestionSelected.answers.some(answerObj => {
+				const answer = formatOriginalText(answerObj?.answer);
+				return formatOriginalText(newValue) == answer;
+			});
+
+			if (matchFound) {
+				subQuestionInResult.score = 1;
 			} else {
-				this.dataQuestion.subQuestions[key].score = 0;
+				subQuestionInResult.score = 0;
 			}
 
+			subQuestionInResult.answers[0] = {
+				...subQuestionInResult.answers[0],
+				answer: newValue,
+			}
+			const indexToUpdate = this.questionResults.findIndex(item => item.questionId === subQuestionInResult.questionId);
+      if (indexToUpdate !== -1) {
+        this.questionResults[indexToUpdate] = subQuestionInResult;
+      } else {
+        this.questionResults.push(subQuestionInResult);
+      }
 		};
-	},
-	watch: {
 	},
 	methods: {
 		replacedSentence(sentence, index) {
@@ -48,7 +75,7 @@ export default {
 			while ((match = regex.exec(sentence)) !== null) {
 				const placeholder = match[0];
 				const inputPlaceholder = match[1];
-				const inputHtml = `<input type="text" class="input-answer" oninput="handleChange(event, ${index})" data-index="${index}"  />`;
+				const inputHtml = `<input type="text" class="input-answer" onchange="handleChange(event, ${index})" data-index="${index}"  />`;
 				replaced = replaced.replace(placeholder, inputHtml);
 			}
 
@@ -68,31 +95,6 @@ export default {
 				});
 			});
 		},
-		renderFormAnswer() {
-			let question = "";
-			for (let option of this.options) {
-				question = option.question_content;
-			}
-			let textsMatch = getFromBetween.get(question, "{", "}");
-			for (let text of textsMatch) {
-				question = question.replace(`{${text}}`, "{}");
-			}
-			let arrQuestion = question.split("{}");
-			this.arrQuestionResult = [];
-			arrQuestion.forEach((item, index) => {
-				if (index !== 0 || item.length === 0) {
-					this.arrQuestionResult.push({
-						type: "input",
-						value: this.answer ? this.answer[this.arrQuestionResult.length]?.value || "" : "",
-					});
-				}
-				this.arrQuestionResult.push({
-					type: "text",
-					value: item,
-				});
-			});
-		}
-
 	},
 };
 </script>

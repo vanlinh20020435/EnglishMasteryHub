@@ -2,7 +2,7 @@
     <v-card v-if="isLoading" class="d-flex justify-center">
         <v-progress-circular :size="70" :width="7" color="success" indeterminate></v-progress-circular>
     </v-card>
-    <v-card v-else>
+    <v-card v-else-if="test.testId">
         <div style="display: flex;">
             <div style="flex: 1">
                 <v-card-title style="font-size: 1.75rem;">{{ test.testName }}</v-card-title>
@@ -26,13 +26,16 @@
         </v-card-text>
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn v-if="!isGoingDoExam" @click="clickDoExam" color="primary" variant="elevated"
-                style="font-weight: 500;" :prepend-icon="test.private ? 'mdi-lock' : ''">
-                Làm bài
-            </v-btn>
-            <v-btn v-else color="primary" variant="elevated" style="font-weight: 500;">
-                <v-progress-circular :width="3" :size="20" color="white" indeterminate></v-progress-circular>
-            </v-btn>
+            <div v-if="validTest(test.startDate, test.endDate)">
+                <v-btn v-if="!isGoingDoExam" @click="clickDoExam" color="primary" variant="elevated"
+                    style="font-weight: 500;" :prepend-icon="test.private ? 'mdi-lock' : ''">
+                    Làm bài
+                </v-btn>
+                <v-btn v-else color="primary" variant="elevated" style="font-weight: 500;">
+                    <v-progress-circular :width="3" :size="20" color="white" indeterminate></v-progress-circular>
+                </v-btn>
+            </div>
+            <v-card-subtitle v-else style="color: red;">Không trong thời gian làm bài!</v-card-subtitle>
         </v-card-actions>
     </v-card>
     <v-dialog v-model="isOpenPassword" max-width="500px">
@@ -57,6 +60,7 @@
 </template>
 
 <script>
+import datetime from '@/utils/datetime';
 import { getTestByClass, getTestByStudent } from '@/services'
 import { mapState } from 'pinia';
 import { authenticationRole, studentStore, testStore, toastStore } from '@/stores';
@@ -103,13 +107,18 @@ export default {
         },
         async doExam() {
             this.isGoingDoExam = true
-            const res = await getTestByStudent(this.authentication.accessToken.token, this.$route.params.id, this.password)
+            const res = await getTestByStudent(this.authentication.accessToken.token, this.$route.params.id, this.student.class.classId, this.password)
             if (res.success) {
                 this.updateTest(res.data)
-                this.$router.push('/student/exam')
             }
             this.isGoingDoExam = false
             return res
+        },
+        validTest(start, end) {
+            // let res = false
+            // datetime(start).value < new Date() && new Date() < datetime(end).value
+            // return res
+            return true
         }
     }
 }

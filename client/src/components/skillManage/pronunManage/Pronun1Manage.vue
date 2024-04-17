@@ -37,7 +37,7 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.content"
+                :model-value="question?.content || `Question ${index + 1}`"
                 @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
@@ -166,6 +166,8 @@ export default {
     this.questions = this.questionSkill.subQuestions;
 
     this.showFullQuestion = Array(this.questions?.length).fill(true);
+
+    console.log(' this.questionSkill.subQuestions ====',  this.questionSkill.subQuestions);
   },
   methods: {
     handleToggleShowFull() {

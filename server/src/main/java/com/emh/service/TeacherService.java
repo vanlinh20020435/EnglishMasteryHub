@@ -14,10 +14,7 @@ import com.emh.repos.UserRepository;
 import com.emh.specifications.FilterOperation;
 import com.emh.specifications.SearchCriteria;
 import com.emh.specifications.SpecificationsBuilder;
-import com.emh.util.AppException;
-import com.emh.util.MapperUtils;
-import com.emh.util.NotFoundException;
-import com.emh.util.ReferencedWarning;
+import com.emh.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -49,14 +46,14 @@ public class TeacherService
 	{
 		final List<Teacher> teachers = teacherRepository.findAll(Sort.by("teacherId"));
 		return teachers.stream()
-				.map(teacher -> MapperUtils.teacherMapToResponse(teacher, new TeacherResponse()))
+				.map(teacher -> EntityMapper.teacherMapToResponse(teacher, new TeacherResponse()))
 				.toList();
 	}
 
 	public TeacherResponse get(final Integer teacherId)
 	{
 		return teacherRepository.findById(teacherId)
-				.map(teacher -> MapperUtils.teacherMapToResponse(teacher, new TeacherResponse()))
+				.map(teacher -> EntityMapper.teacherMapToResponse(teacher, new TeacherResponse()))
 				.orElseThrow(NotFoundException::new);
 	}
 
@@ -71,7 +68,7 @@ public class TeacherService
 		user.setStatus(1);
 		teacher.setStatus(1);
 		user = userRepository.save(user);
-		MapperUtils.teacherMapToEntity(teacherRequest, teacher, user);
+		EntityMapper.teacherMapToEntity(teacherRequest, teacher, user);
 		return teacherRepository.save(teacher).getTeacherId();
 	}
 
@@ -79,12 +76,13 @@ public class TeacherService
 	{
 		final Teacher teacher = teacherRepository.findById(teacherId)
 				.orElseThrow(NotFoundException::new);
-		if (StringUtils.isNotBlank(teacherRequest.getPassword()))
-			teacherRequest.setPassword(teacher.getPassword());
+		teacherRequest.setPassword(teacher.getPassword());
 		User user = MapperUtils.map(teacherRequest, User.class);
 		user.setUserId(teacher.getUser().getUserId());
+		user.setRole(Role.TEACHER.toString());
+		user.setStatus(teacher.getUser().getStatus());
 		user = userRepository.save(user);
-		MapperUtils.teacherMapToEntity(teacherRequest, teacher, user);
+		EntityMapper.teacherMapToEntity(teacherRequest, teacher, user);
 		teacherRepository.save(teacher);
 	}
 
@@ -115,7 +113,7 @@ public class TeacherService
 	{
 		Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(NotFoundException::new);
 		return teacher.getClasses().stream()
-				.map(classs -> MapperUtils.classMapToResponse(classs, new ClassesResponse()))
+				.map(classs -> EntityMapper.classMapToResponse(classs, new ClassesResponse()))
 				.toList();
 	}
 
@@ -130,7 +128,7 @@ public class TeacherService
 			spec.with(new SearchCriteria("name", FilterOperation.EQUAL.toString(), name, false));
 		final List<Teacher> teachers = teacherRepository.findAll(spec.build());
 		return teachers.stream()
-				.map(teacher -> MapperUtils.teacherMapToResponse(teacher, new TeacherResponse()))
+				.map(teacher -> EntityMapper.teacherMapToResponse(teacher, new TeacherResponse()))
 				.toList();
 	}
 

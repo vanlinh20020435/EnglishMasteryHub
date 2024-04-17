@@ -4,7 +4,8 @@
     </v-card>
     <v-list v-else-if="tests.length" style="padding-top: 0; padding-bottom: 0;">
         <v-hover v-for="test in tests" v-slot="{ isHovering, props }">
-            <v-card @click="$router.replace(`/student/test/${test.testId}`)" :class="{ 'on-hover': isHovering }"
+            <v-card :disabled="!validTest(test.startDate, test.endDate)"
+                @click="$router.push(`/student/test/${test.testId}`)" :class="{ 'on-hover': isHovering }"
                 :elevation="isHovering ? 8 : 4" v-bind="props" style="margin: 0 8px 16px">
                 <v-list-item height="70" :key="test.testId" :title="test.testName"
                     :subtitle="test.startDate + ' - ' + test.endDate">
@@ -28,6 +29,7 @@
 </template>
 
 <script>
+import datetime from '@/utils/datetime';
 import { getTestInfoByClass } from '@/services'
 import { mapState } from 'pinia';
 import { authenticationRole, studentStore } from '@/stores';
@@ -48,6 +50,14 @@ export default {
             this.tests = res.data
         }
         this.isLoading = false
+    },
+    methods: {
+        validTest(start, end) {
+            // let res = false
+            // datetime(start).value < new Date() && new Date() < datetime(end).value
+            // return res
+            return true
+        }
     }
 }
 </script>

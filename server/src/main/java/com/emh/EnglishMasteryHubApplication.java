@@ -22,6 +22,6 @@ public class EnglishMasteryHubApplication implements CommandLineRunner
 	public void run(String... arg) throws Exception
 	{
 		storageService.init();
-		storageService.deleteAll();
+//		storageService.deleteAll();
 	}
 }

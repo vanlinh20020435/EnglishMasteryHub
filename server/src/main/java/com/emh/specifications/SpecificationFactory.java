@@ -58,7 +58,7 @@ public class SpecificationFactory<T>
 
 	private Specification<T> getForeignSpecification(SearchCriteria criteria)
 	{
-		SearchForeignCriteria foreignCriteria= (SearchForeignCriteria) criteria;
+		SearchForeignCriteria foreignCriteria = (SearchForeignCriteria) criteria;
 		return (root, query, builder) -> {
 			return builder
 					.equal(root.get(foreignCriteria.getForeignName()).<String>get(foreignCriteria.getKey()), foreignCriteria.getValue().toString());

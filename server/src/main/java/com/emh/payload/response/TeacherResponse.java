@@ -32,6 +32,8 @@ public class TeacherResponse
 	@Size(max = 255)
 	private String avatar;
 
+	private Integer status;
+
 	@JsonSerialize(as = Date.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date birthday;

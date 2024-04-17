@@ -25,6 +25,8 @@ public class ClassesResponse
 
 	private String description;
 
+	private Integer totalStudent;
+
 	@JsonSerialize(as = Date.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date startDate;

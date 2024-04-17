@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Date;
 
 
 @Entity
@@ -13,24 +14,30 @@ import java.io.Serializable;
 public class TestClass extends BaseEntity
 {
 	@EmbeddedId
-	TestClassKey id;
+	TestClassKey id = new TestClassKey();
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@MapsId("classId")
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "class_id", nullable = false)
 	private Classes classs;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@MapsId("testId")
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "test_id", nullable = false)
 	private Tests tests;
 
-	@Embeddable
-	class TestClassKey implements Serializable
-	{
+	@Column
+	private Date startDate;
 
-		@Column(name = "student_id")
-		Long studentId;
+	@Column
+	private Date endDate;
+}
 
-		@Column(name = "course_id")
-		Long courseId;
-	}
+@Getter
+@Setter
+@Embeddable
+class TestClassKey implements Serializable
+{
+	Integer classId;
+	Integer testId;
 }
