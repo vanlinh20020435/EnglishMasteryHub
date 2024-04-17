@@ -14,7 +14,6 @@ public class QuestAnswerResultRequest
 	@NotNull
 	private List<String> answers;
 
-	@NotNull
 	private Boolean rightAnswer;
 
 	private Integer score;
