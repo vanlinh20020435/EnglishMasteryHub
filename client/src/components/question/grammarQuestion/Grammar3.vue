@@ -12,7 +12,7 @@
 
           <div class="d-flex align-center">
             <v-icon size="x-large" class="pr-5 pl-3">mdi-pencil-circle-outline</v-icon>
-            <div class="pr-2">{{ subQuestion?.description }}</div>
+            <div class="pr-2 font-semi-bold">{{ subQuestion?.description }}</div>
 
             <input @change="(event) => handleChangeInputAnswer(index, event)" type="text" placeholder="..."
               class="flex-1-1 input-answer-grammar3">
