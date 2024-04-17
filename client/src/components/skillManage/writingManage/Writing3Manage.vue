@@ -38,7 +38,7 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.content"
+                :model-value="question?.content || `Question ${index + 1}`"
                 @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
@@ -59,6 +59,8 @@
                       hide-no-data
                       clearable
                       auto-grow
+                      :model-value="question.description"
+                      @input="(event) => updateDescriptionQuestion(index, event)"   
                     >
                     </v-textarea>
                   </v-col>
@@ -79,6 +81,8 @@
                       hide-no-data
                       clearable
                       auto-grow
+                      :model-value="question.options[0]?.option || ''"
+                      @input="(event) => updateOptionModelQuestion(index, 0, event)"
                     >
                     </v-textarea>
                   </v-col>
@@ -150,11 +154,14 @@ export default {
       const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
-        numOptions: 2,
-        options: Array.from({ length: 2 }, (_, i) => ({
+        numOptions: 1,
+        options: Array.from({ length: 1 }, (_, i) => ({
           option: "",
         })),
-        answers: [],
+        answers: [{
+          answer: "",
+          explanation: ''
+        }],
       });
       this.$nextTick(() => {
         this.showFullQuestion[newIndex - 1] = true;
@@ -162,53 +169,15 @@ export default {
       // Emit an event to notify the parent component about the addition
       this.$emit("addQuestion", newIndex);
     },
-
-    handleDeleteOption(questionIndex, optionIndex) {
-      if (questionIndex >= 0 && questionIndex < this.questions?.length) {
-        // Access the question object
-        const question = this.questions[questionIndex];
-
-        // Check if optionIndex is valid
-        if (optionIndex >= 0 && optionIndex < question.options.length) {
-          // Remove the option at the specified index
-          question.options.splice(optionIndex, 1);
-
-          // that an option has been deleted
-          this.$emit("optionDeleted", { questionIndex, optionIndex });
-        } else {
-          console.error("Invalid optionIndex");
-        }
-      } else {
-        console.error("Invalid questionIndex");
-      }
-    },
-    handleAddOption(questionIndex) {
-      // Check if questionIndex is valid
-      if (questionIndex >= 0 && questionIndex < this.questions?.length) {
-        // Access the question object
-        const question = this.questions[questionIndex];
-
-        // Push a new option to the question's options array
-        const newIndex = question.options.length + 1;
-        question.options.push({
-          option: "",
-        });
-
-        // Emit an event to notify the parent component about the addition
-        this.$emit("optionAdded", { questionIndex, optionIndex: newIndex - 1 });
-      } else {
-        console.error("Invalid questionIndex");
-      }
-    },
-
-    handleUpdateOtherAnswer(questionIndex, optionIndex, value) {
-      // Update the answer value in the corresponding question option
-      this.questions[questionIndex].options[optionIndex].option = value;
-    },
-
     updateTitleQuestion(questionIndex, event) {
       this.questions[questionIndex].content = event.target.value;
     },
+    updateDescriptionQuestion(questionIndex, event) {
+      this.questions[questionIndex].description = event.target.value;
+    },
+    updateOptionModelQuestion(questionIndex, optionIndex, event) {
+      this.questions[questionIndex].options[optionIndex].option = event.target.value;
+    }
   },
 };
 </script>

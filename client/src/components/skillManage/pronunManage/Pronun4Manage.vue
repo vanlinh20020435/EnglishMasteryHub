@@ -37,7 +37,7 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.content"
+                :model-value="question?.content || `Question ${index + 1}`"
                 @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
@@ -66,6 +66,7 @@
                   :key="indexOption"
                 >
                   <QuestionCheckbox
+                    :optionItem="question.options[indexOption - 1]"
                     :handleDeleteOption="
                       () => handleDeleteOption(index, indexOption - 1)
                     "
@@ -78,7 +79,12 @@
                         handleChangeExplanation(index, indexOption - 1, value)
                     "
                     :questionIndex="index"
-                    :checked="question.options[indexOption - 1].checked"
+                    :checked="
+                      question.options[indexOption - 1]?.checked ||
+                      (!!question.options[indexOption - 1]?.option &&
+                        question.options[indexOption - 1]?.option ==
+                          question?.answers[0]?.answer)
+                    "
                     @checkboxChange="
                       (value) =>
                         handleCheckboxChange(index, indexOption - 1, value)
@@ -183,7 +189,10 @@ export default {
         options: Array.from({ length: 2 }, (_, i) => ({
           option: "",
         })),
-        answers: [],
+        answers: [{
+          answer: "",
+          explanation: ''
+        }],
       });
       this.$nextTick(() => {
         this.showFullQuestion[newIndex - 1] = true;

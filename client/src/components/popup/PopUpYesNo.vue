@@ -55,7 +55,6 @@ export default {
     visible(newValue) {
       // Update internal state when parent prop changes
       this.dialogVisible = newValue;
-      console.log(typeof this.msg);
     },
     dialogVisible(newValue) {
       // Emit input event when internal state changes

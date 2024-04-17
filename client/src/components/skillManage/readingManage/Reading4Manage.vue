@@ -37,7 +37,7 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.content"
+                :model-value="question?.content || `Question ${index + 1}`"
                 @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
@@ -161,7 +161,10 @@ export default {
         options: Array.from({ length: 4 }, (_, i) => ({
           option: "",
         })),
-        answers: [],
+        answers: [{
+          answer: "",
+          explanation: ''
+        }],
       });
       this.$nextTick(() => {
         this.showFullQuestion[newIndex - 1] = true;

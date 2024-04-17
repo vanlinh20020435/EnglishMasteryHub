@@ -100,7 +100,7 @@ export default {
     async fetchDataClass() {
       let urlAPI =
         "/api/teachers/" +
-        this.authentication.user?.userId +
+        this.authentication.user?.teacherId +
         "/classes/get-all";
       const result = await apiCallerGet(urlAPI);
       if (result?.data) {

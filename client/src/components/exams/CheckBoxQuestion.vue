@@ -6,7 +6,7 @@
           large
           class="checkbox-large"
           color="primary"
-          :checked="checked"
+          :model-value="checked"
           @change="handleCheckboxChange"
         >
         </v-checkbox>
@@ -18,7 +18,7 @@
             hide-no-data
             single-line
             variant="solo"
-            :model-value="option"
+            :model-value="optionItem?.option"
             @input="updateOption($event.target.value)"
           >
           </v-text-field>
@@ -31,7 +31,7 @@
             single-line
             hide-details
             placeholder="Giải thích đáp án"
-            :model-value="explanation"
+            :model-value="optionItem?.explanation"
             @input="updateExplanation($event.target.value)"
           >
           </v-text-field>

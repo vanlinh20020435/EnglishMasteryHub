@@ -369,7 +369,7 @@
       </v-form>
     </v-container>
     <PopUpYesNo
-      msg="Tạo bài kiểm tra thành công"
+      msg="Chỉnh sửa bài kiểm tra thành công"
       :visible="dialogCreateSuccess"
       btnYes="Đồng ý"
       hideBtnNo
@@ -392,7 +392,7 @@ import {
   WritingManage,
   ListeningManage,
 } from "@/components/skillManage";
-import { apiCallerGet, apiCallerPost } from "@/services/teacher";
+import { apiCallerGet, apiCallerPost, apiCallerPut } from "@/services/teacher";
 import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
 
 export default {
@@ -424,11 +424,11 @@ export default {
             title: "Listen to each audio and choose the word you hear",
             option: 2,
           },
-          {
-            id: 2,
-            title: "Choose the correct sound",
-            option: 2,
-          },
+          // {
+          //   id: 2,
+          //   title: "Choose the correct sound",
+          //   option: 2,
+          // },
           {
             id: 3,
             title: "Listen and write the words you hear",
@@ -448,12 +448,12 @@ export default {
           {
             id: 1,
             title: "Fill the blank with the correct form of the words",
-            option: 2,
+            option: 0,
           },
           {
             id: 2,
             title: "Choose the underlined part that needs correction",
-            option: 2,
+            option: 4,
           },
           {
             id: 3,
@@ -502,12 +502,12 @@ export default {
           {
             id: 1,
             title: "Listen and answer the questions",
-            option: 0,
+            option: 1,
           },
           {
             id: 2,
             title: "Listen and fill in the sentences",
-            option: 0,
+            option: 1,
           },
           {
             id: 3,
@@ -534,13 +534,13 @@ export default {
           {
             id: 2,
             title: "Use the given words to make complete sentences",
-            option: 2,
+            option: 0,
           },
           {
             id: 3,
             title:
               "Write about the advantages and disadvantages of playing sports",
-            option: 2,
+            option: 1,
           },
         ],
       },
@@ -688,59 +688,67 @@ export default {
     },
 
     async handleSaveExam() {
-    //   if (!!this.valid) {
-    //     const convertQuestion = (question, questionParent) => ({
-    //       content: question?.content,
-    //       skill: questionParent?.skill,
-    //       type: `${questionParent?.type?.toString()}`,
-    //       answers: question?.answers.map((answer) => ({
-    //         answer: answer?.answer,
-    //         explanation: answer?.explanation || "",
-    //       })),
-    //       options: question.options.map((option) => ({
-    //         option: option?.option,
-    //       })),
-    //       files: !!question?.files?.type
-    //         ? [
-    //             {
-    //               type: question?.files?.type,
-    //               url: question?.files?.url,
-    //               name: question?.files?.name,
-    //             },
-    //           ]
-    //         : [],
-    //     });
+      if (!!this.valid) {
+        const convertQuestion = (question, questionParent) => ({
+          content: question?.content?.trim(),
+          skill: questionParent?.skill?.trim(),
+          type: `${questionParent?.type?.toString()?.trim()}`,
+          description: question?.description?.trim(),
+          answers: question?.answers.map((answer) => ({
+            answer: answer?.answer?.trim(),
+            explanation: answer?.explanation?.trim() || "",
+          })),
+          options: question.options.map((option) => ({
+            option: option?.option?.trim(),
+          })),
+          files: !!question?.files?.type || question?.files?.[0]?.type
+            ? [
+                {
+                  type: question?.files?.type || question?.files?.[0]?.type,
+                  url: question?.files?.url || question?.files?.[0]?.url,
+                  name: question?.files?.name || question?.files?.[0]?.name,
+                },
+              ]
+            : [],
+        });
 
-    //     const convertedData = this.questionList.map((item) => ({
-    //       content: "",
-    //       description: "",
-    //       title: item?.title,
-    //       type: `${item?.type?.toString()}`,
-    //       skill: item?.skill,
-    //       time: 0,
-    //       subQuestions: item.subQuestions.map((question) =>
-    //         convertQuestion(question, item)
-    //       ),
-    //     }));
+        const convertedData = this.dataExam.questions.map((item) => ({
+          content: item?.content?.trim() || '',
+          description: item?.description?.trim() || '',
+          title: item?.title?.trim(),
+          type: `${item?.type?.toString()?.trim()}`,
+          skill: item?.skill?.trim(),
+          time: 0,
+          subQuestions: item.subQuestions.map((question) =>
+            convertQuestion(question, item)
+          ),
+          files: !!item?.files?.type || item?.files?.[0]?.type
+            ? [
+                {
+                  type: item?.files?.type || item?.files?.[0]?.type,
+                  url: item?.files?.url || item?.files?.[0]?.url,
+                  name: item?.files?.name || item?.files?.[0]?.name,
+                },
+              ]
+            : [],
+        }));
 
-    //     const body = {
-    //       testName: this.dataExam.testName,
-    //       time: this.dataExam.time,
-    //       status: "0",
-    //       description: this.dataExam.description,
-    //       questions: convertedData,
-    //     };
+        const body = {
+          testName: this.dataExam.testName?.trim(),
+          time: this.dataExam.time,
+          status: "0",
+          description: this.dataExam.description?.trim(),
+          questions: convertedData,
+        };
 
-    //     const result = await apiCallerPost(
-    //       "/api/testss",
-    //       JSON.parse(localStorage?.getItem("accessToken"))?.token,
-    //       body
-    //     );
+        const urlAPI = "/api/testss/" + this.$route.params.id;
 
-    //     if (result.success) {
-    //       this.dialogCreateSuccess = true;
-    //     }
-    //   }
+        const result = await apiCallerPut(urlAPI, body);
+
+        if (result.success) {
+          this.dialogCreateSuccess = true;
+        }
+      }
     },
   },
 };
@@ -749,4 +757,3 @@ export default {
 <style>
 @import "./Exam.style.scss";
 </style>
-../../../components/skillManage/pronunManage

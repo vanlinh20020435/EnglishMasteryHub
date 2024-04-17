@@ -37,7 +37,7 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.content"
+                :model-value="question?.content || `Question ${index + 1}`"
                 @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
@@ -49,6 +49,7 @@
                   :key="indexOption"
                 >
                   <QuestionCheckbox
+                    :optionItem="question.options[indexOption - 1]"
                     :handleDeleteOption="
                       () => handleDeleteOption(index, indexOption - 1)
                     "
@@ -56,12 +57,13 @@
                       (value) =>
                         handleUpdateOption(index, indexOption - 1, value)
                     "
-                    @update:updateExplanation="
-                      (value) =>
-                        handleChangeExplanation(index, indexOption - 1, value)
-                    "
                     :questionIndex="index"
-                    :checked="question.options[indexOption - 1].checked"
+                    :checked="
+                      question.options[indexOption - 1]?.checked ||
+                      (!!question.options[indexOption - 1]?.option &&
+                        question.options[indexOption - 1]?.option ==
+                          question?.answers[0]?.answer)
+                    "
                     @checkboxChange="
                       (value) =>
                         handleCheckboxChange(index, indexOption - 1, value)
@@ -83,6 +85,7 @@
                       hide-no-data
                       clearable
                       auto-grow
+                      :model-value="question?.answers[0]?.explanation || ''"
                       @input="
                         (event) => updateExplanation(index, event.target.value)
                       "
@@ -162,6 +165,8 @@ export default {
     this.questions = this.questionSkill.subQuestions;
     // Initialize the showFullQuestion array with default visibility state for each question
     this.showFullQuestion = Array(this.questions?.length).fill(true);
+
+
   },
   methods: {
     handleToggleShowFull() {
@@ -188,7 +193,10 @@ export default {
         options: Array.from({ length: 4 }, (_, i) => ({
           option: "",
         })),
-        answers: [],
+        answers: [{
+          answer: "",
+          explanation: ''
+        }],
       });
       this.$nextTick(() => {
         this.showFullQuestion[newIndex - 1] = true;
@@ -252,10 +260,10 @@ export default {
       // Update answers based on checkbox state
       if (option.checked) {
         // Checkbox checked, add to answers
-        question.answers.push({
+        question.answers[0] = {
           answer: option.option,
           explanation: option.explanation,
-        });
+        };
       } else {
         // Checkbox unchecked, remove from answers
         const answerIndex = question.answers.findIndex(
