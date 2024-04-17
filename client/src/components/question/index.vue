@@ -1,7 +1,7 @@
 <template>
   <div>
     <PronunQuestion v-if="question?.skill == 'pronunciation'" :question="question" :questionResults="questionResults" />
-    <GrammarQuestion v-if="question?.skill == 'grammar'" :question="question" :questionResults="questionResults" />
+    <GrammarQuestion v-if="question?.skill == 'grammar'" :question="question" :questionResults="questionResults" :indexQuestion="indexQuestion" />
     <WritingQuestion v-if="question?.skill == 'writing'" :question="question" :questionResults="questionResults" />
   </div>
 </template>

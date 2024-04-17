@@ -179,6 +179,6 @@ export default {
 };
 </script>
 
-<!-- <style>
+<style>
 @import "./DoExam.style.scss";
-</style> -->
+</style>
