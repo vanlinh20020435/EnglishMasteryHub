@@ -1,3 +1,5 @@
-.do-exam-container * {
-  font-size: 16px;
+.do-exam-container {
+  span, div, input, a, p {
+    font-size: 16px;
+  }
 }

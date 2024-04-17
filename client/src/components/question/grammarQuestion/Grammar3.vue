@@ -82,5 +82,9 @@ export default {
   outline: none;
   min-width: 5rem;
   max-width: 100%;
+  color: #8e1c76;
+}
+.input-answer-grammar3:focus {
+  border-bottom: 1px solid #999;
 }
 </style>
