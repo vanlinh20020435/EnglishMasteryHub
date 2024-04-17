@@ -294,7 +294,7 @@ public class TestsService
 				t -> Objects.equals(t.getClasss().getClassId(), classId)).findFirst()
 				.orElseThrow(NotFoundException::new);
 		Date now = new Date();
-		if(testClass.getStartDate().before(now) && testClass.getEndDate().after(now))
+		if(!(testClass.getStartDate().before(now) && testClass.getEndDate().after(now)))
 			throw new ForbiddenException("Test is not available");
 		String testPassword = tests.getPassword();
 		if(StringUtils.isNotEmpty(testPassword) && !testPassword.equals(password))
