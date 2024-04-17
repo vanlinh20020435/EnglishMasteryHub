@@ -43,6 +43,13 @@ public class StudentResource
 		return ResponseEntity.ok(studentService.get(studentId));
 	}
 
+	@GetMapping("/find-by-user/{userId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
+	public ResponseEntity<StudentResponse> getStudentByUser(@PathVariable(name = "userId") final Integer userId)
+	{
+		return ResponseEntity.ok(studentService.getByUserId(userId));
+	}
+
 	@PostMapping
 	@ApiResponse(responseCode = "201")
 	@Secured("ROLE_ADMIN")

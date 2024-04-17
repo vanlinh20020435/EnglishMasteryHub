@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 public class QuestAnswerResultResponse
 {
-	private Integer id;
+	private Long id;
 
 	@NotNull
 	private Boolean rightAnswer;
@@ -21,7 +21,7 @@ public class QuestAnswerResultResponse
 	@NotNull
 	private Integer defaultScore;
 
-	private Integer questionId;
+	private QuestionsResponse question;
 
 	@NotNull
 	private List<String> answers;

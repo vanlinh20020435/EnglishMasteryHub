@@ -20,7 +20,7 @@ public class QuestionsResponse
 
 	private String description;
 
-	private String explanation;
+	private String title;
 
 	@NotNull
 	@Size(max = 50)
