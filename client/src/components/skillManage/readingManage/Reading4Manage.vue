@@ -50,8 +50,8 @@
 
                   <v-col cols="8">
                     <v-select
-                      :model-value="this.answerSelection"
-                      clearable
+                      :model-value="question?.answers[0]?.answer || 'True'"
+                      @change="handleUpdateAnswer"
                       :items="['True', 'False']"
                     ></v-select>
                   </v-col>
@@ -71,7 +71,12 @@
                       placeholder="Giải thích ..."
                       hide-no-data
                       clearable
-                      hide-details
+                      hide-details                      
+                      @click:clear="() => handleClear('answer', index)"
+                      :model-value="question?.answers[0]?.explanation || ''"
+                      @change="
+                        (event) => updateExplanation(index, event.target.value)
+                      "
                     >
                     </v-textarea>
                   </v-col>
@@ -173,14 +178,25 @@ export default {
       this.$emit("addQuestion", newIndex);
     },
 
-    handleChangeExplanation(questionIndex, optionIndex, value) {
-      // Update the answer value in the corresponding question option
-      this.questions[questionIndex].options[optionIndex].explanation = value;
-    },
-
     updateTitleQuestion(questionIndex, event) {
       this.questions[questionIndex].content = event.target.value;
     },
+    handleUpdateAnswer() {
+      // const newValue = event?.target?.value;
+
+      console.log('newValue: ');
+      
+    },
+    updateExplanation(questionIndex, newValue) {
+      this.questions[questionIndex].answers[0].explanation = newValue;
+    },
+    handleClear(typeClear, questionIndex) {
+			if (typeClear == "answer") {
+				this.questions[questionIndex].answers[0].answer = "";
+			} else if (typeClear == "explanation") {
+				this.questions[questionIndex].answers[0].explanation = "";
+			}
+		},
   },
 };
 </script>

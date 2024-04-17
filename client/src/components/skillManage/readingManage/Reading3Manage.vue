@@ -58,10 +58,6 @@
                       (value) =>
                         handleUpdateOption(index, indexOption - 1, value)
                     "
-                    @update:updateExplanation="
-                      (value) =>
-                        handleChangeExplanation(index, indexOption - 1, value)
-                    "
                     :questionIndex="index"
                     :checked="
                       question.options[indexOption - 1]?.checked ||
@@ -91,7 +87,9 @@
                       hide-no-data
                       clearable
                       auto-grow
-                      @input="
+                      @click:clear="() => handleClear('answer', index)"
+                      :model-value="question?.answers[0]?.explanation || ''"
+                      @change="
                         (event) => updateExplanation(index, event.target.value)
                       "
                     >
@@ -249,24 +247,18 @@ export default {
       // Update the answer value in the corresponding question option
       this.questions[questionIndex].options[optionIndex].option = value;
     },
-
-    handleChangeExplanation(questionIndex, optionIndex, value) {
-      // Update the answer value in the corresponding question option
-      this.questions[questionIndex].options[optionIndex].explanation = value;
-    },
-
     handleCheckboxChange(questionIndex, optionIndex, isChecked) {
       const question = this.questions[questionIndex];
       const option = question.options[optionIndex];
-      option.checked = isChecked;
+      option.checked = isChecked;      
 
       // Update answers based on checkbox state
       if (option.checked) {
         // Checkbox checked, add to answers
-        question.answers.push({
-          answer: option.option,
-          explanation: option.explanation,
-        });
+        this.questions[questionIndex].answers[0] = {
+          answer: option?.option,
+          explanation: question.answers[0]?.explanation,
+        };      
       } else {
         // Checkbox unchecked, remove from answers
         const answerIndex = question.answers.findIndex(
@@ -274,18 +266,23 @@ export default {
         );
 
         if (answerIndex != -1) {
-          question.answers.splice(answerIndex, 1);
+          question.answers[0].answer = "";
         }
       }
     },
-
     updateTitleQuestion(questionIndex, event) {
       this.questions[questionIndex].content = event.target.value;
     },
-
     updateExplanation(questionIndex, newValue) {
       this.questions[questionIndex].answers[0].explanation = newValue;
     },
+    handleClear(typeClear, questionIndex) {
+			if (typeClear == "answer") {
+				this.questions[questionIndex].answers[0].answer = "";
+			} else if (typeClear == "explanation") {
+				this.questions[questionIndex].answers[0].explanation = "";
+			}
+		},
   },
 };
 </script>

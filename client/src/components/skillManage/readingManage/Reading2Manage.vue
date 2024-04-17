@@ -42,7 +42,7 @@
               >
               </v-textarea>
 
-              <v-col class="pt-1 pb-0">
+              <!-- <v-col class="pt-1 pb-0">
                 <v-row class="d-flex flex-row justify-end">
                   <v-col cols="2">
                     <v-list-subheader>Từ gợi ý</v-list-subheader>
@@ -59,7 +59,7 @@
                     </v-text-field>
                   </v-col>
                 </v-row>
-              </v-col>
+              </v-col> -->
 
               <v-col class="pt-1 pb-0">
                 <v-row class="d-flex flex-row justify-end">
@@ -74,7 +74,7 @@
                       placeholder="Đáp án ..."
                       hide-no-data
                       clearable
-                      :model-value="question.answers[0].answer"
+                      :model-value="question.answers[0]?.answer"
                       @input="(event) => handleUpdateAnswer(index, 0, event.target.value)"
                     >
                     </v-text-field>
@@ -150,8 +150,9 @@
                       hide-no-data
                       clearable
                       hide-details
+                      @click:clear="() => handleClear('answer', index)"
                       :model-value="question?.answers[0]?.explanation || ''" 
-                      @input="(event) =>
+                      @change="(event) =>
                         updateExplanation(
                           index,
                           event.target.value
@@ -302,6 +303,13 @@ export default {
     updateExplanation(questionIndex, newValue) {
       this.questions[questionIndex].answers.forEach((answer) => answer.explanation = newValue);
     },
+    handleClear(typeClear, questionIndex) {
+			if (typeClear == "answer") {
+				this.questions[questionIndex].answers[0].answer = "";
+			} else if (typeClear == "explanation") {
+				this.questions[questionIndex].answers[0].explanation = "";
+			}
+		},
   },
 };
 </script>

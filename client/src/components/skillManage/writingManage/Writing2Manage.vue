@@ -74,7 +74,7 @@
                   <v-col cols="8">
                     <v-textarea rows="2" max-rows="4" placeholder="Giải thích ..." hide-no-data clearable hide-details
                       :model-value="question?.answers[0]?.explanation || ''" 
-                      @input="(event) =>
+                      @change="(event) =>
                         updateExplanation(
                           index,
                           event.target.value

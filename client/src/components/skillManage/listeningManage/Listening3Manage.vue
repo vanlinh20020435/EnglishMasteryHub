@@ -78,7 +78,7 @@
 												'explanation',
 												index
 											)" 
-                      @input="(event) =>
+                      @change="(event) =>
 												updateExplanation(
 													index,
 													event.target.value
