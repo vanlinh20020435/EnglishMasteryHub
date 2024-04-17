@@ -259,327 +259,337 @@ export default {
         ListeningManage,
     },
     data: () => ({
-        dataExam: {
-            testName: "",
-            time: "",
-            totalQuestions: "",
-            description: "",
-        },
-        dataSkills: [
-            {
-                id: 1,
-                title: "Pronunciation",
-                dataTypes: [
-                    {
-                        id: 1,
-                        title: "Listen to each audio and choose the word you hear",
-                        option: 2,
-                    },
-                    {
-                        id: 2,
-                        title: "Choose the correct sound",
-                        option: 2,
-                    },
-                    {
-                        id: 3,
-                        title: "Listen and write the words you hear",
-                        option: 2,
-                    },
-                    {
-                        id: 4,
-                        title: "Listen and choose the correct intonation",
-                        option: 2,
-                    },
-                ],
-            },
-            {
-                id: 2,
-                title: "Grammar",
-                dataTypes: [
-                    {
-                        id: 1,
-                        title: "Fill the blank with the correct form of the words",
-                        option: 2,
-                    },
-                    {
-                        id: 2,
-                        title: "Choose the underlined part that needs correction",
-                        option: 2,
-                    },
-                    {
-                        id: 3,
-                        title: "Rewrite the sentences beginning with the given words",
-                        option: 0,
-                    },
-                    {
-                        id: 4,
-                        title: "Choose the best option to complete each sentence",
-                        option: 4,
-                    },
-                ],
-            },
-            {
-                id: 3,
-                title: "Reading",
-                dataTypes: [
-                    {
-                        id: 1,
-                        title:
-                            "Read the passage and choose the best answer to each question",
-                        option: 4,
-                    },
-                    {
-                        id: 2,
-                        title: "Read the passage and answer the questions",
-                        option: 0,
-                    },
-                    {
-                        id: 3,
-                        title: "Choose the suitable word(s) for each blank",
-                        option: 4,
-                    },
-                    {
-                        id: 4,
-                        title:
-                            "Read the passage and decide whether the statements are True or False",
-                        option: 0,
-                    },
-                ],
-            },
-            {
-                id: 4,
-                title: "Listening",
-                dataTypes: [
-                    {
-                        id: 1,
-                        title: "Listen and answer the questions",
-                        option: 0,
-                    },
-                    {
-                        id: 2,
-                        title: "Listen and fill in the sentences",
-                        option: 0,
-                    },
-                    {
-                        id: 3,
-                        title:
-                            "Listen and decide whether the following sentences are True or False. ",
-                        option: 2,
-                    },
-                    {
-                        id: 4,
-                        title: "Listen and choose the best option",
-                        option: 4,
-                    },
-                ],
-            },
-            {
-                id: 5,
-                title: "Writing",
-                dataTypes: [
-                    {
-                        id: 1,
-                        title: "Write complete sentences using the given words",
-                        option: 0,
-                    },
-                    {
-                        id: 2,
-                        title: "Use the given words to make complete sentences",
-                        option: 2,
-                    },
-                    {
-                        id: 3,
-                        title:
-                            "Write about the advantages and disadvantages of playing sports",
-                        option: 2,
-                    },
-                ],
-            },
-        ],
-
-        selectedSkill: "",
-        selectedTypeSkill: {
+    dataExam: {
+      testName: "",
+      time: "",
+      totalQuestions: "",
+      description: "",
+    },
+    dataSkills: [
+      {
+        id: 1,
+        title: "Pronunciation",
+        dataTypes: [
+          {
             id: 1,
-            title: "",
-        },
-        selectedTypeQuestion: "",
-        questionList: [], // Array to store Pronun1Manage components
-        required: [
-            (v) => {
-                if (v) return true;
-                return "Trường nhập bắt buộc!";
-            },
+            title: "Listen to each audio and choose the word you hear",
+            option: 2,
+          },
+          // {
+          //   id: 2,
+          //   title: "Choose the correct sound",
+          //   option: 2,
+          // },
+          {
+            id: 3,
+            title: "Listen and write the words you hear",
+            option: 2,
+          },
+          {
+            id: 4,
+            title: "Listen and choose the correct intonation",
+            option: 2,
+          },
         ],
-        valid: true,
-        dialogCreateSuccess: false,
-    }),
-    created() {
-        // Auto-select the first item's title
-        if (this.dataSkills.length > 0) {
-            this.selectedSkill = this.dataSkills[0].title;
-            this.selectedTypeSkill = this.dataSkills[0].dataTypes[0];
-        }
-    },
-    computed: {
-        filteredDataTypes() {
-            if (this.selectedSkill) {
-                const selectedItem = this.dataSkills.find(
-                    (item) => item.title == this.selectedSkill
-                );
-                return selectedItem ? selectedItem.dataTypes : [];
-            } else {
-                return [];
-            }
-        },
-    },
-    watch: {
-        selectedSkill(newValue, oldValue) {
-            // Reset selectedDataType when selectedItem changes
-            this.selectedTypeSkill = null;
-            // Find the selected item in the items array
-            const selectedItem = this.dataSkills.find(
-                (item) => item.title === newValue
-            );
+      },
+      {
+        id: 2,
+        title: "Grammar",
+        dataTypes: [
+          {
+            id: 1,
+            title: "Fill the blank with the correct form of the words",
+            option: 0,
+          },
+          {
+            id: 2,
+            title: "Choose the underlined part that needs correction",
+            option: 4,
+          },
+          {
+            id: 3,
+            title: "Rewrite the sentences beginning with the given words",
+            option: 0,
+          },
+          {
+            id: 4,
+            title: "Choose the best option to complete each sentence",
+            option: 4,
+          },
+        ],
+      },
+      {
+        id: 3,
+        title: "Reading",
+        dataTypes: [
+          {
+            id: 1,
+            title:
+              "Read the passage and choose the best answer to each question",
+            option: 4,
+          },
+          {
+            id: 2,
+            title: "Read the passage and answer the questions",
+            option: 0,
+          },
+          {
+            id: 3,
+            title: "Choose the suitable word(s) for each blank",
+            option: 4,
+          },
+          {
+            id: 4,
+            title:
+              "Read the passage and decide whether the statements are True or False",
+            option: 0,
+          },
+        ],
+      },
+      {
+        id: 4,
+        title: "Listening",
+        dataTypes: [
+          {
+            id: 1,
+            title: "Listen and answer the questions",
+            option: 1,
+          },
+          {
+            id: 2,
+            title: "Listen and fill in the sentences",
+            option: 1,
+          },
+          {
+            id: 3,
+            title:
+              "Listen and decide whether the following sentences are True or False. ",
+            option: 2,
+          },
+          {
+            id: 4,
+            title: "Listen and choose the best option",
+            option: 4,
+          },
+        ],
+      },
+      {
+        id: 5,
+        title: "Writing",
+        dataTypes: [
+          {
+            id: 1,
+            title: "Write complete sentences using the given words",
+            option: 0,
+          },
+          {
+            id: 2,
+            title: "Use the given words to make complete sentences",
+            option: 0,
+          },
+          {
+            id: 3,
+            title:
+              "Write about the advantages and disadvantages of playing sports",
+            option: 1,
+          },
+        ],
+      },
+    ],
 
-            // If the selected item is found, set selectedTypeSkill to its type
-            if (selectedItem) {
-                this.selectedTypeSkill = selectedItem?.dataTypes[0]; // Assuming selectedItem has a 'type' property
-            }
-        },
+    selectedSkill: "",
+    selectedTypeSkill: {
+      id: 1,
+      title: "",
     },
-    methods: {
-        handleAddSkill() {
-            // Add Pronun1Manage component to questionList array
+    selectedTypeQuestion: "",
+    questionList: [], // Array to store Pronun1Manage components
+    required: [
+      (v) => {
+        if (v) return true;
+        return "Trường nhập bắt buộc!";
+      },
+    ],
+    valid: true,
+    dialogCreateSuccess: false,
+  }),
+  created() {
+    // Auto-select the first item's title
+    if (this.dataSkills.length > 0) {
+      this.selectedSkill = this.dataSkills[0].title;
+      this.selectedTypeSkill = this.dataSkills[0].dataTypes[0];
+    }
+  },
+  computed: {
+    filteredDataTypes() {
+      if (this.selectedSkill) {
+        const selectedItem = this.dataSkills.find(
+          (item) => item.title == this.selectedSkill
+        );
+        return selectedItem ? selectedItem.dataTypes : [];
+      } else {
+        return [];
+      }
+    },
+  },
+  watch: {
+    selectedSkill(newValue, oldValue) {
+      // Reset selectedDataType when selectedItem changes
+      this.selectedTypeSkill = null;
+      // Find the selected item in the items array
+      const selectedItem = this.dataSkills.find(
+        (item) => item.title === newValue
+      );
 
-            const questions = [
+      // If the selected item is found, set selectedTypeSkill to its type
+      if (selectedItem) {
+        this.selectedTypeSkill = selectedItem?.dataTypes[0]; // Assuming selectedItem has a 'type' property
+      }
+    },
+  },
+  methods: {
+    handleAddSkill() {
+      // Add Pronun1Manage component to questionList array
+
+      const questions = [
+        {
+          content: "Question 1",
+          numOptions: this.selectedTypeSkill.option,
+          options: Array.from(
+            { length: this.selectedTypeSkill.option },
+            (_, i) => ({
+              option: "",
+            })
+          ),
+          answers: [
+            {
+              answer: "",
+              explanation: "",
+            },
+          ],
+        },
+      ];
+      const selectedItem = this.dataSkills.find(
+        (item) => item.title == this.selectedSkill
+      );
+
+      const selectedItemSkill = selectedItem.dataTypes.find(
+        (item) => item.title == this.selectedTypeSkill.title
+      );
+
+      this.questionList.push({
+        skill: this.selectedSkill.toLowerCase(),
+        type: selectedItemSkill?.id?.toString() || "1",
+        title: this.selectedTypeSkill.title,
+        subQuestions: questions, // Assign the questions array to the questionList item
+      });
+    },
+    removePronun1(index) {
+      // Remove Pronun1Manage component at specified index from questionList array
+      this.questionList.splice(index, 1);
+    },
+    handleDeleteQuestionInPronun1(pronun1Index, questionIndex) {
+      // Remove the question at the specified index from the questionList array
+      this.questionList[pronun1Index].subQuestions.splice(questionIndex, 1);
+    },
+    handleUpdateGroupTitleQuestion(index, updatedValue) {
+      // Update the groupTitleQuestion property in questionList at the specified index
+
+      this.questionList[index].title = updatedValue;
+      this.$emit("updateGroupTitleQuestion", updatedValue); // Emit the event
+    },
+    handleAddQuestion(pronun1Index) {
+      // Find the Pronun1Manage component at the specified index
+      const pronun1 = this.questionList[pronun1Index];
+
+      // Create a new question object
+      const newQuestion = {
+        content: `New Question`,
+        numOptions: this.selectedTypeSkill.option,
+        options: Array.from(
+          { length: this.selectedTypeSkill.option },
+          (_, i) => ({
+            option: "",
+          })
+        ),
+        answers: [
+          {
+            answer: "",
+            explanation: "",
+          },
+        ],
+      };
+
+      // Push the new question to the questions array of the Pronun1Manage component
+      pronun1.subQuestions.push(newQuestion);
+    },
+
+    async handleSaveExam() {
+      if (!!this.valid) {
+        const convertQuestion = (question, questionParent) => ({
+          content: question?.content?.trim(),
+          skill: questionParent?.skill?.trim(),
+          type: `${questionParent?.type?.toString()?.trim()}`,
+          description: question?.description?.trim(),
+          answers: question?.answers.map((answer) => ({
+            answer: answer?.answer?.trim(),
+            explanation: answer?.explanation?.trim() || "",
+          })),
+          options: question.options.map((option) => ({
+            option: option?.option?.trim(),
+          })),
+          files: !!question?.files?.type
+            ? [
                 {
-                    content: "Question 1",
-                    numOptions: this.selectedTypeSkill.option,
-                    options: Array.from(
-                        { length: this.selectedTypeSkill.option },
-                        (_, i) => ({
-                            option: "",
-                        })
-                    ),
-                    answers: [
-                        {
-                            answer: "",
-                            explanation: "",
-                        },
-                    ],
+                  type: question?.files?.type,
+                  url: question?.files?.url,
+                  name: question?.files?.name,
                 },
-            ];
-            const selectedItem = this.dataSkills.find(
-                (item) => item.title == this.selectedSkill
-            );
+              ]
+            : [],
+        });
 
-            const selectedItemSkill = selectedItem.dataTypes.find(
-                (item) => item.title == this.selectedTypeSkill.title
-            );
+        const convertedData = this.questionList.map((item) => ({
+          content: item?.content?.trim() || '',
+          description: item?.description?.trim() || '',
+          title: item?.title?.trim(),
+          type: `${item?.type?.toString()?.trim()}`,
+          skill: item?.skill?.trim(),
+          time: 0,
+          subQuestions: item.subQuestions.map((question) =>
+            convertQuestion(question, item)
+          ),
+          files: !!item?.files?.type
+            ? [
+                {
+                  type: item?.files?.type,
+                  url: item?.files?.url,
+                  name: item?.files?.name,
+                },
+              ]
+            : [],
+        }));
 
-            this.questionList.push({
-                skill: this.selectedSkill.toLowerCase(),
-                type: selectedItemSkill?.id?.toString() || "1",
-                title: this.selectedTypeSkill.title,
-                subQuestions: questions, // Assign the questions array to the questionList item
-            });
-        },
-        removePronun1(index) {
-            // Remove Pronun1Manage component at specified index from questionList array
-            this.questionList.splice(index, 1);
-        },
-        handleDeleteQuestionInPronun1(pronun1Index, questionIndex) {
-            // Remove the question at the specified index from the questionList array
-            this.questionList[pronun1Index].subQuestions.splice(questionIndex, 1);
-        },
-        handleUpdateGroupTitleQuestion(index, updatedValue) {
-            // Update the groupTitleQuestion property in questionList at the specified index
+        const body = {
+          testName: this.dataExam.testName?.trim(),
+          time: this.dataExam.time,
+          status: "0",
+          description: this.dataExam.description?.trim(),
+          questions: convertedData,
+        };
 
-            this.questionList[index].title = updatedValue;
-            this.$emit("updateGroupTitleQuestion", updatedValue); // Emit the event
-        },
-        handleAddQuestion(pronun1Index) {
-            // Find the Pronun1Manage component at the specified index
-            const pronun1 = this.questionList[pronun1Index];
+        const result = await apiCallerPost(
+          "/api/testss",
+          JSON.parse(localStorage?.getItem("accessToken"))?.token,
+          body
+        );
 
-            // Create a new question object
-            const newQuestion = {
-                content: `New Question`,
-                numOptions: this.selectedTypeSkill.option,
-                options: Array.from(
-                    { length: this.selectedTypeSkill.option },
-                    (_, i) => ({
-                        option: "",
-                    })
-                ),
-                answers: [
-                    {
-                        answer: "",
-                        explanation: "",
-                    },
-                ],
-            };
-
-            // Push the new question to the questions array of the Pronun1Manage component
-            pronun1.subQuestions.push(newQuestion);
-        },
-
-        async handleSaveExam() {
-            if (!!this.valid) {
-                const convertQuestion = (question, questionParent) => ({
-                    content: question?.content,
-                    skill: questionParent?.skill,
-                    type: `${questionParent?.type?.toString()}`,
-                    answers: question?.answers.map((answer) => ({
-                        answer: answer?.answer,
-                        explanation: answer?.explanation || "",
-                    })),
-                    options: question.options.map((option) => ({
-                        option: option?.option,
-                    })),
-                    files: !!question?.files?.type
-                        ? [
-                            {
-                                type: question?.files?.type,
-                                url: question?.files?.url,
-                                name: question?.files?.name,
-                            },
-                        ]
-                        : [],
-                });
-
-                const convertedData = this.questionList.map((item) => ({
-                    content: "",
-                    description: "",
-                    title: item?.title,
-                    type: `${item?.type?.toString()}`,
-                    skill: item?.skill,
-                    time: 0,
-                    subQuestions: item.subQuestions.map((question) =>
-                        convertQuestion(question, item)
-                    ),
-                }));
-
-                const body = {
-                    testName: this.dataExam.testName,
-                    time: this.dataExam.time,
-                    status: "0",
-                    description: this.dataExam.description,
-                    questions: convertedData,
-                };
-
-                const result = await apiCallerPost(
-                    "/api/testss",
-                    JSON.parse(localStorage?.getItem("accessToken"))?.token,
-                    body
-                );
-
-                if (result.success) {
-                    this.dialogCreateSuccess = true;
-                }
-            }
-        },
+        if (result.success) {
+          this.dialogCreateSuccess = true;
+        }
+      }
     },
+  },
 };
 </script>
 

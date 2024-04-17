@@ -151,7 +151,7 @@
                       clearable
                       hide-details
                       :model-value="question?.answers[0]?.explanation || ''" 
-                      @input="(event) =>
+                      @change="(event) =>
                         updateExplanation(
                           index,
                           event.target.value
