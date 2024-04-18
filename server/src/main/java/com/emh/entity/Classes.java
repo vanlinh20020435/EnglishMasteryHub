@@ -29,9 +29,11 @@ public class Classes extends BaseEntity
 	private String description;
 
 	@Column(name = "start_date")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date startDate;
 
 	@Column(name = "end_date")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date endDate;
 
 	@ManyToOne(fetch = FetchType.EAGER)

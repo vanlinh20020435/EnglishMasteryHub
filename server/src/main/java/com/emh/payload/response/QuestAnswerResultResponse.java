@@ -16,10 +16,10 @@ public class QuestAnswerResultResponse
 	@NotNull
 	private Boolean rightAnswer;
 
-	private Integer score;
+	private Double score;
 
 	@NotNull
-	private Integer defaultScore;
+	private Double defaultScore;
 
 	private QuestionsResponse question;
 

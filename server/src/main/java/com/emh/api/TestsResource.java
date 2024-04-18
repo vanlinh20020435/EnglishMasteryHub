@@ -1,7 +1,6 @@
 package com.emh.api;
 
 import com.emh.payload.request.TestsRequest;
-import com.emh.payload.response.TestClassInfoResponse;
 import com.emh.payload.response.TestsResponse;
 import com.emh.service.TestsService;
 import com.emh.util.ReferencedException;

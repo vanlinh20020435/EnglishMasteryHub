@@ -19,10 +19,10 @@ public class StudentTestResult extends BaseEntity
 	private Integer id;
 
 	@Column
-	private Integer score;
+	private Double score;
 
 	@Column
-	private Integer testDefaultScore;
+	private Double testDefaultScore;
 
 	@Column
 	private Integer time;
