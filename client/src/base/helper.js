@@ -7,3 +7,7 @@ export const formatOriginalText = (str) => {
   console.log('str ===', str);
   return str?.trim()?.toLowerCase()?.replace(/\./gi, "")
 }
+
+export const formatTwoNumber = (num) => {
+  return num >= 10 ? num : "0" + num;
+};

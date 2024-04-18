@@ -1,17 +1,23 @@
 <template>
   <div class="d-flex flex-column">
     <h3 class="font-semi-bold text-lg">Bài {{ indexQuestion + 1 }}: {{ dataQuestion.title }}</h3>
-    <v-col>
-      <v-col class="d-flex" v-for="(subQuestion, index) in dataQuestion.subQuestions" :key="index">
+    <v-col class="mt-5 mb-5">
+      <h3 class="font-semi-bold text-lg text-center pb-1">{{ dataQuestion.description }}</h3>
+      <v-col class="d-flex flex-column align-center pb-10">
+        <div class="w-75 ">{{ dataQuestion.content }}</div>
+      </v-col>
+
+      <v-col class="d-flex pt-8" v-for="(subQuestion, index) in dataQuestion?.subQuestions" :key="index">
         <div class="d-flex flex-column w-100">
           <div class="d-flex align-center pb-2">
             <span class="mr-3 font-semi-bold">{{ index + 1 }}.</span>
-            <div v-html="replacedTextUnderline(subQuestion?.content, index)"></div>
+            <div>{{ subQuestion?.content }}</div>
           </div>
 
-          <v-radio-group hide-details v-model="selectedOptions[index]">
+
+          <v-radio-group v-model="selectedOptions[index]">
             <div class="d-flex align-center flex-wrap">
-              <v-col cols="6" v-for="(optionSub, indexOption) in subQuestion.options" :key="indexOption">
+              <v-col cols="12" class="pt-1 pb-1" v-for="(optionSub, indexOption) in subQuestion?.options" :key="indexOption">
                 <span>
                   <v-radio @input="handleRadioInput(optionSub?.option, index)" color="#00bd7e"
                     :label="optionSub?.option" :value="optionSub?.option"></v-radio>
@@ -25,10 +31,11 @@
   </div>
 </template>
 
+
 <script>
 import { formatOriginalText } from '@/base/helper.js';
 export default {
-  name: 'Grammar2Question',
+  name: 'Reading1Question',
   data() {
     return {
       selectedOptions: [],
@@ -50,31 +57,7 @@ export default {
 
     this.questionResults.push(...subquestionResults)
   },
-  watch: {
-  },
   methods: {
-    replacedTextUnderline(sentence, index) {
-      // Regular expression to match placeholders enclosed in curly braces {}
-      const regex = /\[(.*?)\]/g;
-      let replaced = sentence;
-      let match;
-
-      // Loop through each match and replace it with an input element
-      while ((match = regex.exec(sentence)) !== null) {
-        const placeholder = match[0];
-        const inputPlaceholder = match[1];
-        const htmlTextUnderline = `<span class="text-underline-offset-6">${inputPlaceholder.trim()}</span>`;
-        replaced = replaced.replace(placeholder, htmlTextUnderline);
-      }
-
-      // Convert the replaced HTML string to a DOM element
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = replaced;
-
-
-      // Return the replaced HTML string
-      return tempDiv.innerHTML;
-    },
     handleRadioInput(value, subQuestionIndex) {
       let subQuestionSelected = this.dataQuestion.subQuestions?.[subQuestionIndex];
       let subQuestionInResult = this.questionResults.find(item => item?.questionId == subQuestionSelected?.questionId);
@@ -105,10 +88,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.v-selection-control .v-label {
-  color: #000000;
-  opacity: 1;
-}
-</style>

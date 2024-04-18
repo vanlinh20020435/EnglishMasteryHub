@@ -128,6 +128,7 @@ export default {
     questionSkill: Object,
   },
   created() {
+    this.questionSkill.requiresGrading = true;
     this.questions = this.questionSkill.subQuestions;
     // Initialize the showFullQuestion array with default visibility state for each question
     this.showFullQuestion = Array(this.questions?.length).fill(true);

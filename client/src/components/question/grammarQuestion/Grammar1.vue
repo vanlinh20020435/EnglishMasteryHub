@@ -99,7 +99,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .input-answer {
 	border-bottom: 1px solid #797B7C;
 	outline: none;
