@@ -636,32 +636,6 @@ export default {
       this.questionList[index].title = updatedValue;
       this.$emit("updateGroupTitleQuestion", updatedValue); // Emit the event
     },
-    handleAddQuestion(pronun1Index) {
-      // Find the Pronun1Manage component at the specified index
-      const pronun1 = this.questionList[pronun1Index];
-
-      // Create a new question object
-      const newQuestion = {
-        content: `New Question`,
-        numOptions: this.selectedTypeSkill.option,
-        options: Array.from(
-          { length: this.selectedTypeSkill.option },
-          (_, i) => ({
-            option: "",
-          })
-        ),
-        answers: [
-          {
-            answer: "",
-            explanation: "",
-          },
-        ],
-      };
-
-      // Push the new question to the questions array of the Pronun1Manage component
-      pronun1.subQuestions.push(newQuestion);
-    },
-
     async handleSaveExam() {
       if (!!this.valid) {
         const convertQuestion = (question, questionParent) => ({

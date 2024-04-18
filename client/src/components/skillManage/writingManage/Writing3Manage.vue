@@ -155,6 +155,7 @@ export default {
       const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
+        content: `Question ${newIndex}`,
         numOptions: 1,
         options: Array.from({ length: 1 }, (_, i) => ({
           option: "",
