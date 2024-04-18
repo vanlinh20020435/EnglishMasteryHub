@@ -12,7 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -291,13 +294,13 @@ public class TestsService
 		Tests tests = testsRepository.findById(testId)
 				.orElseThrow(NotFoundException::new);
 		TestClass testClass = tests.getTestClasses().stream().filter(
-				t -> Objects.equals(t.getClasss().getClassId(), classId)).findFirst()
+						t -> Objects.equals(t.getClasss().getClassId(), classId)).findFirst()
 				.orElseThrow(NotFoundException::new);
 		Date now = new Date();
-		if(!(testClass.getStartDate().before(now) && testClass.getEndDate().after(now)))
+		if (!(testClass.getStartDate().before(now) && testClass.getEndDate().after(now)))
 			throw new ForbiddenException("Test is not available");
-		String testPassword = tests.getPassword();
-		if(StringUtils.isNotEmpty(testPassword) && !testPassword.equals(password))
+		String testPassword = testClass.getPassword();
+		if (StringUtils.isNotEmpty(testPassword) && !testPassword.equals(password))
 			throw new ForbiddenException("Wrong password");
 
 		return exportTest(tests);

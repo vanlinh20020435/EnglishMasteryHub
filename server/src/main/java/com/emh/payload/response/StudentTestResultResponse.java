@@ -27,6 +27,8 @@ public class StudentTestResultResponse
 	@NotNull
 	private StudentResponse student;
 
+	private Boolean requiresGrading = false;
+
 	@NotNull
 	private List<QuestAnswerResultResponse> questionResults;
 }

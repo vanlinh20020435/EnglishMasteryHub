@@ -27,6 +27,9 @@ public class TestClass extends BaseEntity
 	private Tests tests;
 
 	@Column
+	private String password;
+
+	@Column
 	private Date startDate;
 
 	@Column

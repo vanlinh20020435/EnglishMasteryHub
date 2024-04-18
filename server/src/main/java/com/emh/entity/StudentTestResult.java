@@ -31,7 +31,7 @@ public class StudentTestResult extends BaseEntity
 	@JoinColumn(name = "class_id", nullable = false)
 	private Classes classs;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "test_code_id", nullable = false)
 	private Tests tests;
 
