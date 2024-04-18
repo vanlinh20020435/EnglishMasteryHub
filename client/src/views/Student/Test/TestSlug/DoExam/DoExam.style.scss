@@ -2,4 +2,15 @@
   span, div, input, a, p {
     font-size: 16px;
   }
+
+  .timer-tick {
+    position: fixed;
+    top: 15vh;
+    right: 4vw;
+
+    padding: 1.4rem 1.3rem;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+  }
 }

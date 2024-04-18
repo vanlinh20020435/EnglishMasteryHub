@@ -1,38 +1,40 @@
 <template>
   <div class="d-flex flex-column">
     <h3 class="font-semi-bold text-lg">Bài {{ indexQuestion + 1 }}: {{ dataQuestion.title }}</h3>
-    <v-col>
-      <v-col class="d-flex" v-for="(subQuestion, index) in dataQuestion.subQuestions" :key="index">
+    <v-col class="mt-5 mb-5">
+      <h3 class="font-semi-bold text-lg text-center pb-1">{{ dataQuestion.description }}</h3>
+      <v-col class="d-flex flex-column align-center pb-10">
+        <div class="w-75 ">{{ dataQuestion.content }}</div>
+      </v-col>
+
+      <v-col class="d-flex pt-8" v-for="(subQuestion, index) in dataQuestion?.subQuestions" :key="index">
         <div class="d-flex flex-column w-100">
           <div class="d-flex align-center pb-2">
             <span class="mr-3 font-semi-bold">{{ index + 1 }}.</span>
             <div>{{ subQuestion?.content }}</div>
           </div>
+          <div class="d-flex align-center">
+            <v-icon size="x-large" class="pr-5 pl-3">mdi-pencil-circle-outline</v-icon>
+            <div class="pr-2 font-semi-bold">{{ subQuestion?.description }}</div>
 
-          <v-radio-group hide-details>
-            <div class="d-flex align-center flex-wrap">
-              <v-col cols="6" v-for="(optionSub, indexOption) in subQuestion.options" :key="indexOption">
-                <span>
-                  <v-radio @input="handleRadioInput(optionSub?.option, index)" color="#00bd7e"
-                    :label="optionSub?.option" :value="optionSub?.option"></v-radio>
-                </span>
-              </v-col>
-            </div>
-          </v-radio-group>
+            <input @change="(event) => handleChangeInputAnswer(index, event)" type="text" placeholder="Trả lời ..."
+              class="flex-1-1 input-answer-reading2 font-semi-bold pt-2 pb-2">
+          </div>
+
         </div>
       </v-col>
     </v-col>
   </div>
 </template>
 
-<script>
 
+<script>
 import { formatOriginalText } from '@/base/helper.js';
 export default {
-  name: 'Grammar2Question',
+  name: 'Reading2Question',
   data() {
     return {
-
+      selectedOptions: [],
     }
   },
   props: {
@@ -52,13 +54,14 @@ export default {
     this.questionResults.push(...subquestionResults)
   },
   methods: {
-    handleRadioInput(value, subQuestionIndex) {
-      let subQuestionSelected = this.dataQuestion.subQuestions[subQuestionIndex];
-      let subQuestionInResult = this.questionResults.find(item => item.questionId == subQuestionSelected.questionId);
+    handleChangeInputAnswer(subQuestionIndex, event) {
+      const newValue = event?.target?.value;
+      let subQuestionSelected = this.dataQuestion.subQuestions?.[subQuestionIndex];
+      let subQuestionInResult = this.questionResults.find(item => item?.questionId == subQuestionSelected?.questionId);
 
       const matchFound = subQuestionSelected.answers.some(answerObj => {
         const answer = formatOriginalText(answerObj?.answer);
-        return formatOriginalText(value) == answer;
+        return formatOriginalText(newValue) == answer;
       });
 
       if (matchFound) {
@@ -66,12 +69,6 @@ export default {
       } else {
         subQuestionInResult.score = 0;
       }
-
-      subQuestionInResult.answers[0] = {
-        ...subQuestionInResult.answers[0],
-        answer: value,
-      }
-
       const indexToUpdate = this.questionResults.findIndex(item => item.questionId === subQuestionInResult.questionId);
       if (indexToUpdate !== -1) {
         this.questionResults[indexToUpdate] = subQuestionInResult;
@@ -84,8 +81,12 @@ export default {
 </script>
 
 <style>
-.v-selection-control .v-label {
-  color: #000000;
-  opacity: 1;
+.input-answer-reading2 {
+  outline: none;
+  min-width: 5rem;
+  max-width: 25rem;
+  color: #8e1c76;
+  font-style: italic;
+  border-bottom: 1px solid #999;
 }
 </style>

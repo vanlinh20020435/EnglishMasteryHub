@@ -661,38 +661,12 @@ export default {
       this.dataExam.questions[index].title = updatedValue;
       this.$emit("updateGroupTitleQuestion", updatedValue); // Emit the event
     },
-    handleAddQuestion(pronun1Index) {
-      // Find the Pronun1Manage component at the specified index
-      const pronun1 = this.dataExam.questions[pronun1Index];
-
-      // Create a new question object
-      const newQuestion = {
-        title: `New Question`,
-        numOptions: this.selectedTypeSkill.option,
-        options: Array.from(
-          { length: this.selectedTypeSkill.option },
-          (_, i) => ({
-            option: "",
-          })
-        ),
-        answers: [
-          {
-            answer: "",
-            explanation: "",
-          },
-        ],
-      };
-
-      // Push the new question to the questions array of the Pronun1Manage component
-      pronun1.subQuestions.push(newQuestion);
-    },
-
     async handleSaveExam() {
       if (!!this.valid) {
         const convertQuestion = (question, questionParent) => ({
-          content: question?.content?.trim(),
-          skill: questionParent?.skill?.trim(),
-          type: `${questionParent?.type?.toString()?.trim()}`,
+          content: question?.content?.trim() || '',
+          skill: questionParent?.skill?.trim() || '',
+          type: `${questionParent?.type?.toString()?.trim()}` || '1',
           description: question?.description?.trim(),
           answers: question?.answers.map((answer) => ({
             answer: answer?.answer?.trim(),
@@ -719,6 +693,7 @@ export default {
           type: `${item?.type?.toString()?.trim()}`,
           skill: item?.skill?.trim(),
           time: 0,
+          requiresGrading: item?.requiresGrading || false,
           subQuestions: item.subQuestions.map((question) =>
             convertQuestion(question, item)
           ),

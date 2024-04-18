@@ -128,6 +128,7 @@ export default {
     questionSkill: Object,
   },
   created() {
+    this.questionSkill.requiresGrading = true;
     this.questions = this.questionSkill.subQuestions;
     // Initialize the showFullQuestion array with default visibility state for each question
     this.showFullQuestion = Array(this.questions?.length).fill(true);
@@ -154,6 +155,7 @@ export default {
       const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
+        content: `Question ${newIndex}`,
         numOptions: 1,
         options: Array.from({ length: 1 }, (_, i) => ({
           option: "",
