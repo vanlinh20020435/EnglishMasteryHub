@@ -527,9 +527,9 @@ export default {
     async handleSaveExam() {
       if (!!this.valid) {
         const convertQuestion = (question, questionParent) => ({
-          content: question?.content?.trim(),
-          skill: questionParent?.skill?.trim(),
-          type: `${questionParent?.type?.toString()?.trim()}`,
+          content: question?.content?.trim() || '',
+          skill: questionParent?.skill?.trim() || '',
+          type: `${questionParent?.type?.toString()?.trim()}` || '1',
           description: question?.description?.trim(),
           answers: question?.answers.map((answer) => ({
             answer: answer?.answer?.trim(),
@@ -556,6 +556,7 @@ export default {
           type: `${item?.type?.toString()?.trim()}`,
           skill: item?.skill?.trim(),
           time: 0,
+          requiresGrading: item?.requiresGrading || false,
           subQuestions: item.subQuestions.map((question) =>
             convertQuestion(question, item)
           ),
@@ -569,7 +570,6 @@ export default {
               ]
             : [],
         }));
-
         const body = {
           testName: this.dataExam.testName?.trim(),
           time: this.dataExam.time,

@@ -46,6 +46,9 @@
       </v-btn>
       <v-btn @click="scrollToTop" icon="mdi-menu-up" color="success"> </v-btn>
     </div>
+    <div class="timer-tick">
+      <TimerTick :seconds="test?.time * 60 || 30 * 60" :onEndTimerTick="onEndTimerTick"></TimerTick>
+    </div>
     <v-dialog v-model="isOpenSubmit" max-width="500px">
       <v-card v-if="isLoadingSubmit">
         <v-card-text class="d-flex justify-center">
@@ -85,10 +88,13 @@ import {
 } from '@/stores';
 import { submitExam } from '@/services';
 import { mapState } from 'pinia';
+import TimerTick from '@/components/timerTick/TimerTick.vue';
+
 export default {
   mixins: [windowScroll('position')],
   components: {
     Question,
+    TimerTick
   },
   data: () => ({
     answersForm: {
@@ -156,6 +162,9 @@ export default {
         'Kết quả chưa được lưu, bạn có chắc muốn rời khỏi trang?';
       return 'Kết quả chưa được lưu, bạn có chắc muốn rời khỏi trang?';
     },
+    onEndTimerTick() {
+      this.confirmSubmit();
+    }
   },
   beforeUnmount() {
     window.removeEventListener('DOMContentLoaded', this.confirmLeave);
