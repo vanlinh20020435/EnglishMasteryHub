@@ -1,5 +1,5 @@
 <template>
-    <v-list-item :key="noti.testId" :subtitle="noti.description" :title="noti.testName">
+    <v-list-item class="pt-3 pb-3" :key="noti.testId" :subtitle="noti.description" :title="noti.testName">
         <template v-slot:prepend>
             <v-avatar color="success">
                 <v-icon color="white">mdi-clipboard-text</v-icon>
@@ -21,3 +21,11 @@ export default {
     }
 }
 </script>
+
+<style>
+    .v-list-item .v-list-item__content .v-list-item-subtitle,
+    .v-list-item .v-list-item-subtitle {
+        overflow: visible;
+        padding-bottom: 0.25rem;
+    }
+</style>
