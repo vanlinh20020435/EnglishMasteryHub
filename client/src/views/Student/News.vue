@@ -4,9 +4,7 @@
     </v-card>
     <div :class="`class-wrapper ${$vuetify.display.smAndDown ? 'sm' : ''}`">
         <v-avatar class="class-avatar">
-            <v-img class="class-avatar-img" alt="Avatar" :src="student?.avatar ||
-        'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'
-        "></v-img>
+            <v-img class="class-avatar-img" alt="Avatar" :src="getClassAvatar(student?.class)"></v-img>
         </v-avatar>
         <v-card class="class-info">
             <div class="class-info__main">
@@ -35,9 +33,7 @@
                 :sort-by="[{ key: 'studentId', order: 'asc' }]">
                 <template v-slot:item.avatar="{ item }">
                     <v-avatar>
-                        <v-img alt="Avatar" :src="item.avatar ||
-        'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'
-        "></v-img>
+                        <v-img alt="Avatar" :src="item.avatar || getAvtUserMethod(item)"></v-img>
                     </v-avatar>
                 </template>
 
@@ -53,7 +49,9 @@
 import { getStudentsOfClass } from '@/services'
 import { mapState } from 'pinia';
 import { authenticationRole, studentStore } from '@/stores';
-import Notification from '@/views/Student/Notification/index.vue'
+import Notification from '@/views/Student/Notification/index.vue';
+import classDefaultImage from "@/assets/images/class.png";
+import { getAvtUser } from '@/base/helper';
 
 export default {
     components: {
@@ -89,6 +87,14 @@ export default {
             if (res.success) {
                 this.students = res.data
             }
+        },
+        getClassAvatar(classData) {
+        return classData && classData.avatar
+            ? classData.avatar
+            : classDefaultImage; // Return the class avatar or the default image
+        },
+        getAvtUserMethod(item) {
+            return getAvtUser(item, 'student');
         }
     }
 }

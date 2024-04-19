@@ -51,9 +51,9 @@
   <div style="background: #4d4d4d14">
     <v-container class="d-flex" style="padding: 0">
       <v-tabs v-model="tab" align-tabs="center" color="#00bd7e">
-        <v-tab :value="1" @click="$router.replace('/student/news')">Bảng tin</v-tab>
-        <v-tab :value="2" @click="$router.replace('/student/test')">Bài kiểm tra</v-tab>
-        <v-tab :value="3" @click="$router.replace('/student/document')">Tài liệu</v-tab>
+        <v-tab :value="1" @click="$router.push('/student/news')">Bảng tin</v-tab>
+        <v-tab :value="2" @click="$router.push('/student/test')">Bài kiểm tra</v-tab>
+        <v-tab :value="3" @click="$router.push('/student/document')">Tài liệu</v-tab>
       </v-tabs>
       <v-spacer />
     </v-container>
