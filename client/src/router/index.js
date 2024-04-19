@@ -12,20 +12,25 @@ import {
   DetailClassTeacher,
   ClassStudents,
   StudyDocuments,
+  AssignExam,
+  MarkExam,
+  EditExam,
 } from "@/views/Teacher";
 import { authenticationRole } from "@/stores";
 import Login from "@/views/Login.vue";
 import StudentManager from "@/views/Admin/User/Student.vue";
 import TeacherManager from "@/views/Admin/User/Teacher.vue";
+import ExamManager from "@/views/Admin/Exam/index.vue";
+import CreateExamManager from "@/views/Admin/Exam/Create.vue";
+import EditExamManager from "@/views/Admin/Exam/Edit.vue";
 import Class from "@/views/Admin/Class/index.vue";
-import Event from "@/views/Admin/Event/index.vue";
 import ClassSlug from "@/views/Admin/Class/ClassSlug.vue";
-import Account from "@/views/Account/index.vue";
+import { Account, EditAccount, UpdatePassword } from "@/views/Account";
 import Student from "@/views/Student/index.vue";
 import News from "@/views/Student/News.vue";
 import Test from "@/views/Student/Test/index.vue";
 import Docs from "@/views/Student/Docs.vue";
-import TestSlug from "@/views/Student/Test/TestSlug.vue";
+import TestSlug from "@/views/Student/Test/TestSlug/index.vue";
 const routes = [
   {
     path: "/login",
@@ -38,8 +43,18 @@ const routes = [
     public: true,
   },
   {
-    path: "/account",
+    path: "/:role/account",
     component: Account,
+    public: true,
+  },
+  {
+    path: "/:role/account/edit",
+    component: EditAccount,
+    public: true,
+  },
+  {
+    path: "/:role/account/update-password",
+    component: UpdatePassword,
     public: true,
   },
   {
@@ -73,6 +88,14 @@ const routes = [
             path: "study-document",
             component: StudyDocuments,
           },
+          {
+            path: "assign-exam",
+            component: AssignExam,
+          },
+          {
+            path: "mark-exam",
+            component: MarkExam,
+          },
         ],
       },
       {
@@ -85,6 +108,10 @@ const routes = [
           {
             path: "add",
             component: CreateExam,
+          },
+          {
+            path: "edit/:id",
+            component: EditExam,
           },
           {
             path: "my_exam",
@@ -137,6 +164,24 @@ const routes = [
       {
         path: "event",
         component: Event,
+      },
+      {
+        path: "exam",
+        children: [
+          {
+            path: "",
+            component: ExamManager,
+            props: { isAdmin: true },
+          },
+          {
+            path: "add",
+            component: CreateExamManager,
+          },
+          {
+            path: "edit/:id",
+            component: EditExamManager,
+          },
+        ],
       },
     ],
   },

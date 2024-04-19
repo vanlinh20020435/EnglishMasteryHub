@@ -17,7 +17,9 @@
         >
           <HeaderAction
             :handleToggleShowFull="() => handleToggleShowFullQuestion(index)"
-            :title="question.title ? question.title : `Question ${index + 1}`"
+            :title="
+              question.content ? question.content : `Question ${index + 1}`
+            "
             :handleDelete="() => handleDeleteQuestion(index)" />
           <v-row
             :class="{
@@ -35,7 +37,7 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.title"
+                :model-value="question?.content || `Question ${index + 1}`"
                 @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
@@ -48,8 +50,8 @@
 
                   <v-col cols="8">
                     <v-select
-                      :model-value="this.answerSelection"
-                      clearable
+                      :model-value="question?.answers[0]?.answer || 'True'"
+                      @change="handleUpdateAnswer"
                       :items="['True', 'False']"
                     ></v-select>
                   </v-col>
@@ -69,7 +71,12 @@
                       placeholder="Giải thích ..."
                       hide-no-data
                       clearable
-                      hide-details
+                      hide-details                      
+                      @click:clear="() => handleClear('answer', index)"
+                      :model-value="question?.answers[0]?.explanation || ''"
+                      @change="
+                        (event) => updateExplanation(index, event.target.value)
+                      "
                     >
                     </v-textarea>
                   </v-col>
@@ -130,9 +137,9 @@ export default {
     questionSkill: Object,
   },
   created() {
-    this.questions = this.questionSkill.questions;
+    this.questions = this.questionSkill.subQuestions;
     // Initialize the showFullQuestion array with default visibility state for each question
-    this.showFullQuestion = Array(this.questions.length).fill(true);
+    this.showFullQuestion = Array(this.questions?.length).fill(true);
   },
   methods: {
     handleToggleShowFull() {
@@ -152,14 +159,18 @@ export default {
     },
     handleAddQuestion() {
       // Add a new question
-      const newIndex = this.questions.length + 1;
+      const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
+        content: `Question ${newIndex}`,
         numOptions: 4,
         options: Array.from({ length: 4 }, (_, i) => ({
           option: "",
         })),
-        answers: [],
+        answers: [{
+          answer: "",
+          explanation: ''
+        }],
       });
       this.$nextTick(() => {
         this.showFullQuestion[newIndex - 1] = true;
@@ -168,14 +179,25 @@ export default {
       this.$emit("addQuestion", newIndex);
     },
 
-    handleChangeExplanation(questionIndex, optionIndex, value) {
-      // Update the answer value in the corresponding question option
-      this.questions[questionIndex].options[optionIndex].explanation = value;
-    },
-
     updateTitleQuestion(questionIndex, event) {
-      this.questions[questionIndex].title = event.target.value;
+      this.questions[questionIndex].content = event.target.value;
     },
+    handleUpdateAnswer() {
+      // const newValue = event?.target?.value;
+
+      console.log('newValue: ');
+      
+    },
+    updateExplanation(questionIndex, newValue) {
+      this.questions[questionIndex].answers[0].explanation = newValue;
+    },
+    handleClear(typeClear, questionIndex) {
+			if (typeClear == "answer") {
+				this.questions[questionIndex].answers[0].answer = "";
+			} else if (typeClear == "explanation") {
+				this.questions[questionIndex].answers[0].explanation = "";
+			}
+		},
   },
 };
 </script>

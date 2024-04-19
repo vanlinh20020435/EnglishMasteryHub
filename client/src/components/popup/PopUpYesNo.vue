@@ -1,7 +1,17 @@
 <template>
   <v-dialog v-model="dialogVisible" max-width="500px">
     <v-card class="card-popup">
-      <v-card-title class="popup-msg">{{ msg }}</v-card-title>
+      <v-card-title v-if="typeof msg == 'string'" class="popup-msg">{{
+        msg
+      }}</v-card-title>
+      <h3
+        v-else-if="typeof msg == 'object'"
+        v-for="(msgItem, index) in msg"
+        :key="index"
+        class="popup-msg font-semi-bold"
+      >
+        {{ msgItem }}
+      </h3>
       <v-card-actions class="popup-actions d-flex justify-center">
         <v-btn
           v-if="!hideBtnNo"
@@ -12,6 +22,7 @@
           >Không</v-btn
         >
         <v-btn
+          v-if="!hideBtnYes"
           color="blue-darken-1"
           class="btn-default btn-gradient d-flex align-center justify-center"
           variant="text"
@@ -33,6 +44,7 @@ export default {
     visible: Boolean,
     hideBtnNo: Boolean,
     btnYes: String,
+    hideBtnYes: Boolean,
   },
   data() {
     return {
@@ -53,5 +65,5 @@ export default {
 </script>
 
 <style>
-@import "./PpopUpYesNo.style.scss";
+@import "./PopUpYesNo.style.scss";
 </style>

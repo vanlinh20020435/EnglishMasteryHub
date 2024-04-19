@@ -1,18 +1,19 @@
 package com.emh.service;
 
 import com.emh.entity.*;
+import com.emh.model.Role;
 import com.emh.payload.request.*;
 import com.emh.payload.response.*;
 import com.emh.repos.*;
-import com.emh.util.MapperUtils;
-import com.emh.util.NotFoundException;
-import com.emh.util.ReferencedWarning;
+import com.emh.util.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -25,13 +26,17 @@ public class TestsService
 	private final QuestAnswerRepository questAnswerRepository;
 	private final QuestOptionRepository questOptionRepository;
 	private final QuestFileRepository questFileRepository;
+	private final CustomUserDetailsService customUserDetailsService;
+	private final UserRepository userRepository;
 
 	public TestsService(final TestsRepository testsRepository,
 						final QuestionsRepository questionsRepository,
 						final StudentTestResultRepository studentTestResultRepository,
 						final QuestAnswerRepository questAnswerRepository,
 						final QuestOptionRepository questOptionRepository,
-						final QuestFileRepository questFileRepository)
+						final QuestFileRepository questFileRepository,
+						final CustomUserDetailsService customUserDetailsService,
+						UserRepository userRepository)
 	{
 		this.testsRepository = testsRepository;
 		this.questionsRepository = questionsRepository;
@@ -39,6 +44,8 @@ public class TestsService
 		this.questAnswerRepository = questAnswerRepository;
 		this.questOptionRepository = questOptionRepository;
 		this.questFileRepository = questFileRepository;
+		this.customUserDetailsService = customUserDetailsService;
+		this.userRepository = userRepository;
 	}
 
 	public List<TestsResponse> findAll()
@@ -59,7 +66,7 @@ public class TestsService
 	public Integer create(final TestsRequest testsRequest) throws IOException
 	{
 		Tests tests = new Tests();
-		MapperUtils.testMapToEntity(testsRequest, tests);
+		EntityMapper.testMapToEntity(testsRequest, tests);
 		tests = testsRepository.save(tests);
 		saveQuestions(tests, testsRequest);
 		return tests.getTestId();
@@ -69,12 +76,18 @@ public class TestsService
 	{
 		final Tests tests = testsRepository.findById(testId)
 				.orElseThrow(NotFoundException::new);
-		MapperUtils.testMapToEntity(testsDTO, tests);
+		if (!checkPermission(getCreator(tests.getCreatedBy())))
+			throw new ForbiddenException();
+		EntityMapper.testMapToEntity(testsDTO, tests);
 		testsRepository.save(tests);
 	}
 
 	public void delete(final Integer testId)
 	{
+		final Tests tests = testsRepository.findById(testId)
+				.orElseThrow(NotFoundException::new);
+		if (!checkPermission(getCreator(tests.getCreatedBy())))
+			throw new ForbiddenException();
 		testsRepository.deleteById(testId);
 	}
 
@@ -88,7 +101,7 @@ public class TestsService
 		for (QuestionsRequest questionsRequest : testsRequest.getQuestions())
 		{
 			Questions questions = new Questions();
-			MapperUtils.questionMapToEntity(questionsRequest, questions, tests);
+			EntityMapper.questionMapToEntity(questionsRequest, questions, tests);
 			questionsRepository.save(questions);
 			saveQuestionAnswers(questions, questionsRequest);
 			saveQuestionOptions(questions, questionsRequest);
@@ -104,7 +117,7 @@ public class TestsService
 		for (QuestAnswerRequest questAnswerRequest : questionsRequest.getAnswers())
 		{
 			QuestAnswer answer = new QuestAnswer();
-			MapperUtils.questionAnswerMapToEntity(questAnswerRequest, answer, questions);
+			EntityMapper.questionAnswerMapToEntity(questAnswerRequest, answer, questions);
 			questAnswerRepository.save(answer);
 		}
 	}
@@ -116,7 +129,7 @@ public class TestsService
 		for (QuestOptionRequest questOptionRequest : questionsRequest.getOptions())
 		{
 			QuestOption option = new QuestOption();
-			MapperUtils.questionOptionMapToEntity(questOptionRequest, option, questions);
+			EntityMapper.questionOptionMapToEntity(questOptionRequest, option, questions);
 			questOptionRepository.save(option);
 		}
 	}
@@ -128,7 +141,7 @@ public class TestsService
 		for (QuestFileRequest questFileRequest : questionsRequest.getFiles())
 		{
 			QuestFile file = new QuestFile();
-			MapperUtils.questionFileMapToEntity(questFileRequest, file, questions);
+			EntityMapper.questionFileMapToEntity(questFileRequest, file, questions);
 			questFileRepository.save(file);
 		}
 	}
@@ -140,7 +153,7 @@ public class TestsService
 		for (QuestionsRequest subQuestionsRequest : questionsRequest.getSubQuestions())
 		{
 			Questions questions = new Questions();
-			MapperUtils.questionMapToEntity(subQuestionsRequest, questions, tests, parentQuestions);
+			EntityMapper.questionMapToEntity(subQuestionsRequest, questions, tests, parentQuestions);
 			questionsRepository.save(questions);
 			saveQuestionAnswers(questions, subQuestionsRequest);
 			saveQuestionOptions(questions, subQuestionsRequest);
@@ -150,9 +163,13 @@ public class TestsService
 
 	private TestsResponse exportTest(Tests tests)
 	{
+		User creator = getCreator(tests.getCreatedBy());
+		Boolean permission = checkPermission(creator);
 		TestsResponse response = new TestsResponse();
-		MapperUtils.testMapToResponse(tests, response);
+		EntityMapper.testMapToResponse(tests, response);
 		exportQuestions(tests, response);
+		response.setCreator(creator.getName());
+		response.setHavePermission(permission);
 		return response;
 	}
 
@@ -166,7 +183,7 @@ public class TestsService
 			if (questions.getParentQuestion() != null)
 				continue;
 			QuestionsResponse questionsResponse = new QuestionsResponse();
-			MapperUtils.questionMapToResponse(questions, questionsResponse);
+			EntityMapper.questionMapToResponse(questions, questionsResponse);
 			exportQuestionAnswers(questions, questionsResponse);
 			exportQuestionOptions(questions, questionsResponse);
 			exportQuestionFiles(questions, questionsResponse);
@@ -184,7 +201,7 @@ public class TestsService
 		for (QuestAnswer questAnswer : questions.getQuestionQuestAnswers())
 		{
 			QuestAnswerResponse answer = new QuestAnswerResponse();
-			MapperUtils.questionAnswerMapToResponse(questAnswer, answer);
+			EntityMapper.questionAnswerMapToResponse(questAnswer, answer);
 			responses.add(answer);
 		}
 		questionsResponse.setAnswers(responses);
@@ -198,7 +215,7 @@ public class TestsService
 		for (QuestOption questOption : questions.getQuestOptions())
 		{
 			QuestOptionResponse option = new QuestOptionResponse();
-			MapperUtils.questionOptionMapToResponse(questOption, option);
+			EntityMapper.questionOptionMapToResponse(questOption, option);
 			responses.add(option);
 		}
 		questionsResponse.setOptions(responses);
@@ -212,7 +229,7 @@ public class TestsService
 		for (QuestFile questFile : questions.getQuestFiles())
 		{
 			QuestFileResponse file = new QuestFileResponse();
-			MapperUtils.questionFileMapToResponse(questFile, file);
+			EntityMapper.questionFileMapToResponse(questFile, file);
 			responses.add(file);
 		}
 		questionsResponse.setFiles(responses);
@@ -226,12 +243,51 @@ public class TestsService
 		for (Questions subQuestions : questions.getQuestions())
 		{
 			QuestionsResponse questionsResponse = new QuestionsResponse();
-			MapperUtils.questionMapToResponse(subQuestions, questionsResponse);
+			EntityMapper.questionMapToResponse(subQuestions, questionsResponse);
 			exportQuestionAnswers(subQuestions, questionsResponse);
 			exportQuestionOptions(subQuestions, questionsResponse);
 			exportQuestionFiles(subQuestions, questionsResponse);
 			subQuest.add(questionsResponse);
 		}
 		parentQuestions.setSubQuestions(subQuest);
+	}
+
+	private User getCreator(String creator)
+	{
+		return userRepository.findOneByUsername(creator);
+	}
+
+	private boolean checkPermission(User creator)
+	{
+		UserDetailsImpl userDetails = SecurityUtils.getPrincipal();
+		User currentUser = userRepository.findById(userDetails.getId())
+				.orElseThrow(NotFoundException::new);
+		return checkPermission(currentUser, creator);
+	}
+
+	private boolean checkPermission(User curentUser, User targetUser)
+	{
+		if (curentUser.getRole().equalsIgnoreCase(Role.ADMIN.toString()))
+			return true;
+		return Objects.equals(curentUser.getUserId(), targetUser.getUserId());
+	}
+
+	public List<TestsResponse> findAllByUserId(Integer userId)
+	{
+		User user = userRepository.findById(userId)
+				.orElseThrow(NotFoundException::new);
+		final List<Tests> testses = testsRepository.findAllByCreator(user.getUsername());
+		return testses.stream()
+				.map(this::exportTest)
+				.toList();
+	}
+
+	public Boolean checkPassword(Integer testId, String password)
+	{
+		Tests tests = testsRepository.findById(testId)
+				.orElseThrow(NotFoundException::new);
+		if (StringUtils.isBlank(tests.getPassword()))
+			return true;
+		return tests.getPassword().equals(password);
 	}
 }

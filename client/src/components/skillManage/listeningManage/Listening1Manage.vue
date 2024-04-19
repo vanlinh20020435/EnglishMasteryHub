@@ -17,7 +17,9 @@
         >
           <HeaderAction
             :handleToggleShowFull="() => handleToggleShowFullQuestion(index)"
-            :title="question.title ? question.title : `Question ${index + 1}`"
+            :title="
+              question.content ? question.content : `Question ${index + 1}`
+            "
             :handleDelete="() => handleDeleteQuestion(index)" />
           <v-row
             :class="{
@@ -35,11 +37,11 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.title"
+                :model-value="question?.content || `Question ${index + 1}`"
                 @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
-              <v-row class="d-flex justify-center">
+              <!-- <v-row class="d-flex justify-center">
                 <v-col cols="2">
                   <v-list-subheader>Audio cho câu hỏi</v-list-subheader>
                 </v-col>
@@ -56,7 +58,7 @@
                     :model-value="selectedFileName"
                   ></v-file-input>
                 </v-col>
-              </v-row>
+              </v-row> -->
 
               <v-col class="pt-1 pb-0">
                 <v-row class="d-flex flex-row justify-end">
@@ -71,6 +73,8 @@
                       placeholder="Đáp án ..."
                       hide-no-data
                       clearable
+                      :model-value="question.answers[0]?.answer"
+                      @input="(event) => handleUpdateAnswer(index, 0, event.target.value)"
                     >
                     </v-text-field>
                   </v-col>
@@ -78,7 +82,7 @@
               </v-col>
 
               <v-col
-                v-for="indexOption in question.options.length"
+                v-for="indexOption in question.answers.length - 1"
                 :key="indexOption"
                 class="d-flex justify-end pl-0 pr-0 pt-1 pb-0"
               >
@@ -94,11 +98,12 @@
                         single-line
                         variant="solo"
                         placeholder="Đáp án khác ..."
-                        @input="
-                          handleUpdateOtherAnswer(
+                        :model-value="question?.answers[indexOption]?.answer || ''" 
+                        @input="(event) =>
+                          handleUpdateAnswer(
                             index,
                             indexOption,
-                            $event.target.value
+                            event.target.value
                           )
                         "
                       ></v-text-field>
@@ -108,7 +113,7 @@
                         class="pr-5 cursor-pointer"
                         color="red"
                         size="default"
-                        @click="() => handleDeleteOption(0, indexOption - 1)"
+                        @click="() => handleDeleteOtherAnswer(0, indexOption)"
                       >
                         mdi-trash-can
                       </v-icon>
@@ -124,7 +129,7 @@
               >
                 <v-spacer></v-spacer>
                 <v-btn
-                  @click="() => handleAddOption(index)"
+                  @click="() => handleAddOtherAnswer(index)"
                   color="#00bd7e"
                   theme="dark"
                   >Thêm đáp án khác</v-btn
@@ -145,7 +150,13 @@
                       hide-no-data
                       clearable
                       hide-details
-                    >
+                      :model-value="question?.answers[0]?.explanation || ''" 
+                      @change="(event) =>
+                        updateExplanation(
+                          index,
+                          event.target.value
+                        )
+                      ">
                     </v-textarea>
                   </v-col>
                 </v-row>
@@ -204,9 +215,9 @@ export default {
     questionSkill: Object,
   },
   created() {
-    this.questions = this.questionSkill.questions;
+    this.questions = this.questionSkill.subQuestions;
     // Initialize the showFullQuestion array with default visibility state for each question
-    this.showFullQuestion = Array(this.questions.length).fill(true);
+    this.showFullQuestion = Array(this.questions?.length).fill(true);
   },
   methods: {
     handleToggleShowFull() {
@@ -226,14 +237,18 @@ export default {
     },
     handleAddQuestion() {
       // Add a new question
-      const newIndex = this.questions.length + 1;
+      const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
+        content: `Question ${newIndex}`,
         numOptions: 4,
         options: Array.from({ length: 4 }, (_, i) => ({
           option: "",
         })),
-        answers: [],
+        answers: [{
+          answer: "",
+          explanation: ''
+        }],
       });
       this.$nextTick(() => {
         this.showFullQuestion[newIndex - 1] = true;
@@ -241,15 +256,15 @@ export default {
       // Emit an event to notify the parent component about the addition
       this.$emit("addQuestion", newIndex);
     },
-    handleDeleteOption(questionIndex, optionIndex) {
-      if (questionIndex >= 0 && questionIndex < this.questions.length) {
+    handleDeleteOtherAnswer(questionIndex, optionIndex) {
+      if (questionIndex >= 0 && questionIndex < this.questions?.length) {
         // Access the question object
         const question = this.questions[questionIndex];
 
         // Check if optionIndex is valid
-        if (optionIndex >= 0 && optionIndex < question.options.length) {
+        if (optionIndex >= 0 && optionIndex < question.answers.length) {
           // Remove the option at the specified index
-          question.options.splice(optionIndex, 1);
+          question.answers.splice(optionIndex, 1);
 
           // that an option has been deleted
           this.$emit("optionDeleted", { questionIndex, optionIndex });
@@ -260,39 +275,31 @@ export default {
         console.error("Invalid questionIndex");
       }
     },
-    handleAddOption(questionIndex) {
+    handleAddOtherAnswer(questionIndex) {
       // Check if questionIndex is valid
-      if (questionIndex >= 0 && questionIndex < this.questions.length) {
+      if (questionIndex >= 0 && questionIndex < this.questions?.length) {
         // Access the question object
         const question = this.questions[questionIndex];
-
-        // Push a new option to the question's options array
-        const newIndex = question.options.length + 1;
-        question.options.push({
+        question.options[0] = ({
           option: "",
         });
 
-        // Emit an event to notify the parent component about the addition
-        this.$emit("optionAdded", { questionIndex, optionIndex: newIndex - 1 });
+        question.answers.push({
+          answer: "",
+          explanation: ''
+        });
       } else {
         console.error("Invalid questionIndex");
       }
     },
-
-    handleUpdateOption(questionIndex, optionIndex, value) {
-      // Update the answer value in the corresponding question option
-      this.questions[questionIndex].options[optionIndex].option = value;
-    },
-
     handleChangeExplanation(questionIndex, optionIndex, value) {
       // Update the answer value in the corresponding question option
       this.questions[questionIndex].options[optionIndex].explanation = value;
     },
-
     updateTitleQuestion(questionIndex, event) {
-      this.questions[questionIndex].title = event.target.value;
+      this.questions[questionIndex].content = event.target.value;
+      this.questions[questionIndex].options[0].option = event.target.value;
     },
-
     handleFileUpload(event, questionIndex) {
       // Extract the selected file from the event object
       const file = event.target.files[0];
@@ -321,10 +328,16 @@ export default {
 
       question["files"] = this.fileUpload;
     },
-
+    handleUpdateAnswer(questionIndex, optionIndex, value) {
+      // Update the answer value in the corresponding question option
+      this.questions[questionIndex].answers[optionIndex].answer = value;
+    },
     handleUpdateOtherAnswer(questionIndex, optionIndex, value) {
       // Update the answer value in the corresponding question option
       this.questions[questionIndex].options[optionIndex].option = value;
+    },
+    updateExplanation(questionIndex, newValue) {
+      this.questions[questionIndex].answers.forEach((answer) => answer.explanation = newValue);
     },
   },
 };

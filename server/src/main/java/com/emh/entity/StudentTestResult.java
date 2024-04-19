@@ -28,6 +28,10 @@ public class StudentTestResult extends BaseEntity
 	private Integer time;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "class_id", nullable = false)
+	private Classes classs;
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "test_code_id", nullable = false)
 	private Tests tests;
 

@@ -11,6 +11,7 @@ import com.emh.specifications.FilterOperation;
 import com.emh.specifications.SearchCriteria;
 import com.emh.specifications.SpecificationsBuilder;
 import com.emh.util.AppException;
+import com.emh.util.EntityMapper;
 import com.emh.util.MapperUtils;
 import com.emh.util.NotFoundException;
 import org.apache.commons.lang3.StringUtils;
@@ -39,14 +40,14 @@ public class AdminService
 	{
 		final List<Admin> admins = adminRepository.findAll(Sort.by("adminId"));
 		return admins.stream()
-				.map(admin -> MapperUtils.adminMapToResponse(admin, new AdminResponse()))
+				.map(admin -> EntityMapper.adminMapToResponse(admin, new AdminResponse()))
 				.toList();
 	}
 
 	public AdminResponse get(final Integer adminId)
 	{
 		return adminRepository.findById(adminId)
-				.map(admin -> MapperUtils.adminMapToResponse(admin, new AdminResponse()))
+				.map(admin -> EntityMapper.adminMapToResponse(admin, new AdminResponse()))
 				.orElseThrow(NotFoundException::new);
 	}
 
@@ -61,7 +62,7 @@ public class AdminService
 		user.setStatus(1);
 		admin.setStatus(1);
 		user = userRepository.save(user);
-		MapperUtils.adminMapToEntity(adminRequest, admin, user);
+		EntityMapper.adminMapToEntity(adminRequest, admin, user);
 		return adminRepository.save(admin).getAdminId();
 	}
 
@@ -69,12 +70,13 @@ public class AdminService
 	{
 		final Admin admin = adminRepository.findById(adminId)
 				.orElseThrow(NotFoundException::new);
-		if (StringUtils.isNotBlank(adminRequest.getPassword()))
-			adminRequest.setPassword(admin.getPassword());
+		adminRequest.setPassword(admin.getPassword());
 		User user = MapperUtils.map(adminRequest, User.class);
 		user.setUserId(admin.getUser().getUserId());
+		user.setRole(Role.ADMIN.toString());
+		user.setStatus(admin.getUser().getStatus());
 		user = userRepository.save(user);
-		MapperUtils.adminMapToEntity(adminRequest, admin, user);
+		EntityMapper.adminMapToEntity(adminRequest, admin, user);
 		adminRepository.save(admin);
 	}
 
@@ -97,7 +99,7 @@ public class AdminService
 			spec.with(new SearchCriteria("name", FilterOperation.EQUAL.toString(), name, false));
 		final List<Admin> admins = adminRepository.findAll(spec.build());
 		return admins.stream()
-				.map(admin -> MapperUtils.adminMapToResponse(admin, new AdminResponse()))
+				.map(admin -> EntityMapper.adminMapToResponse(admin, new AdminResponse()))
 				.toList();
 	}
 

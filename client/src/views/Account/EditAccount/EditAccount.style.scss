@@ -1,0 +1,68 @@
+.edit-profile-page {
+  .edit-container {
+    .edit-avt-box {
+      width: 13rem;
+      height: 13rem;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid white;
+      margin-bottom: 1rem;
+      position: relative;
+      overflow: hidden;
+      margin-left: auto;
+      margin-right: auto;
+
+      .edit-avt-preview {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .img-edit-avt {
+        position: absolute;
+        bottom: 0;
+        background: #fff;
+        height: 53px;
+        width: 100%;
+        text-align: center;
+        cursor: pointer;
+
+        img {
+          width: 39px;
+          height: 30px;
+          border-radius: 0;
+          margin-top: 10px;
+          object-fit: cover;
+        }
+      }
+    }
+
+    .edit-info_item {
+      padding-top: 0;
+      padding-bottom: 0.5rem;
+      .v-input__control {
+        width: 95%;
+        .v-field__input {
+          background-color: white;
+          border-radius: 2.5rem;
+          padding-left: 1.5rem;
+          padding-right: 1.5rem;
+        }
+      }
+    }
+
+    .gender-btn {
+      height: 55px;
+      border-radius: 0.75rem;
+      max-width: 56px;
+      padding-left: 0;
+      padding-right: 0;
+
+      .v-btn__content {
+        .v-icon {
+          font-size: 2em;
+        }
+      }
+    }
+  }
+}

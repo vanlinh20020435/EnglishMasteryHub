@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
       <v-btn icon="mdi-filter" style="margin-right: 8px" :color="isOpenFilter ? '#00bd7e' : ''"
         @click="() => (isOpenFilter = !isOpenFilter)"></v-btn>
-      <v-btn class="mb-2" color="#00bd7e" dark variant="outlined" @click="isOpenForm = true">
+      <v-btn color="#00bd7e" dark variant="outlined" @click="isOpenForm = true">
         Tạo mới
       </v-btn>
     </v-toolbar>
@@ -63,25 +63,31 @@
         <v-card-text>
           <v-row>
             <v-col cols="12" md="12" sm="6">
-              <v-text-field v-model="formItem.name" :rules="requireRules" label="Name"></v-text-field>
+              <v-text-field v-model="formItem.name" :rules="nameRules" label="Name*"></v-text-field>
             </v-col>
             <v-col cols="12" md="12" sm="6">
-              <v-text-field v-model="formItem.username" :rules="requireRules" label="Username"></v-text-field>
+              <v-text-field v-model="formItem.username" :rules="usernameRules" label="Username*"></v-text-field>
             </v-col>
             <v-col v-if="!isEdit" cols="12" md="12" sm="6">
-              <v-text-field v-model="formItem.password" :rules="requireRules" label="Password"></v-text-field>
+              <v-text-field v-model="formItem.password" :rules="passwordRules" label="Password*"></v-text-field>
+            </v-col>
+            <v-col v-if="formItem.avatar" cols="12" md="12">
+              <v-text-field prepend-icon="mdi-paperclip" v-model="formItem.avatar" label="Avatar" clearable
+                readonly></v-text-field>
+            </v-col>
+            <v-col v-else cols="12" md="12">
+              <v-file-input v-model="selectedFile" label="Avatar" accept="image/png, image/jpeg" hide-no-data
+                show-size></v-file-input>
             </v-col>
             <v-col cols="12" md="12" sm="6">
-              <v-text-field v-model="formItem.avatar" label="Avatar"></v-text-field>
+              <v-text-field v-model="formItem.email" :rules="emailRules" label="Email*"></v-text-field>
             </v-col>
             <v-col cols="12" md="12" sm="6">
-              <v-text-field v-model="formItem.email" :rules="emailRules" label="Email"></v-text-field>
-            </v-col>
-            <v-col cols="12" md="12" sm="6">
-              <v-select label="Class" v-model="formItem.classId" :items="classSelector"></v-select>
+              <v-select label="Class*" v-model="formItem.classId" :rules="classRules" :items="classSelector"></v-select>
             </v-col>
             <v-col cols="12" md="6" sm="6">
-              <v-select label="Gender" v-model="formItem.gender" :items="genderSelector"></v-select>
+              <v-select label="Gender*" v-model="formItem.gender" :rules="genderRules"
+                :items="genderSelector"></v-select>
             </v-col>
             <v-col cols="12" md="6" sm="6">
               <v-dialog ref="dialog" v-model="isOpenDatePicker" :return-value.sync="datePicker" persistent
@@ -101,7 +107,7 @@
           <v-btn variant="tonal" @click="() => (isOpenForm = false)">
             Cancel
           </v-btn>
-          <v-btn color="success" variant="flat" type="submit">
+          <v-btn color="success" variant="flat" type="submit" :disabled="isLoadingFile">
             Save
           </v-btn>
         </v-card-actions>
@@ -117,10 +123,12 @@
         <v-card-text>
           <v-row>
             <v-col cols="12" md="12" sm="6">
-              <v-text-field v-model="passUpdating.password" :rules="requireRules" label="Password"></v-text-field>
+              <v-text-field type="password" v-model="passUpdating.password" :rules="passwordRules"
+                label="Password"></v-text-field>
             </v-col>
             <v-col cols="12" md="12" sm="6">
-              <v-text-field v-model="passUpdating.repeat" :rules="repeatRules" label="Repeat password"></v-text-field>
+              <v-text-field type="password" v-model="passUpdating.repeat" :rules="repeatRules"
+                label="Repeat password"></v-text-field>
             </v-col>
           </v-row>
         </v-card-text>
@@ -152,7 +160,8 @@ import {
   editStudentStatus,
   changeStudentPassword,
   deleteStudent,
-  getClasses
+  getClasses,
+  uploadFile
 } from '@/services';
 import { authenticationRole, toastStore } from '@/stores';
 import { mapState } from 'pinia';
@@ -199,7 +208,31 @@ export default {
       delettingItem: {},
       data: [],
       valid: false,
-      requireRules: [
+      genderRules: [
+        (value) => {
+          if (value || value === 0) return true;
+          return 'Gender is required.';
+        },
+      ],
+      classRules: [
+        (value) => {
+          if (value || value === 0) return true;
+          return 'Class is required.';
+        },
+      ],
+      passwordRules: [
+        (value) => {
+          if (value || value === 0) return true;
+          return 'Password is required.';
+        },
+      ],
+      usernameRules: [
+        (value) => {
+          if (value || value === 0) return true;
+          return 'Username is required.';
+        },
+      ],
+      nameRules: [
         (value) => {
           if (value || value === 0) return true;
           return 'Name is required.';
@@ -208,7 +241,7 @@ export default {
       repeatRules: [
         (value) => {
           if (value || value === 0) return true;
-          return 'Name is required.';
+          return 'Password is required.';
         },
         (value) => {
           if (this.passUpdating?.password === value) return true;
@@ -235,6 +268,8 @@ export default {
       },
       _timerId: null,
       isOpenFilter: false,
+      selectedFile: null,
+      isLoadingFile: false
     };
   },
   computed: {
@@ -279,9 +314,10 @@ export default {
       const updateStatus = this.itemUpdatingLock?.status ? 0 : 1
       const res = await editStudentStatus(this.itemUpdatingLock?.studentId, this.authentication?.accessToken?.token, updateStatus)
       if (res.success) {
+        this.updateToast('success', `${updateStatus ? 'Mở khóa' : 'Khóa'} tài khoản thành công!`)
         await this.fetchData();
       } else {
-        //error
+        this.updateToast('error', `${updateStatus ? 'Mở khóa' : 'Khóa'} tài khoản thất bại!`)
       }
       this.isOpenLock = false
       this.itemUpdatingLock = {}
@@ -289,9 +325,14 @@ export default {
     async submitChangePassword() {
       if (this.formPasswordValid) {
         const res = await changeStudentPassword(this.passUpdating?.id, this.authentication?.accessToken?.token, this.passUpdating?.password);
+        if (res.success) {
+          this.updateToast('success', "Đổi mật khẩu thành công!")
+          await this.fetchData();
+        } else {
+          this.updateToast('error', "Đổi mật khẩu thất bại!")
+        }
         this.isOpenChangePassword = false;
         this.passUpdating = {}
-        await this.fetchData();
       }
     },
     async submitForm() {
@@ -310,17 +351,27 @@ export default {
     },
     async createItem() {
       this.isLoadingForm = true;
+      const payload = {
+        username: this.formItem.username,
+        email: this.formItem.email,
+        name: this.formItem.name,
+        classId: this.formItem.classId,
+        password: this.formItem.password,
+        gender: this.formItem.gender,
+      }
+      if (this.formItem.avatar) payload.avatar = this.formItem.avatar
+      if (this.formItem.birthday) payload.birthday = this.formItem.birthday
       const res = await createStudent(
         this.authentication?.accessToken?.token,
-        this.formItem
+        payload
       );
       this.isLoadingForm = false;
       if (res.success) {
-        console.log(res);
+        this.updateToast('success', "Tạo Student thành công!")
         this.isOpenForm = false;
         await this.fetchData();
       } else {
-        //error
+        this.updateToast('error', "Tạo Student thất bại!")
       }
     },
     async editItem() {
@@ -329,11 +380,12 @@ export default {
         username: this.formItem.username,
         email: this.formItem.email,
         name: this.formItem.name,
-        gender: this.formItem.gender,
-        avatar: this.formItem.avatar,
-        birthday: this.formItem.birthday,
         classId: this.formItem.classId,
+        password: this.formItem.password,
+        gender: this.formItem.gender,
       };
+      if (this.formItem.avatar) payload.avatar = this.formItem.avatar
+      if (this.formItem.birthday) payload.birthday = this.formItem.birthday
       const res = await editStudent(
         this.formItem.studentId,
         this.authentication?.accessToken?.token,
@@ -341,11 +393,11 @@ export default {
       );
       this.isLoadingForm = false;
       if (res.success) {
-        console.log(res);
+        this.updateToast('success', "Sửa Student thành công!")
         this.isOpenForm = false;
         await this.fetchData();
       } else {
-        //error
+        this.updateToast('error', "Sửa Student thất bại!")
       }
     },
     async deleteItem() {
@@ -355,10 +407,10 @@ export default {
         this.delettingItem.studentId
       );
       if (res.success) {
-        console.log(res);
+        this.updateToast('success', "Xóa Student thành công!")
         await this.fetchData();
       } else {
-        //error
+        this.updateToast('error', "Xóa Student thất bại!")
       }
       this.isOpenDelete = false
       this.isLoadingForm = false;
@@ -387,6 +439,7 @@ export default {
         this.formItem = {};
         this.isEdit = false;
         this.datePicker = null;
+        this.datePickerComputed = null
       } else {
         const res = await getClasses(this.authentication?.accessToken?.token)
         if (res.success) {
@@ -397,6 +450,35 @@ export default {
     datePicker(val) {
       this.datePickerComputed = val ? new Date(val).toLocaleDateString() : null;
     },
+    datePickerComputed(val) {
+      this.formItem.birthday = val;
+    },
+    async selectedFile(val) {
+      if (val) {
+        try {
+          this.isLoadingFile = true
+          const result = await uploadFile(
+            this.authentication?.accessToken?.token,
+            val[0]
+          )
+          if (result.success) {
+            this.formItem.avatar = result.data.url
+          } else {
+            this.selectedFile = null
+            this.updateToast('error', "Lỗi tải ảnh lên!")
+          }
+        } catch (error) {
+          this.selectedFile = null
+          console.log(error);
+        }
+        this.isLoadingFile = false
+      }
+    },
+    "formItem.avatar": function (val) {
+      if (!val) {
+        this.selectedFile = null
+      }
+    }
   },
 };
 </script>

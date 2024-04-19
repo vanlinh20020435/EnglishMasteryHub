@@ -37,7 +37,7 @@ public class Questions extends BaseEntity
 	private String description;
 
 	@Column(columnDefinition = "longtext")
-	private String explanation;
+	private String title;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "test_id", nullable = false)

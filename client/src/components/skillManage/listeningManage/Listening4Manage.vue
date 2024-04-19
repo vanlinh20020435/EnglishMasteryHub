@@ -17,7 +17,9 @@
         >
           <HeaderAction
             :handleToggleShowFull="() => handleToggleShowFullQuestion(index)"
-            :title="question.title ? question.title : `Question ${index + 1}`"
+            :title="
+              question.content ? question.content : `Question ${index + 1}`
+            "
             :handleDelete="() => handleDeleteQuestion(index)"
           />
           <v-row
@@ -36,7 +38,7 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.title"
+                :model-value="question?.content || `Question ${index + 1}`"
                 @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
@@ -48,6 +50,7 @@
                   :key="indexOption"
                 >
                   <QuestionCheckbox
+                    :optionItem="question.options[indexOption - 1]"
                     :handleDeleteOption="
                       () => handleDeleteOption(index, indexOption - 1)
                     "
@@ -55,12 +58,13 @@
                       (value) =>
                         handleUpdateOption(index, indexOption - 1, value)
                     "
-                    @update:updateExplanation="
-                      (value) =>
-                        handleChangeExplanation(index, indexOption - 1, value)
-                    "
                     :questionIndex="index"
-                    :checked="question.options[indexOption - 1].checked"
+                    :checked="
+                      question.options[indexOption - 1]?.checked ||
+                      (!!question.options[indexOption - 1]?.option &&
+                        question.options[indexOption - 1]?.option ==
+                          question?.answers[0]?.answer)
+                    "
                     @checkboxChange="
                       (value) =>
                         handleCheckboxChange(index, indexOption - 1, value)
@@ -83,7 +87,9 @@
                       hide-no-data
                       clearable
                       auto-grow
-                      @input="
+                      @click:clear="() => handleClear('answer', index)"                      
+                      :model-value="question?.answers[0]?.explanation || ''"
+                      @change="
                         (event) => updateExplanation(index, event.target.value)
                       "
                     >
@@ -161,8 +167,8 @@ export default {
   },
   created() {
     // Initialize the showFullQuestion array with default visibility state for each question
-    this.questions = this.questionSkill.questions;
-    this.showFullQuestion = Array(this.questions.length).fill(true);
+    this.questions = this.questionSkill.subQuestions;
+    this.showFullQuestion = Array(this.questions?.length).fill(true);
   },
   methods: {
     handleToggleShowFull() {
@@ -182,14 +188,18 @@ export default {
     },
     handleAddQuestion() {
       // Add a new question
-      const newIndex = this.questions.length + 1;
+      const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
-        numOptions: 2,
-        options: Array.from({ length: 2 }, (_, i) => ({
+        content: `Question ${newIndex}`,
+        numOptions: 4,
+        options: Array.from({ length: 4 }, (_, i) => ({
           option: "",
         })),
-        answers: [],
+        answers: [{
+          answer: "",
+          explanation: ''
+        }],
       });
       this.$nextTick(() => {
         this.showFullQuestion[newIndex - 1] = true;
@@ -198,7 +208,7 @@ export default {
       this.$emit("addQuestion", newIndex);
     },
     handleDeleteOption(questionIndex, optionIndex) {
-      if (questionIndex >= 0 && questionIndex < this.questions.length) {
+      if (questionIndex >= 0 && questionIndex < this.questions?.length) {
         // Access the question object
         const question = this.questions[questionIndex];
 
@@ -218,7 +228,7 @@ export default {
     },
     handleAddOption(questionIndex) {
       // Check if questionIndex is valid
-      if (questionIndex >= 0 && questionIndex < this.questions.length) {
+      if (questionIndex >= 0 && questionIndex < this.questions?.length) {
         // Access the question object
         const question = this.questions[questionIndex];
 
@@ -276,15 +286,15 @@ export default {
     handleCheckboxChange(questionIndex, optionIndex, isChecked) {
       const question = this.questions[questionIndex];
       const option = question.options[optionIndex];
-      option.checked = isChecked;
+      option.checked = isChecked;      
 
       // Update answers based on checkbox state
       if (option.checked) {
         // Checkbox checked, add to answers
-        question.answers[0] = {
-          answer: option.option,
-          explanation: option.explanation,
-        };
+        this.questions[questionIndex].answers[0] = {
+          answer: option?.option,
+          explanation: question.answers[0]?.explanation,
+        };      
       } else {
         // Checkbox unchecked, remove from answers
         const answerIndex = question.answers.findIndex(
@@ -292,18 +302,25 @@ export default {
         );
 
         if (answerIndex != -1) {
-          question.answers.splice(answerIndex, 1);
+          question.answers[0].answer = "";
         }
       }
     },
 
     updateTitleQuestion(questionIndex, event) {
-      this.questions[questionIndex].title = event.target.value;
+      this.questions[questionIndex].content = event.target.value;
     },
 
     updateExplanation(questionIndex, newValue) {
       this.questions[questionIndex].answers[0].explanation = newValue;
     },
+    handleClear(typeClear, questionIndex) {
+			if (typeClear == "answer") {
+				this.questions[questionIndex].answers[0].answer = "";
+			} else if (typeClear == "explanation") {
+				this.questions[questionIndex].answers[0].explanation = "";
+			}
+		},
   },
 };
 </script>

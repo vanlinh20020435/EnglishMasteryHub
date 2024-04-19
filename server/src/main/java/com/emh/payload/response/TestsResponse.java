@@ -42,6 +42,10 @@ public class TestsResponse
 	@JsonProperty("created")
 	private Date createdDate;
 
+	private String creator;
+
+	private Boolean havePermission;
+
 	@NotNull
 	private List<QuestionsResponse> questions = new ArrayList<>();
 }
