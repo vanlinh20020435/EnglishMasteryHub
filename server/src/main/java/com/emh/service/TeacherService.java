@@ -90,8 +90,8 @@ public class TeacherService
 	{
 		final Teacher teacher = teacherRepository.findById(teacherId)
 				.orElseThrow(NotFoundException::new);
-		teacherRepository.deleteById(teacherId);
 		userRepository.delete(teacher.getUser());
+		teacherRepository.deleteById(teacherId);
 	}
 
 	public ReferencedWarning getReferencedWarning(final Integer teacherId)

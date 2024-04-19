@@ -16,6 +16,12 @@ public class UserResponse
 {
 	private Integer userId;
 
+	private Integer adminId;
+
+	private Integer teacherId;
+
+	private Integer studentId;
+
 	@NotNull
 	@Size(max = 16)
 	private String username;

@@ -41,6 +41,7 @@ public class User extends BaseEntity
 	private String avatar;
 
 	@Column
+	@Temporal(TemporalType.DATE)
 	private Date birthday;
 
 	@Column(nullable = false, name = "\"role\"", length = 50)

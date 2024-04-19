@@ -9,12 +9,10 @@ import com.emh.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
+import java.util.*;
 
 @Service
 public class TestsService
@@ -72,7 +70,8 @@ public class TestsService
 		return tests.getTestId();
 	}
 
-	public void update(final Integer testId, final TestsRequest testsDTO)
+	@Transactional
+	public void update(final Integer testId, final TestsRequest testsDTO) throws IOException
 	{
 		final Tests tests = testsRepository.findById(testId)
 				.orElseThrow(NotFoundException::new);
@@ -80,6 +79,8 @@ public class TestsService
 			throw new ForbiddenException();
 		EntityMapper.testMapToEntity(testsDTO, tests);
 		testsRepository.save(tests);
+		questionsRepository.deleteAllByTests(tests);
+		saveQuestions(tests, testsDTO);
 	}
 
 	public void delete(final Integer testId)
@@ -190,6 +191,7 @@ public class TestsService
 			exportSubQuestion(questions, questionsResponse);
 			responses.add(questionsResponse);
 		}
+		responses.sort((q1, q2) -> q1.getQuestionId().compareTo(q2.getQuestionId()));
 		testsResponse.setQuestions(responses);
 	}
 
@@ -249,6 +251,7 @@ public class TestsService
 			exportQuestionFiles(subQuestions, questionsResponse);
 			subQuest.add(questionsResponse);
 		}
+		subQuest.sort((q1, q2) -> q1.getQuestionId().compareTo(q2.getQuestionId()));
 		parentQuestions.setSubQuestions(subQuest);
 	}
 
@@ -276,18 +279,28 @@ public class TestsService
 	{
 		User user = userRepository.findById(userId)
 				.orElseThrow(NotFoundException::new);
-		final List<Tests> testses = testsRepository.findAllByCreator(user.getUsername());
+		final List<Tests> testses = testsRepository.findAllByCreator(user.getUsername(), Sort.by("testId"));
 		return testses.stream()
 				.map(this::exportTest)
 				.toList();
 	}
 
-	public Boolean checkPassword(Integer testId, String password)
+	public TestsResponse verify(Integer testId, Integer classId, String password)
 	{
 		Tests tests = testsRepository.findById(testId)
 				.orElseThrow(NotFoundException::new);
-		if (StringUtils.isBlank(tests.getPassword()))
-			return true;
-		return tests.getPassword().equals(password);
+		TestClass testClass = tests.getTestClasses().stream().filter(
+						t -> Objects.equals(t.getClasss().getClassId(), classId)).findFirst()
+				.orElseThrow(NotFoundException::new);
+		TimeZone gmt7TimeZone = TimeZone.getTimeZone("GMT+7");
+		Date now = new Date();
+		now.setTime(now.getTime() + gmt7TimeZone.getRawOffset());
+		if (!(testClass.getStartDate().before(now) && testClass.getEndDate().after(now)))
+			throw new ForbiddenException("Test is not available");
+		String testPassword = testClass.getPassword();
+		if (StringUtils.isNotEmpty(testPassword) && !testPassword.equals(password))
+			throw new ForbiddenException("Wrong password");
+
+		return exportTest(tests);
 	}
 }

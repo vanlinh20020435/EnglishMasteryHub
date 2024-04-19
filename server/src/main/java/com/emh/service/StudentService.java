@@ -14,12 +14,15 @@ import com.emh.specifications.FilterOperation;
 import com.emh.specifications.SearchCriteria;
 import com.emh.specifications.SpecificationsBuilder;
 import com.emh.util.*;
+import csv.impl.AbstractStreamTableReader;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -94,8 +97,8 @@ public class StudentService
 	{
 		final Student student = studentRepository.findById(studentId)
 				.orElseThrow(NotFoundException::new);
-		studentRepository.deleteById(studentId);
 		userRepository.delete(student.getUser());
+		studentRepository.deleteById(studentId);
 	}
 
 	public ReferencedWarning getReferencedWarning(final Integer studentId)
@@ -149,5 +152,27 @@ public class StudentService
 				.orElseThrow(NotFoundException::new);
 		Student student = studentRepository.findFirstByUser(user);
 		return EntityMapper.studentMapToResponse(student, new StudentResponse());
+	}
+
+	public List<Integer> importFile(MultipartFile multipartFile, Integer classId) throws Exception
+	{
+		List<Integer> results = new ArrayList<>();
+		AbstractStreamTableReader in = FileReaderUtil.from(multipartFile);
+		while (in.hasNext())
+		{
+			Object[] columns = in.next();
+			String name = (String) columns[0];
+			String genderStr = columns.length >= 2 ? (String) columns[1] : "Nam";
+			Integer gender = genderStr.equalsIgnoreCase("Nam") ? 1 : 0;
+			StudentRequest student = new StudentRequest();
+			student.setName(name);
+			student.setGender(gender);
+			student.setUsername(UsernameGeneratorUtils.generateUsername(name));
+			student.setPassword("123456");
+			student.setClassId(classId);
+			results.add(this.create(student));
+		}
+		in.close();
+		return results;
 	}
 }
