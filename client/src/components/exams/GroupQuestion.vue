@@ -40,7 +40,7 @@
               hide-no-data
               clearable
               auto-grow
-              :model-value="titlePassage"
+              :model-value="this.questionSkill?.description"
               @input="updateTitltePassage"
             >
             </v-text-field>
@@ -61,7 +61,7 @@
               hide-no-data
               clearable
               auto-grow
-              :model-value="contentPassage"
+              :model-value="this.questionSkill?.content"
               @input="updateContentPassage"
             >
             </v-textarea>
@@ -140,8 +140,6 @@ export default {
     groupTitleQuestion: String,
     handleDeleteSkill: Function,
     hasPassage: Boolean,
-    titlePassage: String,
-    contentPassage: String,
     fileName: String,
     hasAudio: Boolean,
     contentAudio: String,

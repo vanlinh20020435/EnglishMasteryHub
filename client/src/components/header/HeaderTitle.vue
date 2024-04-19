@@ -1,8 +1,7 @@
 <template>
   <v-row class="align-center" style="flex: 0">
     <v-col
-      cols="12"
-      :md="itemSelection?.length > 0 ? 6 : 8"
+      :cols="itemSelection?.length > 0 ? 6 : 8"
       class="header_title font-bold color-primary d-flex align-center"
     >
       <div class="header_icon d-flex align-center">
@@ -29,7 +28,7 @@
         ></v-select
       ></v-row>
     </v-col>
-    <v-col cols="12" md="4" style="padding-right: 5%">
+    <v-col cols="4" style="padding-right: 5%">
       <v-row class="d-flex align-center header_search justify-end">
         <v-text-field
           v-model="localSearchValue"
@@ -59,6 +58,16 @@
 
         <v-btn
           rounded
+          @click="handleClickBtnLeft"
+          v-if="!!leftButton"
+          color="#FBB03B"
+          theme="dark"
+          class="header-btn font-bold mr-4"
+          >{{ dataBtnLeft.text }}
+        </v-btn>
+
+        <v-btn
+          rounded
           @click="handleClickBtn"
           v-if="!!textBtn"
           color="#FBB03B"
@@ -82,6 +91,9 @@ export default {
     itemSelection: Array,
     textBtn: Boolean,
     handleClickBtn: Function,
+    leftButton: Boolean,
+    dataBtnLeft: Object,
+    handleClickBtnLeft: Function,
   },
   data() {
     return {

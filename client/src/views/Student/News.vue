@@ -4,9 +4,7 @@
     </v-card>
     <div :class="`class-wrapper ${$vuetify.display.smAndDown ? 'sm' : ''}`">
         <v-avatar class="class-avatar">
-            <v-img class="class-avatar-img" alt="Avatar" :src="user?.avatar ||
-        'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'
-        "></v-img>
+            <v-img class="class-avatar-img" alt="Avatar" :src="getClassAvatar(student?.class)"></v-img>
         </v-avatar>
         <v-card class="class-info">
             <div class="class-info__main">
@@ -25,28 +23,7 @@
     <v-card style="margin-bottom: 16px;">
         <v-card-title>Thông báo</v-card-title>
         <v-card-text>
-
-            <v-list>
-                <v-hover v-for="noti in notis" v-slot="{ isHovering, props }">
-                    <v-card @click="onclicknoti" :class="{ 'on-hover': isHovering }" :elevation="isHovering ? 4 : 2"
-                        v-bind="props" style="margin: 0 8px 8px">
-                        <v-list-item :key="noti.id" :subtitle="noti.id" :title="noti.id">
-                            <template v-slot:prepend>
-                                <v-avatar :color="notiTypeEnum[noti.type || 'notification'].color">
-                                    <v-icon color="white">{{ notiTypeEnum[noti.type || 'notification'].icon }}</v-icon>
-                                </v-avatar>
-                            </template>
-
-                            <template v-slot:append>
-                                <div style="display: flex; flex-direction: column; align-items: flex-end;">
-                                    <v-list-item-title>Thời gian làm bài: {{ noti.id }} phút</v-list-item-title>
-                                    <v-list-item-subtitle>Tổng số câu hỏi: {{ noti.id }} câu</v-list-item-subtitle>
-                                </div>
-                            </template>
-                        </v-list-item>
-                    </v-card>
-                </v-hover>
-            </v-list>
+            <Notification />
         </v-card-text>
     </v-card>
     <v-card>
@@ -56,9 +33,7 @@
                 :sort-by="[{ key: 'studentId', order: 'asc' }]">
                 <template v-slot:item.avatar="{ item }">
                     <v-avatar>
-                        <v-img alt="Avatar" :src="item.avatar ||
-        'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'
-        "></v-img>
+                        <v-img alt="Avatar" :src="item.avatar || getAvtUserMethod(item)"></v-img>
                     </v-avatar>
                 </template>
 
@@ -74,8 +49,14 @@
 import { getStudentsOfClass } from '@/services'
 import { mapState } from 'pinia';
 import { authenticationRole, studentStore } from '@/stores';
+import Notification from '@/views/Student/Notification/index.vue';
+import classDefaultImage from "@/assets/images/class.png";
+import { getAvtUser } from '@/base/helper';
 
 export default {
+    components: {
+        Notification
+    },
     data: () => ({
         test: {},
         students: [],
@@ -92,27 +73,10 @@ export default {
             { title: 'Birthday', key: 'birthday', sortable: false },
             { title: 'Gender', key: 'gender', sortable: false },
         ],
-        notis: [{ type: 'event' }, { type: 'notification' }, { type: 'exam' }]
     }),
     computed: {
         ...mapState(authenticationRole, ['authentication']),
-        ...mapState(studentStore, ['student']),
-        notiTypeEnum() {
-            return ({
-                notification: {
-                    color: 'primary',
-                    icon: 'mdi-bullhorn'
-                },
-                event: {
-                    color: 'warning',
-                    icon: 'mdi-star'
-                },
-                exam: {
-                    color: 'success',
-                    icon: 'mdi-clipboard-text'
-                }
-            })
-        }
+        ...mapState(studentStore, ['student'])
     },
     async mounted() {
         await this.getStudents()
@@ -124,7 +88,14 @@ export default {
                 this.students = res.data
             }
         },
-        onclicknoti() { }
+        getClassAvatar(classData) {
+        return classData && classData.avatar
+            ? classData.avatar
+            : classDefaultImage; // Return the class avatar or the default image
+        },
+        getAvtUserMethod(item) {
+            return getAvtUser(item, 'student');
+        }
     }
 }
 </script>

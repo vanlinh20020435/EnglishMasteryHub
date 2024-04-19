@@ -37,60 +37,6 @@
             @click:row="(a, b) => handleClickItem(b.item)"
           >
             <template v-slot:top>
-              <v-dialog v-model="dialog" max-width="500px">
-                <v-card>
-                  <v-card-title>
-                    <span class="text-h5">{{ formTitle }}</span>
-                  </v-card-title>
-
-                  <v-card-text>
-                    <v-container>
-                      <v-row>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.name"
-                            label="Dessert name"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.calories"
-                            label="Calories"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.fat"
-                            label="Fat (g)"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.carbs"
-                            label="Carbs (g)"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.protein"
-                            label="Protein (g)"
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="blue-darken-1" variant="text" @click="close">
-                      Cancel
-                    </v-btn>
-                    <v-btn color="blue-darken-1" variant="text" @click="save">
-                      Save
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
               <PopUpYesNo
                 msg="Bạn có chắc chắn muốn xóa bài kiểm tra này?"
                 :visible="dialogDelete"
@@ -104,11 +50,15 @@
                 color="#00bd7e"
                 size="default"
                 class="me-2"
-                @click="editItem(item)"
+                @click.stop.prevent="editItem(item)"
               >
                 mdi-pencil
               </v-icon>
-              <v-icon color="red" size="default" @click="deleteItem(item)">
+              <v-icon
+                color="red"
+                size="default"
+                @click.stop.prevent="deleteItem(item)"
+              >
                 mdi-trash-can
               </v-icon>
             </template>
@@ -120,7 +70,6 @@
                   alt="Empty Exam"
                   class="img_empty"
                 />
-
                 <h3 class="font-bold">{{ msgEmptyExam }}</h3>
               </div>
             </template>
@@ -153,7 +102,7 @@ import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
 import { mapState } from "pinia";
 import { authenticationRole } from "@/stores";
 import { apiCallerGet, apiCallerDelete } from "@/services/teacher";
-import { removeVietnameseDiacritics } from "@/base/Validate";
+import { removeVietnameseDiacritics } from "@/base/helper";
 
 export default {
   name: "ManageExam",
@@ -197,6 +146,7 @@ export default {
   }),
   props: {
     isAll: Boolean,
+    isAdmin: Boolean,
   },
   computed: {
     formTitle() {
@@ -228,7 +178,7 @@ export default {
     },
   },
   created() {
-    if (!this.isAll) {
+    if (!this.isAll || !!this.isAdmin) {
       const actionHeader = {
         title: "Thao tác",
         key: "actions",
@@ -279,7 +229,7 @@ export default {
       },
     },
   },
-  
+
   // mounted() {
   //   this.fetchDataExam();
   // },
@@ -287,7 +237,9 @@ export default {
   methods: {
     async fetchDataExam() {
       this.isLoading = true;
-      let urlFetch = !this.isAll
+      let urlFetch = this.isAdmin
+        ? "/api/testss"
+        : !this.isAll
         ? "/api/testss/find-by-user/" + this.authentication.user?.userId
         : "/api/testss";
       const result = await apiCallerGet(urlFetch);
@@ -297,12 +249,9 @@ export default {
       }
     },
     editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      // this.dialog = true;
-      if (!item?.havePermission) {
-        this.openPopupEdit = true;
-      }
+      this.$router.push(
+        `/${this.authentication.user.role}/exam/edit/${item.testId}`
+      );
     },
 
     deleteItem(item) {

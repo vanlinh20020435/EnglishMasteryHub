@@ -16,7 +16,9 @@
         >
           <HeaderAction
             :handleToggleShowFull="() => handleToggleShowFullQuestion(index)"
-            :title="question.title ? question.title : `Question ${index + 1}`"
+            :title="
+              question.content ? question.content : `Question ${index + 1}`
+            "
             :handleDelete="() => handleDeleteQuestion(index)"
           />
 
@@ -36,8 +38,8 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.title"
-                @input="(event) => updateTitleQuestion(index, event)"
+                :model-value="question?.content || `Question ${index + 1}`"
+                @change="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
               <v-col>
@@ -58,6 +60,7 @@
                       auto-grow
                       @click:clear="() => handleClear('answer', index)"
                       variant="solo"
+                      :model-value="question?.answers[0]?.answer || ''"
                       @input="
                         (event) => updateAnswer(index, event.target.value)
                       "
@@ -84,6 +87,7 @@
                       @change="
                         (event) => updateExplanation(index, event.target.value)
                       "
+                      :model-value="question?.answers[0]?.explanation || ''"
                     >
                     </v-textarea>
                   </v-col>
@@ -131,9 +135,9 @@ export default {
   },
 
   created() {
-    this.questions = this.questionSkill.questions;
+    this.questions = this.questionSkill.subQuestions;
     // Initialize the showFullQuestion array with default visibility state for each question
-    this.showFullQuestion = Array(this.questions.length).fill(true);
+    this.showFullQuestion = Array(this.questions?.length).fill(true);
   },
   props: {
     groupTitleQuestion: String,
@@ -158,11 +162,12 @@ export default {
     },
     handleAddQuestion() {
       // Add a new question
-      const newIndex = this.questions.length + 1;
+      const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
-        numOptions: 2,
-        options: Array.from({ length: 2 }, (_, i) => ({
+        content: `Question ${newIndex}`,
+        numOptions: 4,
+        options: Array.from({ length: 4 }, (_, i) => ({
           option: "",
         })),
         answers: [
@@ -179,7 +184,22 @@ export default {
       this.$emit("addQuestion", newIndex);
     },
     updateTitleQuestion(questionIndex, event) {
-      this.questions[questionIndex].title = event.target.value;
+      const valueTitle = event.target.value;
+      this.questions[questionIndex].content = valueTitle;
+
+      const regex = /\[(.*?)\]/g;
+      let matches = Array.from(valueTitle.matchAll(regex), m => m[1]?.trim());
+      console.log('matches =====', matches);
+      
+
+      this.questions[questionIndex]?.options.forEach((option, index) => {
+        option.option = matches[index] || '';
+      });
+      console.log('this.questions[questionIndex].options ====', this.questions[questionIndex].options);
+
+      this.questions[questionIndex].options = 
+      this.questions[questionIndex].options.filter((option, index) => matches[index] !== undefined);
+    
     },
     updateAnswer(questionIndex, newValue) {
       this.questions[questionIndex].answers[0].answer = newValue;

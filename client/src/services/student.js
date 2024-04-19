@@ -14,6 +14,7 @@ export const getStudents = async (token = null) => {
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result;
 };
@@ -32,6 +33,7 @@ export const getStudent = async (token = null, id = null) => {
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result;
 };
@@ -55,6 +57,7 @@ export const searchStudents = async (token = null, params) => {
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result;
 };
@@ -73,6 +76,7 @@ export const createStudent = async (token = null, payload = null) => {
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result;
 };
@@ -91,6 +95,7 @@ export const editStudent = async (id = null, token = null, payload = null) => {
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result;
 };
@@ -118,6 +123,7 @@ export const editStudentStatus = async (
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result;
 };
@@ -142,6 +148,7 @@ export const changeStudentPassword = async (
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result;
 };
@@ -159,6 +166,7 @@ export const deleteStudent = async (token = null, id = null) => {
     result.success = true;
   } catch (error) {
     console.log(error);
+    result.success = false
   }
   return result;
 };
