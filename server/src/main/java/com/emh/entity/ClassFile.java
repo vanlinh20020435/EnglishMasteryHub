@@ -25,6 +25,9 @@ public class ClassFile extends BaseEntity
 	@Column(nullable = false)
 	private String name;
 
+	@Column(nullable = false)
+	private String documentName;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "classs_id", nullable = false)
 	private Classes classs;

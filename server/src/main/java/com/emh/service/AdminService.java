@@ -84,8 +84,8 @@ public class AdminService
 	{
 		final Admin admin = adminRepository.findById(adminId)
 				.orElseThrow(NotFoundException::new);
-		adminRepository.deleteById(adminId);
 		userRepository.delete(admin.getUser());
+		adminRepository.deleteById(adminId);
 	}
 
 	public List<AdminResponse> searchAdmin(String username, String email, String name) throws Exception

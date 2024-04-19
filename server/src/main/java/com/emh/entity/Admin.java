@@ -41,6 +41,7 @@ public class Admin extends BaseEntity
 	private String avatar;
 
 	@Column
+	@Temporal(TemporalType.DATE)
 	private Date birthday;
 
 	@ManyToOne(fetch = FetchType.EAGER)

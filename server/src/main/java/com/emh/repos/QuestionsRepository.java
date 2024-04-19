@@ -12,4 +12,6 @@ public interface QuestionsRepository extends JpaRepository<Questions, Integer>
 														final Integer questionId);
 
 	Questions findFirstByTests(Tests tests);
+
+	void deleteAllByTests(Tests tests);
 }

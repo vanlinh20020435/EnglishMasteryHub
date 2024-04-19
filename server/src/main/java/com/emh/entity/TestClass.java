@@ -27,9 +27,14 @@ public class TestClass extends BaseEntity
 	private Tests tests;
 
 	@Column
+	private String password;
+
+	@Column
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date startDate;
 
 	@Column
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date endDate;
 }
 

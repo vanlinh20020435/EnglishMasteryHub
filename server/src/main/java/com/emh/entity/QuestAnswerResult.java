@@ -25,10 +25,10 @@ public class QuestAnswerResult extends BaseEntity
 	private Boolean rightAnswer;
 
 	@Column
-	private Integer score;
+	private Double score;
 
 	@Column
-	private Integer defaultScore;
+	private Double defaultScore;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "question_id", nullable = false)

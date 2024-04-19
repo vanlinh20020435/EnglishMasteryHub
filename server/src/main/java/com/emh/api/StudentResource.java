@@ -5,6 +5,7 @@ import com.emh.payload.response.StudentResponse;
 import com.emh.service.StudentService;
 import com.emh.util.ReferencedException;
 import com.emh.util.ReferencedWarning;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -112,5 +114,14 @@ public class StudentResource
 	{
 		studentService.updatePassword(studentId, password);
 		return new ResponseEntity<>(studentId, HttpStatus.CREATED);
+	}
+
+	@Operation(summary = "Import file to create student", description = "Support xls/xlsx and csv/txt files (columns separated by ',') files include 2 columns fullname and gender. The account's default password is '123456'")
+	@PostMapping("/import/{classId}")
+	@Secured({"ROLE_ADMIN"})
+	public ResponseEntity<List<Integer>> uploadFile(@RequestParam("file") MultipartFile file,
+													@PathVariable(name = "classId") final Integer classId) throws Exception
+	{
+		return ResponseEntity.ok(studentService.importFile(file, classId));
 	}
 }
