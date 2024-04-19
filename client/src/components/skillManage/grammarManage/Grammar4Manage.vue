@@ -37,7 +37,7 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.content"
+                :model-value="question?.content || `Question ${index + 1}`"
                 @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
@@ -56,10 +56,6 @@
                     @update:option="
                       (value) =>
                         handleUpdateOption(index, indexOption - 1, value)
-                    "
-                    @update:updateExplanation="
-                      (value) =>
-                        handleChangeExplanation(index, indexOption - 1, value)
                     "
                     :questionIndex="index"
                     :checked="
@@ -88,8 +84,10 @@
                       placeholder="Giải thích ..."
                       hide-no-data
                       clearable
-                      auto-grow
-                      @input="
+                      auto-grow                      
+                      @click:clear="() => handleClear('explanation', index)"
+                      :model-value="question?.answers[0]?.explanation || ''"
+                      @change="
                         (event) => updateExplanation(index, event.target.value)
                       "
                     >
@@ -168,6 +166,8 @@ export default {
     this.questions = this.questionSkill.subQuestions;
     // Initialize the showFullQuestion array with default visibility state for each question
     this.showFullQuestion = Array(this.questions?.length).fill(true);
+
+
   },
   methods: {
     handleToggleShowFull() {
@@ -190,6 +190,7 @@ export default {
       const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
+        content: `Question ${newIndex}`,
         numOptions: 4,
         options: Array.from({ length: 4 }, (_, i) => ({
           option: "",
@@ -256,15 +257,15 @@ export default {
     handleCheckboxChange(questionIndex, optionIndex, isChecked) {
       const question = this.questions[questionIndex];
       const option = question.options[optionIndex];
-      option.checked = isChecked;
+      option.checked = isChecked;      
 
       // Update answers based on checkbox state
       if (option.checked) {
         // Checkbox checked, add to answers
-        question.answers.push({
-          answer: option.option,
-          explanation: option.explanation,
-        });
+        this.questions[questionIndex].answers[0] = {
+          answer: option?.option,
+          explanation: question.answers[0]?.explanation,
+        };      
       } else {
         // Checkbox unchecked, remove from answers
         const answerIndex = question.answers.findIndex(
@@ -272,7 +273,7 @@ export default {
         );
 
         if (answerIndex != -1) {
-          question.answers.splice(answerIndex, 1);
+          question.answers[0].answer = "";
         }
       }
     },
@@ -284,6 +285,13 @@ export default {
     updateExplanation(questionIndex, newValue) {
       this.questions[questionIndex].answers[0].explanation = newValue;
     },
+    handleClear(typeClear, questionIndex) {
+			if (typeClear == "answer") {
+				this.questions[questionIndex].answers[0].answer = "";
+			} else if (typeClear == "explanation") {
+				this.questions[questionIndex].answers[0].explanation = "";
+			}
+		},
   },
 };
 </script>

@@ -39,7 +39,7 @@ export {
   importStudent,
   addTestToClass,
   deleteTestInClass,
-  getFilesByClass
+  getFilesByClass,
 } from './class';
 export { login, getUserInfo } from './auth';
 export {
@@ -47,7 +47,8 @@ export {
   getTest,
   getTestByClass,
   getTestInfoByClass,
-  getTestByStudent
+  getTestByStudent,
+  submitExam,
 } from './test';
 
 export const uploadFile = async (token, file) => {
@@ -56,21 +57,21 @@ export const uploadFile = async (token, file) => {
     data: null,
   };
   try {
-    const path = "/upload";
+    const path = '/upload';
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append('file', file);
     const response = await $axios.post(path, formData, {
-      headers: { 'Authorization': 'Bearer ' + token },
+      headers: { Authorization: 'Bearer ' + token },
     });
 
     result.data = response.data;
     result.success = true;
   } catch (error) {
     console.log(error);
-    result.success = false
+    result.success = false;
   }
   return result;
-}
+};
 
 const $axios = {
   ...axios.create({

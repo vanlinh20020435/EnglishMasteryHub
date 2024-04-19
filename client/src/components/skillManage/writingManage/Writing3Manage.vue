@@ -38,7 +38,7 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.content"
+                :model-value="question?.content || `Question ${index + 1}`"
                 @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
@@ -128,6 +128,7 @@ export default {
     questionSkill: Object,
   },
   created() {
+    this.questionSkill.requiresGrading = true;
     this.questions = this.questionSkill.subQuestions;
     // Initialize the showFullQuestion array with default visibility state for each question
     this.showFullQuestion = Array(this.questions?.length).fill(true);
@@ -154,8 +155,9 @@ export default {
       const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
-        numOptions: 2,
-        options: Array.from({ length: 2 }, (_, i) => ({
+        content: `Question ${newIndex}`,
+        numOptions: 1,
+        options: Array.from({ length: 1 }, (_, i) => ({
           option: "",
         })),
         answers: [{

@@ -14,7 +14,7 @@
           }" class="d-flex mt-3 pl-3">
             <v-col cols="12" class="mr-2">
               <v-textarea rows="1" max-rows="4" :rules="required" placeholder="Câu hỏi" hide-no-data clearable auto-grow
-                :model-value="question.content" @input="(event) => updateTitleQuestion(index, event)">
+                :model-value="question?.content || `Question ${index + 1}`" @input="(event) => updateTitleQuestion(index, event)">
               </v-textarea>
 
               <v-col class="pt-1 pb-0">
@@ -24,8 +24,14 @@
                   </v-col>
 
                   <v-col cols="8">
-                    <v-text-field variant="solo" :rules="required" placeholder="Từ gợi ý vd: This." hide-no-data
-                      clearable>
+                    <v-text-field 
+                      :model-value="question?.description" 
+                      variant="solo" 
+                      :rules="required" 
+                      placeholder="Từ gợi ý vd: This." 
+                      hide-no-data
+                      @input="(event) => handleUpdateRecommendWord(index, event.target.value)"
+                    >
                     </v-text-field>
                   </v-col>
                 </v-row>
@@ -38,13 +44,16 @@
                   </v-col>
 
                   <v-col cols="8">
-                    <v-text-field variant="solo" :rules="required" placeholder="Đáp án ..." hide-no-data clearable>
+                    <v-text-field variant="solo" :rules="required" placeholder="Đáp án ..." hide-no-data clearable
+                      :model-value="question.answers[0].answer"
+                      @input="(event) => handleUpdateAnswer(index, 0, event.target.value)"
+                    >
                     </v-text-field>
                   </v-col>
                 </v-row>
               </v-col>
 
-              <v-col v-for="indexOption in question.options.length" :key="indexOption"
+              <v-col v-for="indexOption in question.answers.length - 1" :key="indexOption"
                 class="d-flex justify-end pl-0 pr-0 pt-1 pb-0">
                 <v-col cols="2">
                   <v-list-subheader>Đáp án khác</v-list-subheader>
@@ -53,17 +62,18 @@
                   <v-row class="d-flex flex-row">
                     <v-col cols="11">
                       <v-text-field hide-details hide-no-data single-line variant="solo" placeholder="Đáp án khác ..."
-                        @input="() =>
-                            handleUpdateOtherAnswer(
-                              index,
-                              indexOption - 1,
-                              $event.target.value
-                            )
+                        :model-value="question?.answers[indexOption]?.answer || ''" 
+                        @input="(event) =>
+                          handleUpdateAnswer(
+                            index,
+                            indexOption,
+                            event.target.value
+                          )
                           "></v-text-field>
                     </v-col>
                     <v-col cols="1" class="d-flex flex-column align-end mt-4">
                       <v-icon class="pr-5 cursor-pointer" color="red" size="default"
-                        @click="() => handleDeleteOption(0, indexOption - 1)">
+                        @click="() => handleDeleteOtherAnswer(0, indexOption)">
                         mdi-trash-can
                       </v-icon>
                     </v-col>
@@ -73,7 +83,7 @@
 
               <div color="#fff" class="mt-6 mb-4 d-flex pl-3 pr-3" style="border: none">
                 <v-spacer></v-spacer>
-                <v-btn @click="() => handleAddOption(index)" color="#00bd7e" theme="dark">Thêm đáp án khác</v-btn>
+                <v-btn @click="() => handleAddOtherAnswer(index)" color="#00bd7e" theme="dark">Thêm đáp án khác</v-btn>
               </div>
             </v-col>
           </v-row>
@@ -92,7 +102,6 @@
 <script>
 import GroupQuestion from "@/components/exams/GroupQuestion.vue";
 import HeaderAction from "@/components/header/HeaderAction.vue";
-import { apiCallerPost } from "@/services/teacher";
 
 export default {
   name: "Grammar3Manage",
@@ -136,10 +145,9 @@ export default {
       const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
-        numOptions: 2,
-        options: Array.from({ length: 2 }, (_, i) => ({
-          option: "",
-        })),
+        content: `Question ${newIndex}`,
+        numOptions: 0,
+        options: [],
         answers: [{
           answer: "",
           explanation: ''
@@ -152,15 +160,15 @@ export default {
       this.$emit("addQuestion", newIndex);
     },
 
-    handleDeleteOption(questionIndex, optionIndex) {
+    handleDeleteOtherAnswer(questionIndex, optionIndex) {
       if (questionIndex >= 0 && questionIndex < this.questions?.length) {
         // Access the question object
         const question = this.questions[questionIndex];
 
         // Check if optionIndex is valid
-        if (optionIndex >= 0 && optionIndex < question.options.length) {
+        if (optionIndex >= 0 && optionIndex < question.answers.length) {
           // Remove the option at the specified index
-          question.options.splice(optionIndex, 1);
+          question.answers.splice(optionIndex, 1);
 
           // that an option has been deleted
           this.$emit("optionDeleted", { questionIndex, optionIndex });
@@ -171,33 +179,37 @@ export default {
         console.error("Invalid questionIndex");
       }
     },
-    handleAddOption(questionIndex) {
+    handleAddOtherAnswer(questionIndex) {
       // Check if questionIndex is valid
       if (questionIndex >= 0 && questionIndex < this.questions?.length) {
         // Access the question object
         const question = this.questions[questionIndex];
-
-        // Push a new option to the question's options array
-        const newIndex = question.options.length + 1;
-        question.options.push({
+        question.options[0] = ({
           option: "",
         });
 
-        // Emit an event to notify the parent component about the addition
-        this.$emit("optionAdded", { questionIndex, optionIndex: newIndex - 1 });
+        question.answers.push({
+          answer: "",
+          explanation: ''
+        });
       } else {
         console.error("Invalid questionIndex");
       }
     },
-
-    handleUpdateOtherAnswer(questionIndex, optionIndex, value) {
+    handleUpdateAnswer(questionIndex, optionIndex, value) {
       // Update the answer value in the corresponding question option
-      this.questions[questionIndex].options[optionIndex].option = value;
+      this.questions[questionIndex].answers[optionIndex].answer = value;
     },
-
     updateTitleQuestion(questionIndex, event) {
       this.questions[questionIndex].content = event.target.value;
+      this.questions[questionIndex].options[0].option = event.target.value;
     },
+    updateExplanation(questionIndex, newValue) {
+      this.questions[questionIndex].answers.forEach((answer) => answer.explanation = newValue);
+    },
+    handleUpdateRecommendWord(questionIndex, value) {
+      this.questions[questionIndex].description = value;
+    }
   },
 };
 </script>

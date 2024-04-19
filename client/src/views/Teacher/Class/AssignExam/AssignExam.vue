@@ -1,7 +1,7 @@
 vv
 <template>
   <v-card class="height-100 class-container">
-    <v-container class="d-flex flex-column height-100 v-container__full">
+    <v-container class="d-flex flex-column height-100 v-container__full" style="height: 91vh;">
       <HeaderTitle
         title="Giao bài"
         textBtn="Quay lại"

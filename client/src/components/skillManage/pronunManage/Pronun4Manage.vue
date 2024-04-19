@@ -37,7 +37,7 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.content"
+                :model-value="question?.content || `Question ${index + 1}`"
                 @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
@@ -185,6 +185,7 @@ export default {
       const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
+        content: `Question ${newIndex}`,
         numOptions: 2,
         options: Array.from({ length: 2 }, (_, i) => ({
           option: "",
@@ -279,15 +280,15 @@ export default {
     handleCheckboxChange(questionIndex, optionIndex, isChecked) {
       const question = this.questions[questionIndex];
       const option = question.options[optionIndex];
-      option.checked = isChecked;
+      option.checked = isChecked;      
 
       // Update answers based on checkbox state
       if (option.checked) {
         // Checkbox checked, add to answers
-        question.answers.push({
-          answer: option.option,
-          explanation: option.explanation,
-        });
+        this.questions[questionIndex].answers[0] = {
+          answer: option?.option,
+          explanation: question.answers[0]?.explanation,
+        };      
       } else {
         // Checkbox unchecked, remove from answers
         const answerIndex = question.answers.findIndex(
@@ -295,7 +296,7 @@ export default {
         );
 
         if (answerIndex != -1) {
-          question.answers.splice(answerIndex, 1);
+          question.answers[0].answer = "";
         }
       }
     },

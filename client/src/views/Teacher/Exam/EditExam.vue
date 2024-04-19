@@ -424,11 +424,11 @@ export default {
             title: "Listen to each audio and choose the word you hear",
             option: 2,
           },
-          {
-            id: 2,
-            title: "Choose the correct sound",
-            option: 2,
-          },
+          // {
+          //   id: 2,
+          //   title: "Choose the correct sound",
+          //   option: 2,
+          // },
           {
             id: 3,
             title: "Listen and write the words you hear",
@@ -448,12 +448,12 @@ export default {
           {
             id: 1,
             title: "Fill the blank with the correct form of the words",
-            option: 2,
+            option: 0,
           },
           {
             id: 2,
             title: "Choose the underlined part that needs correction",
-            option: 2,
+            option: 4,
           },
           {
             id: 3,
@@ -502,12 +502,12 @@ export default {
           {
             id: 1,
             title: "Listen and answer the questions",
-            option: 0,
+            option: 1,
           },
           {
             id: 2,
             title: "Listen and fill in the sentences",
-            option: 0,
+            option: 1,
           },
           {
             id: 3,
@@ -534,13 +534,13 @@ export default {
           {
             id: 2,
             title: "Use the given words to make complete sentences",
-            option: 2,
+            option: 0,
           },
           {
             id: 3,
             title:
               "Write about the advantages and disadvantages of playing sports",
-            option: 2,
+            option: 1,
           },
         ],
       },
@@ -661,74 +661,58 @@ export default {
       this.dataExam.questions[index].title = updatedValue;
       this.$emit("updateGroupTitleQuestion", updatedValue); // Emit the event
     },
-    handleAddQuestion(pronun1Index) {
-      // Find the Pronun1Manage component at the specified index
-      const pronun1 = this.dataExam.questions[pronun1Index];
-
-      // Create a new question object
-      const newQuestion = {
-        title: `New Question`,
-        numOptions: this.selectedTypeSkill.option,
-        options: Array.from(
-          { length: this.selectedTypeSkill.option },
-          (_, i) => ({
-            option: "",
-          })
-        ),
-        answers: [
-          {
-            answer: "",
-            explanation: "",
-          },
-        ],
-      };
-
-      // Push the new question to the questions array of the Pronun1Manage component
-      pronun1.subQuestions.push(newQuestion);
-    },
-
     async handleSaveExam() {
       if (!!this.valid) {
         const convertQuestion = (question, questionParent) => ({
-          content: question?.content,
-          skill: questionParent?.skill,
-          type: `${questionParent?.type?.toString()}`,
-          description: question?.description,
+          content: question?.content?.trim() || '',
+          skill: questionParent?.skill?.trim() || '',
+          type: `${questionParent?.type?.toString()?.trim()}` || '1',
+          description: question?.description?.trim(),
           answers: question?.answers.map((answer) => ({
-            answer: answer?.answer,
-            explanation: answer?.explanation || "",
+            answer: answer?.answer?.trim(),
+            explanation: answer?.explanation?.trim() || "",
           })),
           options: question.options.map((option) => ({
-            option: option?.option,
+            option: option?.option?.trim(),
           })),
-          files: !!question?.files?.type
+          files: !!question?.files?.type || question?.files?.[0]?.type
             ? [
                 {
-                  type: question?.files?.type,
-                  url: question?.files?.url,
-                  name: question?.files?.name,
+                  type: question?.files?.type || question?.files?.[0]?.type,
+                  url: question?.files?.url || question?.files?.[0]?.url,
+                  name: question?.files?.name || question?.files?.[0]?.name,
                 },
               ]
             : [],
         });
 
         const convertedData = this.dataExam.questions.map((item) => ({
-          content: "",
-          description: "",
-          title: item?.title,
-          type: `${item?.type?.toString()}`,
-          skill: item?.skill,
+          content: item?.content?.trim() || '',
+          description: item?.description?.trim() || '',
+          title: item?.title?.trim(),
+          type: `${item?.type?.toString()?.trim()}`,
+          skill: item?.skill?.trim(),
           time: 0,
+          requiresGrading: item?.requiresGrading || false,
           subQuestions: item.subQuestions.map((question) =>
             convertQuestion(question, item)
           ),
+          files: !!item?.files?.type || item?.files?.[0]?.type
+            ? [
+                {
+                  type: item?.files?.type || item?.files?.[0]?.type,
+                  url: item?.files?.url || item?.files?.[0]?.url,
+                  name: item?.files?.name || item?.files?.[0]?.name,
+                },
+              ]
+            : [],
         }));
 
         const body = {
-          testName: this.dataExam.testName,
+          testName: this.dataExam.testName?.trim(),
           time: this.dataExam.time,
           status: "0",
-          description: this.dataExam.description,
+          description: this.dataExam.description?.trim(),
           questions: convertedData,
         };
 

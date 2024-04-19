@@ -29,8 +29,8 @@
       <template v-slot:item.avatar="{ item }">
         <v-avatar>
           <v-img alt="Avatar" :src="item.avatar ||
-        'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'
-        "></v-img>
+            'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'
+            "></v-img>
         </v-avatar>
       </template>
 
@@ -40,8 +40,8 @@
 
       <template v-slot:item.status="{ item }">
         <v-chip @click="() => openLock(item)" variant="elevated" :color="item.status ? 'success' : 'error'">{{
-        item.status ? 'Active' : 'Inactive'
-      }}</v-chip>
+          item.status ? 'Active' : 'Inactive'
+          }}</v-chip>
       </template>
 
       <template v-slot:item.actions="{ item }">
@@ -509,7 +509,7 @@ export default {
     datePickerComputed(val) {
       this.formItem.birthday = val;
     },
-    async selectedFile(val) {
+    async selectedImage(val) {
       if (val) {
         try {
           this.isLoadingFile = true
@@ -520,11 +520,11 @@ export default {
           if (result.success) {
             this.formItem.avatar = result.data.url
           } else {
-            this.selectedFile = null
+            this.selectedImage = null
             this.updateToast('error', "Lỗi tải ảnh lên!")
           }
         } catch (error) {
-          this.selectedFile = null
+          this.selectedImage = null
           console.log(error);
         }
         this.isLoadingFile = false

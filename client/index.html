@@ -1,13 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="/src/assets/images/logoico.png" type="image/png">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Master Hub</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/src/assets/images/logoico.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>English Master Hub</title>
+  <script>
+    var mdpNoPeek = {
+      "selectAll": "on",
+      "copy": "on",
+      "cut": "on",
+      "paste": "on",
+      "save": "on",
+      "viewSource": "on",
+      "printPage": "on",
+      "developerTool": "on",
+      "windowBlur": "on",
+      "tabHidden": "on",
+      "readerMode": "on",
+      "rightClick": "on",
+      "rightClickImage": "on",
+      "textSelection": "on",
+      "imageDragging": "on"
+    };
+  </script>
+  <script type="text/javascript" src="/src/utils/hotKey.js"></script>
+  <script type="text/javascript" src="/src/utils/devtoolsDetect.js"></script>
+  <script type="text/javascript" src="/src/utils/noPeek.js"></script>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
 </html>

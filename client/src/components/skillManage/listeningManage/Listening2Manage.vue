@@ -37,12 +37,12 @@
                 hide-no-data
                 clearable
                 auto-grow
-                :model-value="question.content"
+                :model-value="question?.content || `Question ${index + 1}`"
                 @input="(event) => updateTitleQuestion(index, event)"
               >
               </v-textarea>
 
-              <v-col class="pt-1 pb-0">
+              <!-- <v-col class="pt-1 pb-0">
                 <v-row class="d-flex flex-row justify-end">
                   <v-col cols="2">
                     <v-list-subheader>Đáp án</v-list-subheader>
@@ -55,11 +55,19 @@
                       placeholder="Đáp án ..."
                       hide-no-data
                       clearable
+                      :model-value="question?.answers[0]?.answer || ''" 
+                      @input="(event) =>
+                        handleUpdateAnswer(
+                          index,
+                          0,
+                          event.target.value
+                        )
+                      "
                     >
                     </v-text-field>
                   </v-col>
                 </v-row>
-              </v-col>
+              </v-col> -->
 
               <v-col class="mt-1 pb-8">
                 <v-row class="d-flex flex-row justify-end">
@@ -75,6 +83,19 @@
                       hide-no-data
                       clearable
                       hide-details
+                      :model-value="question?.answers[0]?.explanation || ''" 
+                      @click:clear="() =>
+											handleClear(
+												'explanation',
+												index
+											)
+											"
+                      @change="(event) =>
+												updateExplanation(
+													index,
+													event.target.value
+												)
+                      "
                     >
                     </v-textarea>
                   </v-col>
@@ -102,7 +123,6 @@
 import GroupQuestion from "@/components/exams/GroupQuestion.vue";
 import HeaderAction from "@/components/header/HeaderAction.vue";
 import QuestionCheckbox from "@/components/exams/CheckBoxQuestion.vue";
-import { apiCallerPost } from "@/services/teacher";
 
 export default {
   name: "Listening2Manage",
@@ -159,6 +179,7 @@ export default {
       const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
+        content: `Question ${newIndex}`,
         numOptions: 4,
         options: Array.from({ length: 4 }, (_, i) => ({
           option: "",
@@ -174,81 +195,38 @@ export default {
       // Emit an event to notify the parent component about the addition
       this.$emit("addQuestion", newIndex);
     },
-    handleDeleteOption(questionIndex, optionIndex) {
-      if (questionIndex >= 0 && questionIndex < this.questions?.length) {
-        // Access the question object
-        const question = this.questions[questionIndex];
-
-        // Check if optionIndex is valid
-        if (optionIndex >= 0 && optionIndex < question.options.length) {
-          // Remove the option at the specified index
-          question.options.splice(optionIndex, 1);
-
-          // that an option has been deleted
-          this.$emit("optionDeleted", { questionIndex, optionIndex });
-        } else {
-          console.error("Invalid optionIndex");
-        }
-      } else {
-        console.error("Invalid questionIndex");
-      }
-    },
-    handleAddOption(questionIndex) {
-      // Check if questionIndex is valid
-      if (questionIndex >= 0 && questionIndex < this.questions?.length) {
-        // Access the question object
-        const question = this.questions[questionIndex];
-
-        // Push a new option to the question's options array
-        const newIndex = question.options.length + 1;
-        question.options.push({
-          option: "",
-        });
-
-        // Emit an event to notify the parent component about the addition
-        this.$emit("optionAdded", { questionIndex, optionIndex: newIndex - 1 });
-      } else {
-        console.error("Invalid questionIndex");
-      }
-    },
-
-    handleUpdateOption(questionIndex, optionIndex, value) {
-      // Update the answer value in the corresponding question option
-      this.questions[questionIndex].options[optionIndex].option = value;
-    },
-
-    handleChangeExplanation(questionIndex, optionIndex, value) {
-      // Update the answer value in the corresponding question option
-      this.questions[questionIndex].options[optionIndex].explanation = value;
-    },
-
-    handleCheckboxChange(questionIndex, optionIndex, isChecked) {
-      const question = this.questions[questionIndex];
-      const option = question.options[optionIndex];
-      option.checked = isChecked;
-
-      // Update answers based on checkbox state
-      if (option.checked) {
-        // Checkbox checked, add to answers
-        question.answers.push({
-          answer: option.option,
-          explanation: option.explanation,
-        });
-      } else {
-        // Checkbox unchecked, remove from answers
-        const answerIndex = question.answers.findIndex(
-          (answer) => answer.answer == option.option
-        );
-
-        if (answerIndex != -1) {
-          question.answers.splice(answerIndex, 1);
-        }
-      }
-    },
-
     updateTitleQuestion(questionIndex, event) {
       this.questions[questionIndex].content = event.target.value;
+
+			this.questions[questionIndex].options[0] = {
+				option: event.target.value,
+			};
+
+			let match = /\{([^}]+)\}/.exec(event.target.value);
+
+			let valueConvertAnswer = match ? match[1] : "";
+
+			if (valueConvertAnswer) {
+				this.questions[questionIndex].answers[0].answer =
+					valueConvertAnswer;
+			} else {
+				this.questions[questionIndex].answers[0].answer = "";
+			}
     },
+    updateExplanation(questionIndex, newValue) {
+			this.questions[questionIndex].answers[0].explanation = newValue;
+		},
+    handleUpdateAnswer(questionIndex, optionIndex, value) {
+      // Update the answer value in the corresponding question option
+      this.questions[questionIndex].answers[optionIndex].answer = value;
+    },
+    handleClear(typeClear, questionIndex) {
+			if (typeClear == "answer") {
+				this.questions[questionIndex].answers[0].answer = "";
+			} else if (typeClear == "explanation") {
+				this.questions[questionIndex].answers[0].explanation = "";
+			}
+		},
   },
 };
 </script>

@@ -14,7 +14,7 @@
           }" class="d-flex mt-3 pl-3">
             <v-col cols="12" class="mr-2">
               <v-textarea rows="1" max-rows="4" :rules="required" placeholder="Câu hỏi" hide-no-data clearable auto-grow
-                :model-value="question.content" @input="(event) => updateTitleQuestion(index, event)">
+                :model-value="question?.content || `Question ${index + 1}`" @input="(event) => updateTitleQuestion(index, event)">
               </v-textarea>
 
               <v-col class="pt-1 pb-0">
@@ -41,13 +41,12 @@
                   <v-row class="d-flex flex-row">
                     <v-col cols="11">
                       <v-text-field hide-details hide-no-data single-line variant="solo" placeholder="Đáp án khác ..."
-                      :model-value="question.answers[indexOption]?.answer || ''"
-                        @input="(event) =>
-                            handleUpdateAnswer(
-                              index,
-                              indexOption,
-                              event.target.value
-                            )
+                        :model-value="question.answers[indexOption]?.answer || ''" @input="(event) =>
+                          handleUpdateAnswer(
+                            index,
+                            indexOption,
+                            event.target.value
+                          )
                           "></v-text-field>
                     </v-col>
                     <v-col cols="1" class="d-flex flex-column align-end mt-4">
@@ -62,7 +61,7 @@
 
               <div color="#fff" class="mt-6 mb-4 d-flex pl-3 pr-3" style="border: none">
                 <v-spacer></v-spacer>
-                <v-btn @click="() => handleAddOption(index)" color="#00bd7e" theme="dark">Thêm đáp án khác</v-btn>
+                <v-btn @click="() => handleAddOtherAnswer(index)" color="#00bd7e" theme="dark">Thêm đáp án khác</v-btn>
               </div>
 
               <v-col class="mt-4 pb-8">
@@ -73,8 +72,7 @@
 
                   <v-col cols="8">
                     <v-textarea rows="2" max-rows="4" placeholder="Giải thích ..." hide-no-data clearable hide-details
-                      :model-value="question?.answers[0]?.explanation || ''" 
-                      @input="(event) =>
+                      :model-value="question?.answers[0]?.explanation || ''" @change="(event) =>
                         updateExplanation(
                           index,
                           event.target.value
@@ -141,10 +139,9 @@ export default {
       const newIndex = this.questions?.length + 1;
       this.questions.push({
         title: `Question ${newIndex}`,
-        numOptions: 2,
-        options: Array.from({ length: 2 }, (_, i) => ({
-          option: "",
-        })),
+        content: `Question ${newIndex}`,
+        numOptions: 0,
+        options: [],
         answers: [{
           answer: "",
           explanation: ''
@@ -176,15 +173,12 @@ export default {
         console.error("Invalid questionIndex");
       }
     },
-    handleAddOption(questionIndex) {
+    handleAddOtherAnswer(questionIndex) {
       // Check if questionIndex is valid
       if (questionIndex >= 0 && questionIndex < this.questions?.length) {
         // Access the question object
         const question = this.questions[questionIndex];
-
-        // Push a new option to the question's options array
-        const newIndex = question.options.length + 1;
-        question.options[0] =({
+        question.options[0] = ({
           option: "",
         });
 
