@@ -131,12 +131,12 @@ public class EntityMapper
 	{
 		testsResponse.setTestId(tests.getTestId());
 		testsResponse.setTestName(tests.getTestName());
-		testsResponse.setPassword(tests.getPassword());
 		testsResponse.setTotalQuestions(tests.getTotalQuestions());
 		testsResponse.setTime(tests.getTime());
 		testsResponse.setDescription(tests.getDescription());
 		testsResponse.setStatus(tests.getStatus());
 		testsResponse.setCreatedDate(tests.getCreatedDate());
+		testsResponse.setRequiresGrading(tests.getRequiresGrading());
 		return testsResponse;
 	}
 
@@ -144,7 +144,6 @@ public class EntityMapper
 	{
 		testsResponse.setTestId(tests.getTestId());
 		testsResponse.setTestName(tests.getTestName());
-		testsResponse.setPassword(tests.getPassword());
 		testsResponse.setTotalQuestions(tests.getTotalQuestions());
 		testsResponse.setTime(tests.getTime());
 		testsResponse.setDescription(tests.getDescription());
@@ -163,10 +162,9 @@ public class EntityMapper
 		testInfoResponse.setDescription(tests.getDescription());
 		testInfoResponse.setStatus(tests.getStatus());
 		testInfoResponse.setCreatedDate(tests.getCreatedDate());
-		testInfoResponse.setPrivate(StringUtils.isNotEmpty(tests.getPassword()));
+		testInfoResponse.setPrivate(StringUtils.isNotEmpty(testClass.getPassword()));
 		if (testClass.getStartDate() != null)
 			testInfoResponse.setStartDate(testClass.getStartDate());
-		;
 		if (testClass.getEndDate() != null)
 			testInfoResponse.setEndDate(testClass.getEndDate());
 		return testInfoResponse;
@@ -175,11 +173,11 @@ public class EntityMapper
 	public static Tests testMapToEntity(final TestsRequest testsRequest, final Tests tests)
 	{
 		tests.setTestName(testsRequest.getTestName());
-		tests.setPassword(testsRequest.getPassword());
 		tests.setTotalQuestions(testsRequest.getQuestions().size());
 		tests.setTime(testsRequest.getTime());
 		tests.setDescription(testsRequest.getDescription());
 		tests.setStatus(testsRequest.getStatus());
+		tests.setRequiresGrading(testsRequest.getRequiresGrading());
 		return tests;
 	}
 
@@ -272,6 +270,7 @@ public class EntityMapper
 		testResultResponse.setScore(studentTestResult.getScore());
 		testResultResponse.setTestDefaultScore(studentTestResult.getTestDefaultScore());
 		testResultResponse.setTime(studentTestResult.getTime());
+		testResultResponse.setRequiresGrading(studentTestResult.getTests().getRequiresGrading());
 		return testResultResponse;
 	}
 

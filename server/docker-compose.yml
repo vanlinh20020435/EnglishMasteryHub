@@ -3,19 +3,18 @@ version: '3.4'
 services:
   emh:
     container_name: emh-springboot
-    build:
-      context: .
-      dockerfile: ./Dockerfile
     image: linhnv2002/englishmasteryhub
     ports:
       - "8080:8080"
+    depends_on:
+      mysqld:
+        condition: service_healthy
     volumes:
       - ./log:/app/log
       - ./content:/app/content
       - ./uploads:/app/uploads
-    depends_on:
-      mysqld:
-        condition: service_healthy
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
     networks:
       - java-app
   mysqld:
@@ -26,6 +25,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     environment:
+      - TZ=Asia/Ho_Chi_Minh
       - MYSQL_DATABASE=EnglishMasteryHub
       - MYSQL_ROOT_PASSWORD=P4ssword!
     healthcheck:
@@ -36,8 +36,14 @@ services:
       start_period: 30s
     networks:
       - java-app
+  emh-fe:
+    container_name: emh-vue
+    image: linhnv2002/englishmasteryhub-fe
+    ports:
+      - "3000:3000"
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
 volumes:
   db_data:
 networks:
   java-app:
-    name: java-app

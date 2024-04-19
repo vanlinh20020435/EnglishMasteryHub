@@ -22,7 +22,6 @@
 
 	</appender>
 
-
 	<root level="INFO">
 			<appender-ref ref="ROOT"/>
 	</root>

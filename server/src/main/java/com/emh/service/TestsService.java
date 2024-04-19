@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.*;
 
-
 @Service
 public class TestsService
 {
@@ -291,13 +290,15 @@ public class TestsService
 		Tests tests = testsRepository.findById(testId)
 				.orElseThrow(NotFoundException::new);
 		TestClass testClass = tests.getTestClasses().stream().filter(
-				t -> Objects.equals(t.getClasss().getClassId(), classId)).findFirst()
+						t -> Objects.equals(t.getClasss().getClassId(), classId)).findFirst()
 				.orElseThrow(NotFoundException::new);
+		TimeZone gmt7TimeZone = TimeZone.getTimeZone("GMT+7");
 		Date now = new Date();
-		if(testClass.getStartDate().before(now) && testClass.getEndDate().after(now))
+		now.setTime(now.getTime() + gmt7TimeZone.getRawOffset());
+		if (!(testClass.getStartDate().before(now) && testClass.getEndDate().after(now)))
 			throw new ForbiddenException("Test is not available");
-		String testPassword = tests.getPassword();
-		if(StringUtils.isNotEmpty(testPassword) && !testPassword.equals(password))
+		String testPassword = testClass.getPassword();
+		if (StringUtils.isNotEmpty(testPassword) && !testPassword.equals(password))
 			throw new ForbiddenException("Wrong password");
 
 		return exportTest(tests);

@@ -7,13 +7,11 @@ import com.emh.payload.response.QuestAnswerResultResponse;
 import com.emh.payload.response.StudentTestResultResponse;
 import com.emh.repos.*;
 import com.emh.specifications.FilterOperation;
-import com.emh.specifications.SearchCriteria;
 import com.emh.specifications.SearchForeignCriteria;
 import com.emh.specifications.SpecificationsBuilder;
 import com.emh.util.EntityMapper;
 import com.emh.util.NotFoundException;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 

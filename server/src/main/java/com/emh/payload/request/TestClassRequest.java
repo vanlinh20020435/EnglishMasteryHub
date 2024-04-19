@@ -12,6 +12,8 @@ import java.util.Date;
 @Setter
 public class TestClassRequest
 {
+	private String password;
+
 	@JsonSerialize(as = Date.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm")
 	private Date startDate;

@@ -44,7 +44,7 @@ public class TestsResultResource
 	}
 
 	@PostMapping
-	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
 	public ResponseEntity<Integer> createResults(@RequestBody @Valid final StudentTestResultRequest testResultRequest) throws IOException
 	{
 		final Integer testId = testResultService.create(testResultRequest);

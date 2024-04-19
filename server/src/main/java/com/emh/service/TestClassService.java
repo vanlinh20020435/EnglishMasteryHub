@@ -55,6 +55,8 @@ public class TestClassService
 			throw new AppException("Test already exists");
 		testClass.setTests(tests);
 		testClass.setClasss(classes);
+		if (testClassRequest.getPassword() != null)
+			testClass.setPassword(testClassRequest.getPassword());
 		if (testClassRequest.getStartDate() != null)
 			testClass.setStartDate(testClassRequest.getStartDate());
 		if (testClassRequest.getEndDate() != null)

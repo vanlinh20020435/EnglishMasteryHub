@@ -37,6 +37,8 @@ public class TestsResponse
 	@NotNull
 	private Integer status;
 
+	private Boolean requiresGrading = false;
+
 	@JsonSerialize(as = Date.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@JsonProperty("created")

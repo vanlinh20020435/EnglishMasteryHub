@@ -17,9 +17,6 @@ public class TestsRequest
 	@Size(max = 255)
 	private String testName;
 
-	@Size(max = 32)
-	private String password;
-
 	private Integer time;
 
 	@NotNull
@@ -27,6 +24,8 @@ public class TestsRequest
 
 	@NotNull
 	private Integer status;
+
+	private Boolean requiresGrading = false;
 
 	@Valid
 	@NotNull

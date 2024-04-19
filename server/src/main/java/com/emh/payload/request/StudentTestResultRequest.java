@@ -12,10 +12,10 @@ import java.util.List;
 @Setter
 public class StudentTestResultRequest
 {
-	private Integer score;
+	private Double score;
 
 	@NotNull
-	private Integer testDefaultScore;
+	private Double testDefaultScore;
 
 	@NotNull
 	private Integer time;

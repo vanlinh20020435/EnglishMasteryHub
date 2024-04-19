@@ -45,6 +45,7 @@ public class Teacher extends BaseEntity
 	private String avatar;
 
 	@Column
+	@Temporal(TemporalType.DATE)
 	private Date birthday;
 
 	@OneToMany(mappedBy = "teacher", fetch = FetchType.EAGER)
