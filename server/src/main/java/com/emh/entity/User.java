@@ -47,16 +47,16 @@ public class User extends BaseEntity
 	@Column(nullable = false, name = "\"role\"", length = 50)
 	private String role;
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private Set<Admin> userAdmins;
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private Set<Teacher> userTeachers;
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private Set<Student> userStudents;
 
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "refresh_token_id")
 	private RefreshToken refreshToken;
 }

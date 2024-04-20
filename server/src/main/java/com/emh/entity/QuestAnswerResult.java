@@ -30,11 +30,11 @@ public class QuestAnswerResult extends BaseEntity
 	@Column
 	private Double defaultScore;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "question_id", nullable = false)
 	private Questions question;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "test_result_id", nullable = false)
 	private StudentTestResult studentTestResult;
 }

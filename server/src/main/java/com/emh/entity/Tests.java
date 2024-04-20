@@ -40,13 +40,13 @@ public class Tests extends BaseEntity
 	@Column
 	private Boolean requiresGrading = false;
 
-	@OneToMany(mappedBy = "tests", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "tests", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<Questions> questions;
 
-	@OneToMany(mappedBy = "tests", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "tests", cascade = CascadeType.ALL)
 	private Set<StudentTestResult> testCodeStudentTestResults;
 
-	@OneToMany(mappedBy = "tests", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "tests", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<TestClass> testClasses;
 
 }

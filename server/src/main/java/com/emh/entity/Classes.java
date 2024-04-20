@@ -40,18 +40,18 @@ public class Classes extends BaseEntity
 	@JoinColumn(name = "teacher_id", nullable = false)
 	private Teacher teacher;
 
-	@OneToMany(mappedBy = "classs", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "classs", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<Student> classStudents;
 
-	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "classs", cascade = CascadeType.ALL)
 	private Set<StudentNotifications> classStudentNotificationses;
 
-	@OneToMany(mappedBy = "classs", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "classs", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<TestClass> testClasses;
 
-	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "classs", cascade = CascadeType.ALL)
 	private Set<ClassFile> classFiles;
 
-	@OneToMany(mappedBy = "classs", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "classs", cascade = CascadeType.ALL)
 	private Set<StudentTestResult> classStudentTestResults;
 }

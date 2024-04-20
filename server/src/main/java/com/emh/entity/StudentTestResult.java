@@ -39,6 +39,6 @@ public class StudentTestResult extends BaseEntity
 	@JoinColumn(name = "student_id", nullable = false)
 	private Student student;
 
-	@OneToMany(mappedBy = "studentTestResult", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "studentTestResult", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<QuestAnswerResult> questAnswerResults;
 }
