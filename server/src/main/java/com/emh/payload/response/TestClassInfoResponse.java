@@ -32,6 +32,8 @@ public class TestClassInfoResponse
 	@NotNull
 	private Integer status;
 
+	private boolean isPrivate;
+
 	@JsonSerialize(as = Date.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@JsonProperty("created")
@@ -42,10 +44,10 @@ public class TestClassInfoResponse
 	private Boolean havePermission;
 
 	@JsonSerialize(as = Date.class)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm")
 	private Date startDate;
 
 	@JsonSerialize(as = Date.class)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm")
 	private Date endDate;
 }

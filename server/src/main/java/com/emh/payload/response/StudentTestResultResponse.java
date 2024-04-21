@@ -13,10 +13,10 @@ public class StudentTestResultResponse
 {
 	private Integer id;
 
-	private Integer score;
+	private Double score;
 
 	@NotNull
-	private Integer testDefaultScore;
+	private Double testDefaultScore;
 
 	@NotNull
 	private Integer time;
@@ -26,6 +26,8 @@ public class StudentTestResultResponse
 
 	@NotNull
 	private StudentResponse student;
+
+	private Boolean requiresGrading = false;
 
 	@NotNull
 	private List<QuestAnswerResultResponse> questionResults;

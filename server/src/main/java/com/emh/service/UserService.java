@@ -64,21 +64,27 @@ public class UserService
 		user = userRepository.save(user);
 		switch (Role.valueOf(user.getRole()))
 		{
-			case ADMIN:
+			case ADMIN ->
+			{
 				Admin admin = adminRepository.findFirstByUser(user);
 				AdminRequest adminRequest = MapperUtils.map(userRequest, AdminRequest.class);
 				EntityMapper.adminMapToEntity(adminRequest, admin, user);
 				adminRepository.save(admin);
-			case TEACHER:
+			}
+			case TEACHER ->
+			{
 				Teacher teacher = teacherRepository.findFirstByUser(user);
 				TeacherRequest teacherRequest = MapperUtils.map(userRequest, TeacherRequest.class);
 				EntityMapper.teacherMapToEntity(teacherRequest, teacher, user);
 				teacherRepository.save(teacher);
-			case STUDENT:
+			}
+			case STUDENT ->
+			{
 				Student student = studentRepository.findFirstByUser(user);
 				StudentRequest studentRequest = MapperUtils.map(userRequest, StudentRequest.class);
 				EntityMapper.studentMapToEntity(studentRequest, student, user, student.getClasss());
 				studentRepository.save(student);
+			}
 		}
 	}
 
@@ -99,6 +105,14 @@ public class UserService
 		userResponse.setGender(user.getGender());
 		userResponse.setStatus(user.getStatus());
 		userResponse.setRole(user.getRole());
+		userResponse.setAvatar(user.getAvatar());
+		userResponse.setBirthday(user.getBirthday());
+		switch (Role.valueOf(user.getRole()))
+		{
+			case ADMIN -> userResponse.setAdminId(adminRepository.findFirstByUser(user).getAdminId());
+			case TEACHER -> userResponse.setTeacherId(teacherRepository.findFirstByUser(user).getTeacherId());
+			case STUDENT -> userResponse.setStudentId(studentRepository.findFirstByUser(user).getStudentId());
+		}
 		return userResponse;
 	}
 
@@ -111,21 +125,24 @@ public class UserService
 		userRepository.save(user);
 		switch (Role.valueOf(user.getRole()))
 		{
-			case ADMIN:
+			case ADMIN ->
+			{
 				Admin admin = adminRepository.findFirstByUser(user);
 				admin.setPassword(password);
 				adminRepository.save(admin);
-				break;
-			case TEACHER:
+			}
+			case TEACHER ->
+			{
 				Teacher teacher = teacherRepository.findFirstByUser(user);
 				teacher.setPassword(password);
 				teacherRepository.save(teacher);
-				break;
-			case STUDENT:
+			}
+			case STUDENT ->
+			{
 				Student student = studentRepository.findFirstByUser(user);
 				student.setPassword(password);
 				studentRepository.save(student);
-				break;
+			}
 		}
 	}
 }

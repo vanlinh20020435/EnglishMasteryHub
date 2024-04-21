@@ -21,9 +21,6 @@ public class Tests extends BaseEntity
 	@Column(nullable = false)
 	private String testName;
 
-	@Column(length = 32)
-	private String password;
-
 	@Column
 	private Integer totalQuestions;
 
@@ -39,6 +36,9 @@ public class Tests extends BaseEntity
 
 	@Column(nullable = false)
 	private Integer status;
+
+	@Column
+	private Boolean requiresGrading = false;
 
 	@OneToMany(mappedBy = "tests", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	private Set<Questions> questions;

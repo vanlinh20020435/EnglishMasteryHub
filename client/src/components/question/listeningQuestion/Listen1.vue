@@ -7,7 +7,7 @@
       <Audio :file="question.files[0].url" color="success"></Audio>
       <div v-for="(sub, idx) in question.subQuestions">
         <p style="margin-bottom: 4px">{{ idx + 1 }}. {{ sub.content }}</p>
-        <v-text-field v-model="sub.selected"></v-text-field>
+        <v-text-field v-model="sub.selected" placeholder="Nhập câu trả lời ..."></v-text-field>
       </div>
     </v-card-text>
   </v-card>

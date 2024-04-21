@@ -19,10 +19,10 @@ public class StudentTestResult extends BaseEntity
 	private Integer id;
 
 	@Column
-	private Integer score;
+	private Double score;
 
 	@Column
-	private Integer testDefaultScore;
+	private Double testDefaultScore;
 
 	@Column
 	private Integer time;
@@ -31,7 +31,7 @@ public class StudentTestResult extends BaseEntity
 	@JoinColumn(name = "class_id", nullable = false)
 	private Classes classs;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "test_code_id", nullable = false)
 	private Tests tests;
 

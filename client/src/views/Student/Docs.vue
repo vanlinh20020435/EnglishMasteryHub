@@ -6,7 +6,7 @@
         <v-hover v-for="file in filesInfo" v-slot="{ isHovering, props }">
             <v-card @click="() => fileClick(file.url)" :class="{ 'on-hover': isHovering }"
                 :elevation="isHovering ? 4 : 2" v-bind="props" style="margin: 0 8px 8px">
-                <v-list-item :key="file.fileId" :subtitle="file.name" :title="file.documentName">
+                <v-list-item class="pt-3 pb-3" :key="file.fileId" :subtitle="file.name" :title="file.documentName">
                     <template v-slot:prepend>
                         <v-avatar color="success">
                             <v-icon color="white">mdi-folder-zip</v-icon>
@@ -14,7 +14,7 @@
                     </template>
                     <template v-slot:append>
                         <div style="display: flex; flex-direction: column; align-items: flex-end;">
-                            <v-list-item-title>Loại: {{ file.type }}</v-list-item-title>
+                            <!-- <v-list-item-title>Loại: {{ file.type }}</v-list-item-title> -->
                             <v-list-item-subtitle>Url: {{ file.url }}</v-list-item-subtitle>
                         </div>
                     </template>

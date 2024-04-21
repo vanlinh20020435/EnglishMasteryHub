@@ -27,25 +27,37 @@ public class TestsResultResource
 	}
 
 	@GetMapping
-	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
-	public ResponseEntity<List<StudentTestResultResponse>> getAllTests()
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
+	public ResponseEntity<List<StudentTestResultResponse>> getAllResults(@RequestParam(required = true) final Integer classId,
+																		 @RequestParam(required = true) final Integer testId,
+																		 @RequestParam(required = false) final Integer studentId) throws Exception
 	{
-		return ResponseEntity.ok(testResultService.findAll());
+		return ResponseEntity.ok(testResultService.findAll(classId, testId, studentId));
 	}
 
 	@GetMapping("/{resultId}")
-	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
-	public ResponseEntity<StudentTestResultResponse> getTests(
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
+	public ResponseEntity<StudentTestResultResponse> getResults(
 			@PathVariable(name = "resultId") final Integer resultId)
 	{
 		return ResponseEntity.ok(testResultService.get(resultId));
 	}
 
 	@PostMapping
-	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
-	public ResponseEntity<Integer> createTests(@RequestBody @Valid final StudentTestResultRequest testResultRequest) throws IOException
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
+	public ResponseEntity<Integer> createResults(@RequestBody @Valid final StudentTestResultRequest testResultRequest) throws IOException
 	{
 		final Integer testId = testResultService.create(testResultRequest);
 		return new ResponseEntity<>(testId, HttpStatus.CREATED);
+	}
+
+	@PutMapping("/{resultId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
+	public ResponseEntity<Integer> updateResults(
+			@PathVariable(name = "testId") final Integer resultId,
+			@RequestBody @Valid final StudentTestResultRequest testResultRequest) throws IOException
+	{
+		testResultService.update(resultId, testResultRequest);
+		return ResponseEntity.ok(resultId);
 	}
 }
