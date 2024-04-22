@@ -32,7 +32,7 @@
                 variant="text"
                 prepend-icon="mdi-account"
                 @click="
-                  $router.push(`/${this.authentication.user.role}/account`)
+                  $router.push(`/${this.authentication?.user.role}/account`)
                 "
                 class="justify-start w-100"
               >
@@ -75,7 +75,7 @@ export default {
     drawwing: Function,
   },
   computed: {
-    ...mapState(authenticationRole, ["clearAuth"]),
+    ...mapState(authenticationRole, ["clearAuth", "authentication"]),
   },
   data: () => ({
     isOpenLogout: false,

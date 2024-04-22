@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { formatOriginalText } from '@/base/helper.js';
 export default {
 	name: "Writing3Question",
 	data() {
@@ -23,7 +24,7 @@ export default {
 		questionResults: Object
 	},
 	mounted() {
-		const subquestionResults = this.question.subQuestions.map(item => ({
+		const subquestionResults = this.dataQuestion?.subQuestions.map(item => ({
 			questionId: item.questionId,
 			answers: [],
 			rightAnswer: null,
@@ -44,7 +45,7 @@ export default {
 			let newValue = event.target.value;
 			newValue = this.normalizeText(newValue);
 			let subQuestion = this.dataQuestion.subQuestions[key];
-			let questionResult = this.questionResults.find(q => q.questionId === subQuestion.id);
+			let questionResult = this.questionResults?.find(q => q.questionId === subQuestion?.questionId);
 			questionResult.answers = [newValue];
 
 		}

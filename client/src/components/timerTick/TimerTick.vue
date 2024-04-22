@@ -73,7 +73,7 @@ export default {
 
 </script>
 
-<style scoped>
+<style>
 /* Your component styles here */
 .real-timing {
   font-size: 1.125rem;
