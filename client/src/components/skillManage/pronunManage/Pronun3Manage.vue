@@ -36,10 +36,11 @@
                 rows="2"
                 max-rows="4"
                 :rules="required"
-                placeholder="Danh sách các từ xuất hiện vd: boost; boot; rain; ..."
+                placeholder="Danh sách các từ xuất hiện vd: boost, boot, rain, ..."
                 hide-no-data
                 clearable
                 auto-grow
+                :model-value="stringAnswers"
                 @input="(event) => handleConvertAnswer(event.target.value, 0)"
               >
               </v-textarea>
@@ -72,6 +73,7 @@ export default {
         },
       ],
       questions: [],
+      stringAnswers: "",
     };
   },
   props: {
@@ -81,6 +83,7 @@ export default {
   },
   created() {
     this.questions = this.questionSkill.subQuestions;
+    this.stringAnswers = this.questionSkill.subQuestions[0].answers.map(obj => obj?.answer).join(', ');
   },
   methods: {
     updateGroupTitleQuestion(value) {

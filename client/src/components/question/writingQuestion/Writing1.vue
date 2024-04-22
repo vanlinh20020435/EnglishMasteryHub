@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { formatOriginalText } from '@/base/helper.js';
 export default {
 	name: "Writing1Question",
 	data() {
@@ -22,7 +23,7 @@ export default {
 		questionResults: Object
 	},
 	mounted() {
-		const subquestionResults = this.question.subQuestions.map(item => ({
+		const subquestionResults = this.dataQuestion?.subQuestions.map(item => ({
 			questionId: item.questionId,
 			answers: [],
 			rightAnswer: null,
@@ -39,24 +40,28 @@ export default {
 				return '';
 			return text.toLowerCase().trim().replace(/\s+/g, ' ');
 		},
-		handleChange(event, key) {
-			let isMatching = false;
-			let subQuestion = this.dataQuestion.subQuestions[key];
-			let answers = subQuestion.answers;
+		handleChange(event, subQuestionIndex) {
 			let newValue = event.target.value;
-			newValue = this.normalizeText(newValue);
-			for (let i = 0; i < answers.length; i++) {
-				if (this.normalizeText(answers[i].answer) === newValue) {
-					isMatching = true;
-					break;
-				}
+      let subQuestionSelected = this.dataQuestion.subQuestions?.[subQuestionIndex];
+      let subQuestionInResult = this.questionResults.find(item => item?.questionId == subQuestionSelected?.questionId);
+
+			const matchFound = subQuestionSelected.answers.some(answerObj => {
+				const answer = formatOriginalText(answerObj?.answer);
+				return formatOriginalText(newValue) == answer;
+			});
+
+			if (matchFound) {
+				subQuestionInResult.score = 1;
+			} else {
+				subQuestionInResult.score = 0;
 			}
-
-			let questionResult = this.questionResults.find(q => q.questionId === subQuestion.id);
-			questionResult.answers = [newValue];
-			questionResult.rightAnswer = isMatching;
-			questionResult.score = isMatching ? 1 : 0;
-
+			subQuestionInResult.answers[0] =  newValue;
+			const indexToUpdate = this.questionResults.findIndex(item => item.questionId === subQuestionInResult.questionId);
+      if (indexToUpdate !== -1) {
+        this.questionResults[indexToUpdate] = subQuestionInResult;
+      } else {
+        this.questionResults.push(subQuestionInResult);
+      }
 		}
 	},
 };

@@ -72,11 +72,7 @@ export default {
       } else {
         subQuestionInResult.score = 0;
       }
-
-      subQuestionInResult.answers[0] = {
-        ...subQuestionInResult.answers[0],
-        answer: value,
-      }
+			subQuestionInResult.answers[0] =  newValue;
 
       const indexToUpdate = this.questionResults.findIndex(item => item.questionId === subQuestionInResult.questionId);
       if (indexToUpdate !== -1) {

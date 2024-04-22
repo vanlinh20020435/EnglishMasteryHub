@@ -662,6 +662,7 @@ export default {
       this.$emit("updateGroupTitleQuestion", updatedValue); // Emit the event
     },
     async handleSaveExam() {
+      console.log('123')
       if (!!this.valid) {
         const convertQuestion = (question, questionParent) => ({
           content: question?.content?.trim() || '',
