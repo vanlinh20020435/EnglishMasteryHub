@@ -1,7 +1,10 @@
 vv
 <template>
   <v-card class="height-100 class-container">
-    <v-container class="d-flex flex-column height-100 v-container__full" style="height: 91vh;">
+    <v-container
+      class="d-flex flex-column height-100 v-container__full"
+      style="height: 91vh"
+    >
       <HeaderTitle
         title="Giao bài"
         textBtn="Quay lại"
@@ -114,6 +117,24 @@ vv
               </h4>
             </v-row>
           </v-col>
+
+          <v-col>
+            <v-row class="pt-2 pb-2">
+              <h4 class="font-semi-bold">Đặt mật khẩu</h4>
+            </v-row>
+            <v-row>
+              <v-text-field
+              :append-icon="showPw ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showPw ? 'text' : 'password'"
+              v-model="examSelected.password"
+              variant="outlined"
+              hide-no-data
+              :rules="required"
+              @click:append="showPw = !showPw"
+            />
+            </v-row>
+          </v-col>
+
           <v-col>
             <v-row class="pt-2 pb-2">
               <h4 class="font-semi-bold">Ngày bắt đầu</h4>
@@ -253,6 +274,7 @@ export default {
         ],
         required: [(v) => !!v || "Trường nhập bắt buộc!"],
       },
+      required: [(v) => !!v || "Trường nhập bắt buộc!"],
       examSelected: {
         startDate: this.formatDate(new Date()),
         endDate: this.formatDate(
@@ -273,6 +295,7 @@ export default {
         .substr(0, 10),
       msgPopup: [],
       optionsFormatDate: { day: "2-digit", month: "2-digit", year: "numeric" },
+      showPw: false,
     };
   },
   computed: {
@@ -358,6 +381,7 @@ export default {
           this.examSelected?.testId;
 
         const body = {
+          password: this.examSelected?.password,
           startDate: this.examSelected?.startDate,
           endDate: this.examSelected?.endDate,
         };
