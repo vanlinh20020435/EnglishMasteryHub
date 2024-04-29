@@ -50,7 +50,7 @@ export default {
     const subquestionResults = this.dataQuestion.subQuestions.map(item => ({
       questionId: item.questionId,
       answers: [],
-      rightAnswer: null,
+      rightAnswer: false,
       score: 0,
       defaultScore: 1,
     }))
@@ -68,11 +68,13 @@ export default {
       });
 
       if (matchFound) {
+				subQuestionInResult.rightAnswer = true;
         subQuestionInResult.score = 1;
       } else {
+				subQuestionInResult.rightAnswer = false;
         subQuestionInResult.score = 0;
       }
-			subQuestionInResult.answers[0] =  newValue;
+			subQuestionInResult.answers[0] =  value;
 
       const indexToUpdate = this.questionResults.findIndex(item => item.questionId === subQuestionInResult.questionId);
       if (indexToUpdate !== -1) {
