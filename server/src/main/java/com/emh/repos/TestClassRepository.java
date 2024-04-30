@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface TestClassRepository extends JpaRepository<TestClass, Integer>
 {
 	TestClass findOneByClasssAndTests(Classes classs, Tests tests);
+
+	void deleteAllByTests(Tests tests);
 }

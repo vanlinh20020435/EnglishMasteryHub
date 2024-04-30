@@ -9,6 +9,7 @@ import com.emh.repos.ClassesRepository;
 import com.emh.util.MapperUtils;
 import com.emh.util.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
@@ -47,6 +48,7 @@ public class ClassFileService
 		return classFileRepository.save(classFile).getId();
 	}
 
+	@Transactional
 	public void delete(Integer classId, Integer fileId)
 	{
 		Classes classes = classesRepository.findById(classId)

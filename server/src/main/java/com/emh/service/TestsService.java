@@ -26,6 +26,7 @@ public class TestsService
 	private final QuestFileRepository questFileRepository;
 	private final CustomUserDetailsService customUserDetailsService;
 	private final UserRepository userRepository;
+	private final TestClassRepository testClassRepository;
 
 	public TestsService(final TestsRepository testsRepository,
 						final QuestionsRepository questionsRepository,
@@ -34,7 +35,8 @@ public class TestsService
 						final QuestOptionRepository questOptionRepository,
 						final QuestFileRepository questFileRepository,
 						final CustomUserDetailsService customUserDetailsService,
-						UserRepository userRepository)
+						UserRepository userRepository,
+						TestClassRepository testClassRepository)
 	{
 		this.testsRepository = testsRepository;
 		this.questionsRepository = questionsRepository;
@@ -44,12 +46,14 @@ public class TestsService
 		this.questFileRepository = questFileRepository;
 		this.customUserDetailsService = customUserDetailsService;
 		this.userRepository = userRepository;
+		this.testClassRepository = testClassRepository;
 	}
 
 	public List<TestsResponse> findAll()
 	{
 		final List<Tests> testses = testsRepository.findAll(Sort.by("testId"));
 		return testses.stream()
+				.filter(tests -> !tests.isDeleted())
 				.map(this::exportTest)
 				.toList();
 	}
@@ -57,6 +61,7 @@ public class TestsService
 	public TestsResponse get(final Integer testId)
 	{
 		return testsRepository.findById(testId)
+				.filter(tests -> !tests.isDeleted())
 				.map(this::exportTest)
 				.orElseThrow(NotFoundException::new);
 	}
@@ -83,13 +88,16 @@ public class TestsService
 		saveQuestions(tests, testsDTO);
 	}
 
+	@Transactional
 	public void delete(final Integer testId)
 	{
 		final Tests tests = testsRepository.findById(testId)
 				.orElseThrow(NotFoundException::new);
 		if (!checkPermission(getCreator(tests.getCreatedBy())))
 			throw new ForbiddenException();
-		testsRepository.deleteById(testId);
+		tests.setDeleted(true);
+		testsRepository.saveAndFlush(tests);
+//		testsRepository.deleteById(testId);
 	}
 
 	public ReferencedWarning getReferencedWarning(final Integer testId)

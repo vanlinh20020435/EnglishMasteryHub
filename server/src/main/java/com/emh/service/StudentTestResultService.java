@@ -4,7 +4,9 @@ import com.emh.entity.*;
 import com.emh.payload.request.QuestAnswerResultRequest;
 import com.emh.payload.request.StudentTestResultRequest;
 import com.emh.payload.response.QuestAnswerResultResponse;
+import com.emh.payload.response.StudentSummaryResponse;
 import com.emh.payload.response.StudentTestResultResponse;
+import com.emh.payload.response.TestResultStatisticResponse;
 import com.emh.repos.*;
 import com.emh.specifications.FilterOperation;
 import com.emh.specifications.SearchForeignCriteria;
@@ -14,6 +16,7 @@ import com.emh.util.NotFoundException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -109,6 +112,7 @@ public class StudentTestResultService
 		return tests.getTestId();
 	}
 
+	@Transactional
 	public void update(final Integer resultId, final StudentTestResultRequest studentTestResultRequest) throws IOException
 	{
 		StudentTestResult studentTestResult = studentTestResultRepository.findById(resultId)
@@ -160,5 +164,21 @@ public class StudentTestResultService
 			responses.add(response);
 		}
 		studentTestResultResponse.setQuestionResults(responses);
+	}
+
+	public TestResultStatisticResponse statistic(Integer classId, Integer testId)
+	{
+		TestResultStatisticResponse response = new TestResultStatisticResponse();
+		List<StudentSummaryResponse> studentSummaryResponses = studentTestResultRepository.statistic(classId, testId);
+		long completed = studentSummaryResponses.stream().filter(result -> ObjectUtils.allNotNull(result.getTestResultId())).count();
+		response.setStatistic(studentSummaryResponses);
+		response.setCompleted(completed);
+		response.setIncomplete(studentSummaryResponses.size() - completed);
+		return response;
+	}
+
+	public List<StudentSummaryResponse> statistic(Integer classId, Integer testId, Integer studentId)
+	{
+		return studentTestResultRepository.statistic(classId, testId, studentId);
 	}
 }

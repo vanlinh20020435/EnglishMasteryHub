@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -72,6 +73,7 @@ public class TeacherService
 		return teacherRepository.save(teacher).getTeacherId();
 	}
 
+	@Transactional
 	public void update(final Integer teacherId, final TeacherRequest teacherRequest)
 	{
 		final Teacher teacher = teacherRepository.findById(teacherId)
@@ -86,6 +88,7 @@ public class TeacherService
 		teacherRepository.save(teacher);
 	}
 
+	@Transactional
 	public void delete(final Integer teacherId)
 	{
 		final Teacher teacher = teacherRepository.findById(teacherId)

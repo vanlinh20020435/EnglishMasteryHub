@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -77,6 +78,7 @@ public class StudentService
 		return studentRepository.save(student).getStudentId();
 	}
 
+	@Transactional
 	public void update(final Integer studentId, final StudentRequest studentRequest)
 	{
 		final Student student = studentRepository.findById(studentId)
@@ -93,6 +95,7 @@ public class StudentService
 		studentRepository.save(student);
 	}
 
+	@Transactional
 	public void delete(final Integer studentId)
 	{
 		final Student student = studentRepository.findById(studentId)

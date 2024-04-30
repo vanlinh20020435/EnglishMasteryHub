@@ -1,7 +1,9 @@
 package com.emh.api;
 
 import com.emh.payload.request.StudentTestResultRequest;
+import com.emh.payload.response.StudentSummaryResponse;
 import com.emh.payload.response.StudentTestResultResponse;
+import com.emh.payload.response.TestResultStatisticResponse;
 import com.emh.service.StudentTestResultService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -33,6 +35,23 @@ public class TestsResultResource
 																		 @RequestParam(required = false) final Integer studentId) throws Exception
 	{
 		return ResponseEntity.ok(testResultService.findAll(classId, testId, studentId));
+	}
+
+	@GetMapping("/statistic")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
+	public ResponseEntity<TestResultStatisticResponse> statistic(@RequestParam(required = true) final Integer classId,
+																 @RequestParam(required = true) final Integer testId) throws Exception
+	{
+		return ResponseEntity.ok(testResultService.statistic(classId, testId));
+	}
+
+	@GetMapping("/statistic/{studentId}")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
+	public ResponseEntity<List<StudentSummaryResponse>> statistic(@RequestParam(required = true) final Integer classId,
+																  @RequestParam(required = true) final Integer testId,
+																  @PathVariable(name = "studentId") final Integer studentId) throws Exception
+	{
+		return ResponseEntity.ok(testResultService.statistic(classId, testId, studentId));
 	}
 
 	@GetMapping("/{resultId}")

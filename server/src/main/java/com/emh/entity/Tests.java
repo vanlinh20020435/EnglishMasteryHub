@@ -3,6 +3,10 @@ package com.emh.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
 
 import java.util.Set;
 
@@ -10,6 +14,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@SQLDelete(sql = "UPDATE tests SET deleted = true WHERE id=?")
 public class Tests extends BaseEntity
 {
 
@@ -33,6 +38,8 @@ public class Tests extends BaseEntity
 			columnDefinition = "longtext"
 	)
 	private String description;
+
+	private boolean deleted = Boolean.FALSE;
 
 	@Column(nullable = false)
 	private Integer status;
