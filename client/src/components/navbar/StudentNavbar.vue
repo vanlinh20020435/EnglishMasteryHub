@@ -6,7 +6,7 @@
           align-items: center;
           height: 100%;
           cursor: pointer;
-        " @click="$router.replace('/')">
+        " @click="$router.push('/')">
         <img src="./../../assets/images/logoemhnavba.png" style="flex: 0; width: 30px; margin-right: 8px" />
         <h2 style="color: #fff">English Master Hub</h2>
       </div>
@@ -16,7 +16,7 @@
           <v-btn icon v-bind="props" style="margin-right: 16px">
             <v-avatar size="large">
               <v-img alt="Avatar" :src="user.avatar ||
-                'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'
+                'https://static.thenounproject.com/png/4035887-200.png'
                 "></v-img>
             </v-avatar>
           </v-btn>
