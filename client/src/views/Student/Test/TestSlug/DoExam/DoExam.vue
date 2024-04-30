@@ -1,62 +1,52 @@
 <template>
   <div class="do-exam-container" v-if="test.testId">
-    <v-card :elevation="8" style="margin-bottom: 16px">
-      <v-card-title
-        >{{ test.testName }} -
-        <span style="color: #333; font-size: 14px"
-          >Tổng số câu hỏi: {{ test.totalQuestions }}</span
-        ></v-card-title
-      >
-      <v-card-text class="d-flex">
-        <v-btn
-          @click="back"
-          color="#fde74c"
-          icon="mdi-arrow-left"
-          size="x-small">
-        </v-btn>
-        <v-spacer></v-spacer>
+    <v-card v-if="isSubmitted">
+      <v-card-title v-if="test.requiresGrading">Bạn đã nộp bài thành công!</v-card-title>
+      <v-card-title v-else>Điểm của bạn: {{ answersForm.score }}/{{ answersForm.testDefaultScore }}.</v-card-title>
+      <v-card-subtitle>Tổng thời gian: {{ answersForm.time }} phút.</v-card-subtitle>
+      <v-card-text class="d-flex"><v-spacer></v-spacer><v-btn @click="$router.push('/student/news')"
+          color="success">Quay về trang
+          chủ</v-btn></v-card-text>
+    </v-card>
+    <div v-else>
+      <v-card :elevation="8" style="margin-bottom: 16px">
+        <v-card-title>{{ test.testName }} -
+          <span style="color: #333; font-size: 14px">Tổng số câu hỏi: {{ test.totalQuestions }}</span></v-card-title>
+        <v-card-text class="d-flex">
+          <v-btn @click="back" color="#fde74c" icon="mdi-arrow-left" size="x-small">
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn @click="openSubmit" color="success" style="margin-right: 8px">
+            Nộp bài
+          </v-btn>
+        </v-card-text>
+      </v-card>
+      <v-card :elevation="8">
+        <v-form>
+          <v-card-text>
+            <v-row>
+              <v-col md="12" v-for="(question, index) in test.questions" :key="question.questionId">
+                <Question :question="{ ...question }" :questionResults="answersForm.questionResults"
+                  :indexQuestion="index" />
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-form>
+      </v-card>
+      <div v-if="position[1] > 100" class="position-fixed" style="bottom: 16px; right: 16px">
         <v-btn @click="openSubmit" color="success" style="margin-right: 8px">
           Nộp bài
         </v-btn>
-      </v-card-text>
-    </v-card>
-    <v-card :elevation="8">
-      <v-form>
-        <v-card-text>
-          <v-row>
-            <v-col
-              md="12"
-              v-for="(question, index) in test.questions"
-              :key="question.questionId">
-              <Question
-                :question="{ ...question }"
-                :questionResults="answersForm.questionResults"
-                :indexQuestion="index" />
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-form>
-    </v-card>
-    <div
-      v-if="position[1] > 100"
-      class="position-fixed"
-      style="bottom: 16px; right: 16px">
-      <v-btn @click="openSubmit" color="success" style="margin-right: 8px">
-        Nộp bài
-      </v-btn>
-      <v-btn @click="scrollToTop" icon="mdi-menu-up" color="success"> </v-btn>
-    </div>
-    <div class="timer-tick">
-      <TimerTick :seconds="test?.time * 60 || 30 * 60" :onEndTimerTick="onEndTimerTick"></TimerTick>
+        <v-btn @click="scrollToTop" icon="mdi-menu-up" color="success"> </v-btn>
+      </div>
+      <div class="timer-tick">
+        <TimerTick :seconds="test?.time * 60 || 30 * 60" :onEndTimerTick="onEndTimerTick"></TimerTick>
+      </div>
     </div>
     <v-dialog v-model="isOpenSubmit" max-width="500px">
       <v-card v-if="isLoadingSubmit">
         <v-card-text class="d-flex justify-center">
-          <v-progress-circular
-            :size="60"
-            :width="6"
-            color="success"
-            indeterminate></v-progress-circular>
+          <v-progress-circular :size="60" :width="6" color="success" indeterminate></v-progress-circular>
         </v-card-text>
       </v-card>
       <v-card v-else>
@@ -105,6 +95,7 @@ export default {
     },
     isOpenSubmit: false,
     isLoadingSubmit: false,
+    isSubmitted: false
   }),
   computed: {
     ...mapState(authenticationRole, ['authentication']),
@@ -140,7 +131,7 @@ export default {
       );
       if (res.success) {
         this.updateToast('success', 'Nộp bài thành công!');
-        this.$router.replace('/student/test');
+        this.isSubmitted = true
       } else {
         this.updateToast('error', 'Nộp bài không thành công!');
       }

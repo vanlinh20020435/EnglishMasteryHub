@@ -3,9 +3,9 @@
     :sort-by="[{ key: 'classId', order: 'asc' }]">
     <template v-slot:item.avatar="{ item }">
       <v-avatar>
-        <v-img alt="Avatar" :src="item.avatar ||
-    'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460'
-    "></v-img>
+        <img alt="Avatar" :src="item.avatar ||
+          '/src/assets/images/class.png'
+          "></img>
       </v-avatar>
     </template>
     <template v-slot:item.teacher="{ item }">
@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     handleClickItem(item) {
-      this.$router.replace(`/admin/class/${item.classId}`);
+      this.$router.push(`/admin/class/${item.classId}`);
     },
   },
 };
