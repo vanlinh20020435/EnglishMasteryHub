@@ -27,9 +27,15 @@
               <h3>{{ user.name }}</h3>
               <p class="text-caption mt-1">{{ user.email }}</p>
               <v-divider class="my-3"></v-divider>
-              <v-btn rounded variant="text" prepend-icon="mdi-account" @click="
-                $router.push(`/${this.authentication.user.role}/account`)
-                " class="justify-start w-100">
+              <v-btn
+                rounded
+                variant="text"
+                prepend-icon="mdi-account"
+                @click="
+                  $router.push(`/${this.authentication?.user.role}/account`)
+                "
+                class="justify-start w-100"
+              >
                 Hồ sơ
               </v-btn>
               <v-divider class="my-3"></v-divider>
@@ -69,7 +75,7 @@ export default {
     drawwing: Function,
   },
   computed: {
-    ...mapState(authenticationRole, ["clearAuth"]),
+    ...mapState(authenticationRole, ["clearAuth", "authentication"]),
   },
   data: () => ({
     isOpenLogout: false,
