@@ -1,17 +1,8 @@
 <template>
-  <v-navigation-drawer
-    :temporary="$vuetify.display.mdAndDown"
-    :permanent="$vuetify.display.mdAndUp"
-    width="300"
-    :model-value="drawer"
-    :rail="isRail"
-    location="left">
+  <v-navigation-drawer :temporary="$vuetify.display.mdAndDown" :permanent="$vuetify.display.mdAndUp" width="300"
+    :model-value="drawer" :rail="isRail" location="left">
     <v-list v-model:opened="open">
-      <SidebarItem
-        v-for="(item, idx) in menu"
-        :item="item"
-        :active="activeItem === idx"
-        :rail="isRail"
+      <SidebarItem v-for="(item, idx) in menu" :item="item" :active="activeItem === idx" :rail="isRail"
         :enableActive="() => (activeItem = idx)" />
     </v-list>
     <v-spacer />
@@ -38,6 +29,11 @@ export default {
     isRail: false,
     activeItem: 0,
   }),
+  computed: {
+    path() {
+      return this.$route.fullPath;
+    },
+  },
   mounted() {
     const path = this.$route.fullPath;
     const pathSplit1 = path.split('/')[2];
@@ -45,6 +41,15 @@ export default {
       if (item.value === pathSplit1) this.activeItem = idx;
       if (item.children) this.open.push(item.value);
     });
+  },
+  watch: {
+    path(path) {
+      const pathSplit1 = path.split('/')[2];
+      this.menu.forEach((item, idx) => {
+        if (item.value === pathSplit1) this.activeItem = idx;
+        if (item.children) this.open.push(item.value);
+      });
+    },
   },
 };
 </script>
