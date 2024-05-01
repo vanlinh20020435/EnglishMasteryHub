@@ -31,6 +31,7 @@ import News from "@/views/Student/News.vue";
 import Test from "@/views/Student/Test/index.vue";
 import Docs from "@/views/Student/Docs.vue";
 import TestSlug from "@/views/Student/Test/TestSlug/index.vue";
+import Preview from "@/views/Admin/Exam/Preview.vue";
 const routes = [
   {
     path: "/login",
@@ -180,6 +181,10 @@ const routes = [
           {
             path: "edit/:id",
             component: EditExamManager,
+          },
+          {
+            path: "preview/:id",
+            component: Preview,
           },
         ],
       },
