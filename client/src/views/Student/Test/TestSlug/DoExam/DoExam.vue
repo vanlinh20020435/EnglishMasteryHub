@@ -34,7 +34,7 @@
             </v-row>
           </v-card-text>
         </v-form>
-        <div v-if="preview" style="position: absolute; top: 0; left: 0; width: 100%;
+        <div v-if="preview" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 1;
         height: 100%;"></div>
       </v-card>
       <div v-if="position[1] > 100 && !preview" class="position-fixed" style="bottom: 16px; right: 16px">

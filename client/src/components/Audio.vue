@@ -1,5 +1,5 @@
 <template>
-    <div v-if="config.sound" class="d-flex" style="text-align: center"
+    <div v-if="config.sound" class="d-flex" style="text-align: center; z-index: 2; position: relative;"
         :flat="flat == undefined || flat == false ? false : true">
         <v-btn size="x-small" outlined icon class="ma-2" :color="color" @click.native="play"
             :disabled="playing || !loaded">
@@ -13,7 +13,8 @@
         <v-slider hide-details="" style="flex: 2; margin-top: 8px; max-width: 150px" :track-size="1" :thumb-size="8"
             v-model="playerVolume" :prepend-icon="volumeHighIcon" max="1" step="0.01" min="0"></v-slider>
     </div>
-    <div v-else class="d-flex" style="text-align: center" :flat="flat == undefined || flat == false ? false : true">
+    <div v-else class="d-flex" style="text-align: center; z-index: 2; position: relative;"
+        :flat="flat == undefined || flat == false ? false : true">
         <v-btn size="x-small" outlined icon class="ma-2" :color="color" @click.native="playing ? pause() : play()"
             :disabled="!loaded">
             <v-icon v-if="!playing || paused">{{ playIcon }}</v-icon>
