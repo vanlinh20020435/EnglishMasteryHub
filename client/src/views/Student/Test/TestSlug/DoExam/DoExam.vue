@@ -20,7 +20,7 @@
           <v-btn v-if="!preview" @click="openSubmit" color="success" style="margin-right: 8px">
             Nộp bài
           </v-btn>
-          <v-card-title style="color: orange;">Preview</v-card-title>
+          <v-card-title v-else style="color: orange;">Preview</v-card-title>
         </v-card-text>
       </v-card>
       <v-card class="do-exam-content" :elevation="8" style="position: relative;">
@@ -34,7 +34,7 @@
             </v-row>
           </v-card-text>
         </v-form>
-        <div style="position: absolute; top: 0; left: 0; width: 100%;
+        <div v-if="preview" style="position: absolute; top: 0; left: 0; width: 100%;
         height: 100%;"></div>
       </v-card>
       <div v-if="position[1] > 100 && !preview" class="position-fixed" style="bottom: 16px; right: 16px">
