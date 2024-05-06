@@ -9,7 +9,7 @@
         " @click="$router.push('/')">
         <img src="./../../assets/images/logoemhnavba.png"
           style="flex: 0; width: 30px; margin-right: 8px; margin-left: 20px" />
-        <v-app-bar-title>English Master Hub</v-app-bar-title>
+        <v-app-bar-title>English Mastery Hub</v-app-bar-title>
       </div>
     </template>
   </v-app-bar>

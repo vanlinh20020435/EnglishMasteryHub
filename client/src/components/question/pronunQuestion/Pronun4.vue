@@ -1,10 +1,10 @@
 <template>
-  <v-card>
-    <v-card-title>
-      {{ question.title }}
-    </v-card-title>
-    <v-card-text>
-      <div v-for="(sub, idx) in question.subQuestions">
+  <div class="d-flex flex-column">
+    <h3 class="font-semi-bold text-lg">
+      Bài {{ indexQuestion + 1 }}: {{ question.title }}
+    </h3>
+    <v-col>
+      <div v-for="(sub, idx) in question.subQuestions" :key="idx">
         <p style="margin-bottom: 4px">{{ idx + 1 }}. {{ sub.content }}</p>
         <v-row v-if="$vuetify.display.smAndDown">
           <v-col cols="12" style="padding-bottom: 0">
@@ -39,8 +39,8 @@
           </v-col>
         </v-row>
       </div>
-    </v-card-text>
-  </v-card>
+    </v-col>
+  </div>
 </template>
 
 <script>
@@ -53,6 +53,7 @@ export default {
   props: {
     question: Object,
     questionResults: Object,
+    indexQuestion: Number,
   },
   mounted() {
     this.question.subQuestions.forEach((sub) => {

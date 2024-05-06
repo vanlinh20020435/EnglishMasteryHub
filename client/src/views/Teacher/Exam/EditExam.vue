@@ -376,6 +376,7 @@
       :handleClickYes="
         () => {
           this.$router.go(-1);
+          this.dialogCreateSuccess = false;
         }
       "
     />
@@ -661,7 +662,6 @@ export default {
       this.$emit("updateGroupTitleQuestion", updatedValue); // Emit the event
     },
     async handleSaveExam() {
-      console.log('123')
       if (!!this.valid) {
         const convertQuestion = (question, questionParent) => ({
           content: question?.content?.trim() || '',
@@ -714,6 +714,7 @@ export default {
           status: "0",
           description: this.dataExam.description?.trim(),
           questions: convertedData,
+          requiresGrading: this.questionList?.some((item) => item?.requiresGrading),
         };
 
         const urlAPI = "/api/testss/" + this.$route.params.id;

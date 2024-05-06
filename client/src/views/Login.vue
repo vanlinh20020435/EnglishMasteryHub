@@ -8,7 +8,7 @@
                             <img src="@/assets/images/logoemh.png" />
                         </v-col>
                         <v-col md="12">
-                            <v-text-field v-model="username" @change="onChange" :error="loginFailed"
+                            <v-text-field autofocus v-model="username" @change="onChange" :error="loginFailed"
                                 :rules="usernameRules" label="Username" hide-details="auto">
                             </v-text-field>
                         </v-col>

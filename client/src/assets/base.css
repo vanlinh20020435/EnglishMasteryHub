@@ -94,6 +94,18 @@ img {
   color: #000000;
 }
 
+.color-white {
+  color: #FFFFFF;
+}
+
+.color-right {
+  color: #009444;
+}
+
+.color-wrong {
+  color: #be1e2d;
+}
+
 .height-100 {
   height: 100%;
 }
@@ -131,8 +143,12 @@ img {
   color: #484848 !important;
 }
 
+/* Object fit Image */
 .contain_image {
   object-fit: contain;
+}
+.cover_image {
+  object-fit: cover;
 }
 
 .v-data-table__exam .v-data-table__th .v-data-table-header__content span {
@@ -155,6 +171,14 @@ img {
 
 .btn-delete-linear {
   background-image: var(--linear-color) !important;
+}
+
+.btn-warning {
+  background-color: #F8AF36 !important;
+}
+
+.btn-error {
+  background-color: #e77865 !important;
 }
 
 .bg_white {

@@ -1,6 +1,6 @@
 <template>
 	<div class="d-flex flex-column">
-		<h3 class="font-semi-bold">{{ dataQuestion.title }}</h3>
+		<h3 class="font-semi-bold">Bài {{ indexQuestion + 1 }}: {{ dataQuestion.title }}</h3>
 		<v-col>
 			<v-col v-for="(subQuestion, index) in dataQuestion.subQuestions" :key="index">
 				<div class="font-weight-medium"><span class="font-weight-medium mr-3">{{ index + 1 }}.</span>{{ subQuestion?.content }}</div>
@@ -20,7 +20,8 @@ export default {
 	},
 	props: {
 		dataQuestion: Object,
-		questionResults: Object
+		questionResults: Object,
+		indexQuestion: Number,
 	},
 	mounted() {
 		const subquestionResults = this.dataQuestion?.subQuestions.map(item => ({

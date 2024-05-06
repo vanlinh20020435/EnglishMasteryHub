@@ -366,6 +366,7 @@
       :handleClickYes="
         () => {
           this.$router.go(-1);
+          this.dialogCreateSuccess = false;
         }
       "
     />
@@ -668,7 +669,7 @@ export default {
           skill: item?.skill?.trim(),
           time: 0,
           requiresGrading: item?.requiresGrading || false,
-          subQuestions: item.subQuestions.map((question) =>
+          subQuestions: item.subQuestions?.map((question) =>
             convertQuestion(question, item)
           ),
           files: !!item?.files?.type
@@ -688,6 +689,7 @@ export default {
           status: "0",
           description: this.dataExam.description?.trim(),
           questions: convertedData,
+          requiresGrading: this.questionList?.some((item) => item?.requiresGrading),
         };
 
         const result = await apiCallerPost(

@@ -21,7 +21,7 @@
           </v-btn>
         </v-card-text>
       </v-card>
-      <v-card :elevation="8">
+      <v-card class="do-exam-content" :elevation="8">
         <v-form>
           <v-card-text>
             <v-row>

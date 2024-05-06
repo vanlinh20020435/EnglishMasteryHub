@@ -75,7 +75,18 @@
             <v-list-subheader>File phát âm</v-list-subheader>
           </v-col>
 
-          <v-col cols="8">
+          <v-col v-if="defaultFile" cols="8">
+            <v-text-field
+              prepend-icon="mdi-paperclip"
+              :rule="required"
+              hide-no-data
+              variant="outlined"
+              v-model="defaultFile"
+              clearable
+              readonly
+            ></v-text-field>
+          </v-col>
+          <v-col cols="8" v-else>
             <v-file-input
               @change="(event) => handleFileUpload(event, index)"
               :rule="required"
@@ -102,7 +113,7 @@
               hide-no-data
               clearable
               auto-grow
-              :model-value="contentAudio"
+              :model-value="this.questionSkill?.content"
               @input="updateContentAudio"
             >
             </v-textarea>
@@ -134,6 +145,7 @@ export default {
       ],
       selectedFileName: [],
       selectedFile: null,
+      defaultFile: null
     };
   },
   props: {
@@ -144,6 +156,9 @@ export default {
     hasAudio: Boolean,
     contentAudio: String,
     questionSkill: Object,
+  },
+  mounted() {
+    this.defaultFile = this.questionSkill?.files?.[0]?.name
   },
   methods: {
     handleToggleShowFull() {

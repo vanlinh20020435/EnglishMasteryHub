@@ -40,7 +40,7 @@
                           : '/src/assets/images/avatar_student_male.jpg'
                       "
                       alt="Avatar Student"
-                      class="contain_image"
+                      class="cover_image"
                     />
                   </div>
 

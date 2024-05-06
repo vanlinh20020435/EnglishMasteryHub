@@ -45,8 +45,18 @@
                 <v-col cols="2">
                   <v-list-subheader>File phát âm</v-list-subheader>
                 </v-col>
-
-                <v-col cols="8">
+                <v-col v-if="defaultFiles[index]" cols="8">
+                  <v-text-field
+                    prepend-icon="mdi-paperclip"
+                    :rule="required"
+                    hide-no-data
+                    variant="outlined"
+                    v-model="defaultFiles[index]"
+                    clearable
+                    readonly
+                  ></v-text-field>
+                </v-col>
+                <v-col v-else cols="8">
                   <v-file-input
                     @change="(event) => handleFileUpload(event, index)"
                     :rule="required"
@@ -151,6 +161,7 @@ export default {
       selectedFileName: [],
       fileUpload: {},
       questions: [],
+      defaultFiles: [],
     };
   },
   props: {
@@ -163,6 +174,14 @@ export default {
     this.questions = this.questionSkill.subQuestions;
     // Initialize the showFullQuestion array with default visibility state for each question
     this.showFullQuestion = Array(this.questions?.length).fill(true);
+    
+    this.questionSkill.subQuestions?.forEach((subQuestion) => {
+      if (subQuestion.files && subQuestion.files.length > 0) {
+        this.defaultFiles.push(subQuestion?.files?.[0]?.name);
+      } else if (subQuestion.files) {
+        this.defaultFiles.push("");
+      }
+    });
   },
   methods: {
     handleToggleShowFull() {

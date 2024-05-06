@@ -1,7 +1,9 @@
-vv
 <template>
   <v-card class="height-100 class-container">
-    <v-container class="d-flex flex-column height-100 v-container__full">
+    <v-container
+      class="d-flex flex-column height-100 v-container__full"
+      style="height: 92vh"
+    >
       <HeaderTitle
         title="Bài kiểm tra đã giao"
         textBtn="Quay lại"
@@ -13,20 +15,28 @@ vv
         class="d-flex flex-column class-list class-docs class-students align-center"
       >
         <div
-          v-if="dataExamMark.length > 0"
+          v-if="dataExams.length > 0"
           style="width: 80%; min-width: 28rem; max-width: 70rem; flex: 1"
           class="d-flex flex-column"
         >
-          <!-- <h3 class="font-bold">Danh sách bài kiểm tra</h3> -->
-
           <v-col class="pa-8 pt-3">
             <v-card
-              v-for="(exam, index) in dataExamMark"
+              v-for="(exam, index) in dataExams"
               :key="index"
               class="cursor-pointer pa-3 pb-7 mb-5 d-flex student-item docs-item box-shadow"
-              @click="handleNavigateDetailAssign(doc)"
+              @click="
+                () => {
+                  this.$router.push({
+                    path:
+                      `/${this.authentication?.user?.role}/class/${this.$route.params.id}/` +
+                      'mark-exam/' +
+                      exam.testId,
+                      query: { exam: exam?.testName },
+                  });
+                }
+              "
             >
-              <v-rowc
+              <v-row
                 class="pl-4 pr-4 pt-3 d-flex flex-row w-100 justify-space-between"
               >
                 <div class="d-flex flex-row align-center w-100">
@@ -36,7 +46,8 @@ vv
                       alt="Icon Type Doc"
                     />
                   </div>
-                  <div class="d-flex justify-space-between w-100">
+
+                  <div class="d-flex justify-space-between flex-1-1">
                     <div class="d-flex flex-column">
                       <div
                         class="font-semi-bold student-name ml-2 mr-2 d-flex align-center"
@@ -50,19 +61,9 @@ vv
                         Thời gian làm: {{ exam.time }}
                       </div>
                     </div>
-
-                    <div class="d-flex align-center">
-                      <v-btn
-                        @click.stop.prevent="() => handleOpenModalAssign(exam)"
-                        class="btn-delete-linear"
-                        theme="dark"
-                      >
-                        <span>Giao bài</span>
-                      </v-btn>
-                    </div>
                   </div>
                 </div>
-              </v-rowc>
+              </v-row>
             </v-card>
           </v-col>
         </div>
@@ -115,7 +116,7 @@ export default {
   components: { HeaderTitle, PopUpYesNo },
   data() {
     return {
-      dataExamMark: [],
+      dataExams: [],
       isLoading: false,
       rules: {
         rulesSizeFileUpload: [
@@ -138,11 +139,12 @@ export default {
     ...mapState(authenticationRole, ["updateAuth", "authentication"]),
   },
   mounted() {
-    // this.fetchDataDocuments();
+    this.fetchDataExamsMark();
   },
   methods: {
-    async fetchDataDocuments() {
-      let urlAPI = "/api/testss";
+    async fetchDataExamsMark() {
+      this.isLoading = true;
+      let urlAPI = "/api/class/" + this.$route.params.id + "/tests/get-all";
 
       const result = await apiCallerGet(urlAPI);
 

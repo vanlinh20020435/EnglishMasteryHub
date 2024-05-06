@@ -8,7 +8,7 @@
           cursor: pointer;
         " @click="$router.push('/')">
         <img src="./../../assets/images/logoemhnavba.png" style="flex: 0; width: 30px; margin-right: 8px" />
-        <h2 style="color: #fff">English Master Hub</h2>
+        <h2 style="color: #fff">English Mastery Hub</h2>
       </div>
       <v-spacer />
       <v-menu min-width="200px" rounded>

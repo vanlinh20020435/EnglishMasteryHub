@@ -12,7 +12,19 @@
             <v-list-subheader>File phát âm</v-list-subheader>
           </v-col>
 
-          <v-col cols="8">
+          <v-col v-if="defaultFile" cols="8">
+            <v-text-field
+              prepend-icon="mdi-paperclip"
+              :rule="required"
+              hide-no-data
+              variant="outlined"
+              v-model="defaultFile"
+              clearable
+              readonly
+            ></v-text-field>
+          </v-col>
+
+          <v-col v-else cols="8">
             <v-file-input
               @change="(event) => handleFileUpload(event, 0)"
               :rule="required"
@@ -74,6 +86,7 @@ export default {
       ],
       questions: [],
       stringAnswers: "",
+      defaultFile: null
     };
   },
   props: {
@@ -84,6 +97,8 @@ export default {
   created() {
     this.questions = this.questionSkill.subQuestions;
     this.stringAnswers = this.questionSkill.subQuestions[0].answers.map(obj => obj?.answer).join(', ');
+  
+    this.defaultFile = this.questionSkill.subQuestions?.[0]?.files?.[0]?.name;
   },
   methods: {
     updateGroupTitleQuestion(value) {

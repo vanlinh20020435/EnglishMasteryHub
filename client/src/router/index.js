@@ -7,7 +7,6 @@ import User from "@/views/Admin/User/index.vue";
 import {
   ManageClass,
   ManageExam,
-  ManageCurriculum,
   CreateExam,
   DetailClassTeacher,
   ClassStudents,
@@ -15,6 +14,8 @@ import {
   AssignExam,
   MarkExam,
   EditExam,
+  MarkExamDashboard,
+  MarkExamDetail
 } from "@/views/Teacher";
 import { authenticationRole } from "@/stores";
 import Login from "@/views/Login.vue";
@@ -63,11 +64,7 @@ const routes = [
     children: [
       {
         path: "",
-        component: ManageExam,
-      },
-      {
-        path: "manager",
-        component: Manager,
+        component: ManageClass,
       },
       {
         path: "class",
@@ -95,6 +92,14 @@ const routes = [
           {
             path: "mark-exam",
             component: MarkExam,
+          },
+          {
+            path: "mark-exam/:examId",
+            component: MarkExamDashboard,
+          },
+          {
+            path: "mark-exam/:examId/review/:studentId",
+            component: MarkExamDetail,
           },
         ],
       },
@@ -124,10 +129,6 @@ const routes = [
             props: { isAll: true },
           },
         ],
-      },
-      {
-        path: "curriculum",
-        component: ManageCurriculum,
       },
     ],
   },

@@ -29,7 +29,7 @@ vv
               class="cursor-pointer pa-3 pb-7 mb-5 d-flex student-item docs-item box-shadow"
               @click="handleNavigateDetailAssign(doc)"
             >
-              <v-rowc
+              <v-row
                 class="pl-4 pr-4 pt-3 d-flex flex-row w-100 justify-space-between"
               >
                 <div class="d-flex flex-row align-center w-100">
@@ -65,7 +65,7 @@ vv
                     </div>
                   </div>
                 </div>
-              </v-rowc>
+              </v-row>
             </v-card>
           </v-col>
         </div>
@@ -260,7 +260,7 @@ export default {
   data() {
     return {
       dataExams: [],
-      isLoading: true,
+      isLoading: false,
       valid: true,
       rules: {
         rulesSizeFileUpload: [
@@ -334,6 +334,7 @@ export default {
   },
   methods: {
     async fetchDataDocuments() {
+      this.isLoading = true;
       let urlAPI = "/api/testss";
 
       const result = await apiCallerGet(urlAPI);
