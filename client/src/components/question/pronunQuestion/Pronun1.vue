@@ -16,9 +16,8 @@
               hide-details
               v-model="sub.selected"
               :label="option.option"
-              :value="option.option"
-              :disabled="!!this.reviewExam"              
-              :class="!!this.reviewExam ? sub?.studentResult?.answers?.[0]?.rightAnswer ? 'checkboxRight' : 'checkboxWrong' : ''"
+              :value="option.option"       
+              :class="!!this.reviewExam ? !!sub?.studentResult?.rightAnswer ? 'checkboxRight' : 'checkboxWrong' : ''"
               ></v-checkbox>
           </v-col>
         </v-row>
@@ -30,8 +29,7 @@
               v-model="sub.selected"
               :label="option.option"
               :value="option.option"
-              :disabled="!!this.reviewExam"
-              :class="!!this.reviewExam ? sub?.studentResult?.answers?.[0]?.rightAnswer ? 'checkboxRight' : 'checkboxWrong' : ''"
+              :class="!!this.reviewExam ? !!sub?.studentResult?.rightAnswer ? 'checkboxRight' : 'checkboxWrong' : ''"
               ></v-checkbox>
           </v-col>
           <v-col cols="6">

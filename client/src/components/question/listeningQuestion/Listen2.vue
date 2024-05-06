@@ -7,7 +7,7 @@
       <Audio :file="question.files[0].url" color="success"></Audio>
       <div v-for="(sub, idx) in question.subQuestions" :key="idx" class="d-flex align-center" style="margin-bottom: 8px">
         <p>{{ idx + 1 }}. {{ sub.content.split('{')[0] }}</p>
-        <v-text-field placeholder="Nhập ..." style="max-width: 150px;" flat hide-details tile v-model="sub.selected"></v-text-field>
+        <v-text-field class="ml-2 mr-2" placeholder="Nhập ..." style="max-width: 150px;" flat hide-details tile v-model="sub.selected"></v-text-field>
         <p>{{ sub.content.split('}')[1] }}</p>
       </div>
     </v-col>

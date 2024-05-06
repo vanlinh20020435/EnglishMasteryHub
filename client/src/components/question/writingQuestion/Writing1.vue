@@ -3,8 +3,8 @@
 		<h3 class="font-semi-bold">Bài {{ indexQuestion + 1 }}: {{ dataQuestion.title }}</h3>
 		<v-col>
 			<v-col v-for="(subQuestion, index) in dataQuestion.subQuestions" :key="index">
-				<div class="font-weight-medium"><span class="font-weight-medium mr-3">{{ index + 1 }}.</span>{{ subQuestion?.content }}</div>
-				<v-text-field density="compact" variant="underlined" @input="(event) => handleChange(event, index)" hide-details></v-text-field>
+				<div><span class="mr-3">{{ index + 1 }}.</span>{{ subQuestion?.content }}</div>
+				<v-text-field class="field-writting" density="compact" variant="underlined" @input="(event) => handleChange(event, index)" hide-details></v-text-field>
 			</v-col>
 		</v-col>
 	</div>
@@ -69,3 +69,10 @@ export default {
 	},
 };
 </script>
+
+<style>
+	.field-writting input {
+		font-weight: 600 !important;
+		color: #8e1c76;
+	}
+</style>

@@ -15,7 +15,7 @@
             <div class="pr-2 font-semi-bold">{{ subQuestion?.description }}</div>
 
             <input @change="(event) => handleChangeInputAnswer(index, event)" type="text" placeholder="..."
-              class="flex-1-1 input-answer-grammar3 pt-1 pb-1">
+              class="flex-1-1 input-answer-grammar3 font-semi-bold pt-1 pb-1">
           </div>
         </div>
       </v-col>
@@ -86,6 +86,7 @@ export default {
   min-width: 5rem;
   max-width: 80%;
   color: #8e1c76;
+  line-height: normal;
 }
 .input-answer-grammar3:focus {
   border-bottom: 1px solid #999;
