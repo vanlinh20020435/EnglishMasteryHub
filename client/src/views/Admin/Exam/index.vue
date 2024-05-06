@@ -41,7 +41,7 @@
 <script>
 import PopUpYesNo from "@/components/popup/PopUpYesNo.vue";
 import { mapState } from "pinia";
-import { authenticationRole } from "@/stores";
+import { authenticationRole, testStore } from "@/stores";
 import { apiCallerGet, apiCallerDelete } from "@/services/teacher";
 import { removeVietnameseDiacritics } from "@/base/helper";
 
@@ -100,6 +100,7 @@ export default {
     },
     computed: {
         ...mapState(authenticationRole, ["updateAuth", "authentication"]),
+        ...mapState(testStore, ["updateTest"]),
         msgEmptyExam() {
             return this.stateExams.data.length ? "Không tìm thấy bài kiểm tra nào!" : "Bạn chưa có bài kiểm tra nào!"
         },
@@ -160,7 +161,8 @@ export default {
             this.isOnenDelete = false
         },
         handleClickItem(item) {
-            console.log("item ==", item);
+            this.updateTest(item);
+            this.$router.push(`/admin/exam/preview/${item.testId}`)
         },
         handleSearchInputChange(valueSearch) {
             this.searchValue = valueSearch;

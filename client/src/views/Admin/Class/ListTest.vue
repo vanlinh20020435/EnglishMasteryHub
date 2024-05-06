@@ -18,9 +18,9 @@
       </v-col>
     </v-row>
     <v-data-table :loading="isLoadingTests" :headers="testsHeaders" :items="filteredTests"
-      :sort-by="[{ key: 'studentId', order: 'asc' }]">
+      :sort-by="[{ key: 'studentId', order: 'asc' }]" @click:row="(a, b) => handleClickItem(b.item)">
       <template v-slot:item.actions="{ item }">
-        <v-icon size="small" color="error" @click="() => openDelete(item)">
+        <v-icon size="small" color="error" @click.stop.prevent="() => openDelete(item)">
           mdi-delete
         </v-icon>
       </template>
@@ -85,7 +85,7 @@
 <script>
 import PopUpYesNo from '@/components/popup/PopUpYesNo.vue';
 import { getTestsOfClass, getTests, addTestToClass, deleteTestInClass } from "@/services";
-import { authenticationRole, toastStore } from "@/stores";
+import { authenticationRole, testStore, toastStore } from "@/stores";
 import { mapState } from "pinia";
 const optionsFormatDate = { day: "2-digit", month: "2-digit", year: "numeric" }
 export default {
@@ -155,6 +155,7 @@ export default {
     await this.fetchAllTests()
   },
   computed: {
+    ...mapState(testStore, ["updateTest"]),
     ...mapState(authenticationRole, ["authentication"]),
     ...mapState(toastStore, ["updateToast"]),
     filteredTests() {
@@ -259,6 +260,10 @@ export default {
     openDelete(item) {
       this.isOpenDelete = true;
       this.delettingItem = { ...item };
+    },
+    handleClickItem(item) {
+      this.updateTest(item);
+      this.$router.push(`/admin/exam/preview/${item.testId}`)
     },
     async deleteItem() {
       const res = await deleteTestInClass(

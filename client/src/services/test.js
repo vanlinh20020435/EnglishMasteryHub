@@ -85,6 +85,25 @@ export const getTestByStudent = async (
   return result;
 };
 
+export const getTestResults = async (token = null, classId = null, testId = null, studentId = null) => {
+  const path = `/api/test-result/statistic/${studentId}?testId=${testId}&classId=${classId}`;
+  var result = {
+    success: false,
+    data: null,
+  };
+  try {
+    const response = await $axios.get(path, {
+      headers: { Authorization: 'Bearer ' + token },
+    });
+    result.data = response.data;
+    result.success = true;
+  } catch (error) {
+    console.log(error);
+    result.success = false;
+  }
+  return result;
+};
+
 export const getTestInfoByClass = async (token = null, classId) => {
   const path = `/api/class/${classId}/tests-info/get-all`;
   var result = {
