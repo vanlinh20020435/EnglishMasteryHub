@@ -561,6 +561,7 @@ export default {
           status: "0",
           description: this.dataExam.description?.trim(),
           questions: convertedData,
+          requiresGrading: this.questionList?.some((item) => item?.requiresGrading),
         };
 
         const urlAPI = "/api/testss/" + this.$route.params.id;

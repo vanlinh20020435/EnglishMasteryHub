@@ -548,7 +548,8 @@ export default {
           time: this.dataExam.time,
           status: "0",
           description: this.dataExam.description?.trim(),
-          questions: convertedData,
+          questions: convertedData,          
+          requiresGrading: this.questionList?.some((item) => item?.requiresGrading),
         };
 
         const result = await apiCallerPost(

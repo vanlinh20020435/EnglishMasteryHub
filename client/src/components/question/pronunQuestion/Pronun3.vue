@@ -1,20 +1,20 @@
 <template>
-  <v-card>
-    <v-card-title>
-      {{ question.title }}
-    </v-card-title>
-    <v-card-text>
-      <div v-for="(sub, idx) in question.subQuestions">
+  <div class="d-flex flex-column">
+    <h3 class="font-semi-bold text-lg">
+      Bài {{ indexQuestion + 1 }}: {{ question.title }}
+    </h3>
+    <v-col>
+      <div v-for="(sub, idx) in question.subQuestions" :key="idx">
         <p style="margin-bottom: 4px">{{ idx + 1 }}. {{ sub.content }}</p>
         <Audio :file="sub.files[0].url" color="success" :config="{ sound: true }"></Audio>
         <v-row>
-          <v-col cols="3" v-for="option in sub.options">
+          <v-col cols="3" v-for="(option, indexOption) in sub.options" :key="indexOption" >
             <v-text-field hide-details v-model="option.option"></v-text-field>
           </v-col>
         </v-row>
       </div>
-    </v-card-text>
-  </v-card>
+    </v-col>
+  </div>
 </template>
 
 <script>
@@ -27,6 +27,7 @@ export default {
   props: {
     question: Object,
     questionResults: Object,
+    indexQuestion: Number,
   },
   mounted() {
     this.question.subQuestions.forEach((sub) => {

@@ -23,7 +23,7 @@
           <v-card-title style="color: orange;">Preview</v-card-title>
         </v-card-text>
       </v-card>
-      <v-card :elevation="8" style="position: relative;">
+      <v-card class="do-exam-content" :elevation="8" style="position: relative;">
         <v-form>
           <v-card-text>
             <v-row>

@@ -1,16 +1,16 @@
 <template>
-  <v-card>
-    <v-card-title>
-      {{ question.title }}
-    </v-card-title>
-    <v-card-text>
+  <div class="d-flex flex-column">
+    <h3 class="font-semi-bold text-lg">
+      Bài {{ indexQuestion + 1 }}: {{ question.title }}
+    </h3>
+    <v-col>
       <Audio :file="question.files[0].url" color="success"></Audio>
-      <div v-for="(sub, idx) in question.subQuestions">
+      <div v-for="(sub, idx) in question.subQuestions" :key="idx">
         <p style="margin-bottom: 4px">{{ idx + 1 }}. {{ sub.content }}</p>
         <v-text-field v-model="sub.selected" placeholder="Nhập câu trả lời ..."></v-text-field>
       </div>
-    </v-card-text>
-  </v-card>
+    </v-col>
+  </div>
 </template>
 
 <script>
@@ -23,6 +23,7 @@ export default {
   props: {
     question: Object,
     questionResults: Object,
+    indexQuestion: Number,
   },
   mounted() {
     this.question.subQuestions.forEach((sub) => {

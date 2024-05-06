@@ -19,7 +19,7 @@
           <h3 class="font-bold">Danh sách tài liệu</h3>
 
           <v-col class="pa-8">
-            <v-col
+            <v-card
               v-for="(doc, index) in dataStudyDocs"
               :key="index"
               class="cursor-pointer pa-3 pt-5 pb-8 mb-5 pl-12 d-flex student-item docs-item box-shadow"
@@ -38,11 +38,11 @@
                   <div class="d-flex justify-space-between w-100">
                     <div class="d-flex flex-column">
                       <div
-                        class="font-semi-bold student-name ml-5 mr-5 d-flex align-center"
+                        class="font-semi-bold text-lg ml-5 mr-5 d-flex align-center"
                       >
                         {{ doc.documentName }}
                       </div>
-                      <div class="student-name ml-5 mr-5 d-flex align-center">
+                      <div class="text-base ml-5 mr-5 d-flex align-center">
                         Ngày tạo: {{ doc.created }}
                       </div>
                     </div>
@@ -64,7 +64,7 @@
                   </div>
                 </div>
               </v-row>
-            </v-col>
+            </v-card>
           </v-col>
         </div>
 
