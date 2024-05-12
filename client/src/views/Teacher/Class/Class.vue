@@ -5,36 +5,23 @@
 
       <v-divider class="header_divider" :thickness="2"></v-divider>
 
-      <div
-        style="max-height: 90%; overflow-y: auto"
-        class="d-flex flex-column class-list"
-      >
-        <div
-          v-if="listClasses.length > 0 && !isLoading"
-          style="width: 84%"
-          class="d-flex justify-start align-self-center flex-wrap"
-        >
-          <v-col
-            cols="6"
-            class="pt-4 pb-4"
-            v-for="(classData, index) in listClasses"
-            :key="index"
-          >
-            <v-card
-              @click="() => handleNavigateDetail(classData?.classId)"
-              hover
-              class="pa-3 pl-4 pr-4 class-box"
-              style="border-radius: 1rem"
-            >
+      <div style="max-height: 90%; overflow-y: auto" class="d-flex flex-column class-list">
+        <div v-if="isLoading" class="d-flex justify-center align-center height-100"
+          style="background-color: transparent;">
+          <v-progress-circular :size="70" :width="7" color="success" indeterminate></v-progress-circular>
+        </div>
+        <div v-if="listClasses.length > 0 && !isLoading" style="width: 84%"
+          class="d-flex justify-start align-self-center flex-wrap">
+          <v-col cols="6" class="pt-4 pb-4" v-for="(classData, index) in listClasses" :key="index">
+            <v-card @click="() => handleNavigateDetail(classData?.classId)" hover class="pa-3 pl-4 pr-4 class-box"
+              style="border-radius: 1rem">
               <v-row>
                 <div class="pa-3 class-img d-flex align-center">
                   <img :src="getClassAvatar(classData)" alt="Img Class" />
                 </div>
 
                 <v-col style="flex: 1" class="d-flex flex-column">
-                  <h3
-                    class="font-semi-bold text-center class-name pt-1 pb-1 pl-3 pr-3"
-                  >
+                  <h3 class="font-semi-bold text-center class-name pt-1 pb-1 pl-3 pr-3">
                     {{ classData?.className }}
                   </h3>
 
@@ -54,10 +41,7 @@
         <v-row v-else-if="!isLoading" class="ma-0" style="height: 90%">
           <v-col>
             <div class="d-flex flex-column align-center class-empty">
-              <img
-                src="@/assets/images/img_empty_class.png"
-                alt="Img Empty Class"
-              />
+              <img src="@/assets/images/img_empty_class.png" alt="Img Empty Class" />
               <h3 class="d-flex d-flex flex-column align-center">
                 Bạn chưa được thêm vào lớp học nào.
                 <br />

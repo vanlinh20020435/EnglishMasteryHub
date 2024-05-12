@@ -1,20 +1,28 @@
 <template>
-  <v-card>
-    <v-card-title>
-      {{ question.title }}
-    </v-card-title>
-    <v-card-text>
-      <div v-for="(sub, idx) in question.subQuestions">
+  <div class="d-flex flex-column">
+    <h3 class="font-semi-bold text-lg">
+      Bài {{ indexQuestion + 1 }}: {{ question.title }}
+    </h3>
+    <v-col>
+      <div v-for="(sub, idx) in question.subQuestions" :key="idx">
         <p style="margin-bottom: 4px">{{ idx + 1 }}. {{ sub.content }}</p>
         <Audio :file="sub.files[0].url" color="success" :config="{ sound: true }"></Audio>
         <v-row>
-          <v-col cols="3" v-for="option in sub.options">
-            <v-text-field hide-details v-model="option.option"></v-text-field>
+          <v-col cols="3" v-for="(option, indexOption) in sub.options" :key="indexOption" >
+            <v-text-field 
+              hide-details 
+              v-model="option.option" 
+              :model-value="!!reviewExam ? sub?.studentResult?.answers[indexOption] : option.option"
+              :readonly="!!reviewExam"
+              :class="!!this.reviewExam ? sub?.answers?.some((answer) => answer.answer === sub?.studentResult?.answers[indexOption]) ? 'color-right-textfield' : 'color-wrong-textfield' : ''"
+              placeholder="Write  your answer... ..."
+            >
+            </v-text-field>
           </v-col>
         </v-row>
       </div>
-    </v-card-text>
-  </v-card>
+    </v-col>
+  </div>
 </template>
 
 <script>
@@ -27,10 +35,15 @@ export default {
   props: {
     question: Object,
     questionResults: Object,
+    indexQuestion: Number,
+    reviewExam: String,
   },
   mounted() {
     this.question.subQuestions.forEach((sub) => {
-      const subquestionResult = {
+      const subquestionResult = !!this.reviewExam ? {
+        questionId: sub.questionId,
+        ...sub.studentResult
+      } : {
         questionId: sub.questionId,
         answers: [],
         rightAnswer: null,
@@ -51,15 +64,17 @@ export default {
         const qr = this.questionResults.find(
           (q) => q.questionId === sub.questionId
         );
-        qr.answers = sub.options.map(option => this.normalizeText(option.option));
-        let selected = qr.answers
-        let sc = 0
-        sub.answers.forEach(answer => {
-          let correct = selected.some(s => s === answer.answer)
-          sc += correct ? 1 : 0
-        });
-        qr.score = sc / selected.length
-        qr.rightAnswer = sc === selected.length
+        if(!qr?.length && !this.reviewExam) {
+          qr.answers = sub.options.map(option => this.normalizeText(option.option));
+          let selected = qr.answers
+          let sc = 0
+          sub.answers.forEach(answer => {
+            let correct = selected.some(s => s === answer.answer)
+            sc += correct ? 1 : 0
+          });
+          qr.score = sc / selected.length
+          qr.rightAnswer = sc === selected.length;
+        }
       })
     }
   },

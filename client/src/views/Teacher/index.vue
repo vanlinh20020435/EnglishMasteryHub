@@ -25,6 +25,11 @@ export default {
       //   ],
       // },
       {
+        title: "Quản lý lớp",
+        value: "class",
+        icon: "mdi-account-multiple",
+      },
+      {
         title: "Quản lý bài kiểm tra",
         value: "exam",
         icon: "mdi mdi-file-edit",
@@ -40,11 +45,6 @@ export default {
             icon: "",
           },
         ],
-      },
-      {
-        title: "Quản lý lớp",
-        value: "class",
-        icon: "mdi-account-multiple",
       },
       // {
       //   title: "Giáo trình",

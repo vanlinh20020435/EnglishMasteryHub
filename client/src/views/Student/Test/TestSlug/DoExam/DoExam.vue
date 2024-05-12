@@ -1,62 +1,56 @@
 <template>
-  <div class="do-exam-container" v-if="test.testId">
-    <v-card :elevation="8" style="margin-bottom: 16px">
-      <v-card-title
-        >{{ test.testName }} -
-        <span style="color: #333; font-size: 14px"
-          >Tổng số câu hỏi: {{ test.totalQuestions }}</span
-        ></v-card-title
-      >
-      <v-card-text class="d-flex">
-        <v-btn
-          @click="back"
-          color="#fde74c"
-          icon="mdi-arrow-left"
-          size="x-small">
-        </v-btn>
-        <v-spacer></v-spacer>
+  <div class="do-exam-container" v-if="_test.testId">
+    <v-card v-if="isSubmitted">
+      <v-card-title v-if="_test.requiresGrading">Bạn đã nộp bài thành công!</v-card-title>
+      <v-card-title v-else>Điểm của bạn: {{ answersForm.score }}/{{ answersForm.testDefaultScore }}.</v-card-title>
+      <v-card-subtitle>Tổng thời gian: {{ convertTimeText(answersForm.time * 60) }}</v-card-subtitle>
+      <v-card-text class="d-flex"><v-spacer></v-spacer><v-btn @click="this.$router.push('/student/news')"
+          color="success">Quay về trang
+          chủ</v-btn></v-card-text>
+    </v-card>
+    <div v-else>
+      <v-card :elevation="8" style="margin-bottom: 16px">
+        <v-card-title>{{ _test.testName }} -
+          <span style="color: #333; font-size: 14px">Tổng số câu hỏi: {{ _test.totalQuestions
+            }}</span></v-card-title>
+        <v-card-text class="d-flex">
+          <v-btn @click="back" color="#fde74c" icon="mdi-arrow-left" size="x-small">
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn v-if="!preview" @click="openSubmit" color="success" style="margin-right: 8px">
+            Nộp bài
+          </v-btn>
+          <v-card-title v-else style="color: orange;">Preview</v-card-title>
+        </v-card-text>
+      </v-card>
+      <v-card class="do-exam-content" :elevation="8" style="position: relative;">
+        <v-form>
+          <v-card-text>
+            <v-row>
+              <v-col md="12" v-for="(question, index) in _test.questions" :key="question.questionId">
+                <Question :question="{ ...question }" :questionResults="answersForm.questionResults"
+                  :indexQuestion="index" />
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-form>
+        <div v-if="preview" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 1;
+        height: 100%;"></div>
+      </v-card>
+      <div v-if="position[1] > 100 && !preview" class="position-fixed" style="bottom: 16px; right: 16px">
         <v-btn @click="openSubmit" color="success" style="margin-right: 8px">
           Nộp bài
         </v-btn>
-      </v-card-text>
-    </v-card>
-    <v-card :elevation="8">
-      <v-form>
-        <v-card-text>
-          <v-row>
-            <v-col
-              md="12"
-              v-for="(question, index) in test.questions"
-              :key="question.questionId">
-              <Question
-                :question="{ ...question }"
-                :questionResults="answersForm.questionResults"
-                :indexQuestion="index" />
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-form>
-    </v-card>
-    <div
-      v-if="position[1] > 100"
-      class="position-fixed"
-      style="bottom: 16px; right: 16px">
-      <v-btn @click="openSubmit" color="success" style="margin-right: 8px">
-        Nộp bài
-      </v-btn>
-      <v-btn @click="scrollToTop" icon="mdi-menu-up" color="success"> </v-btn>
-    </div>
-    <div class="timer-tick">
-      <TimerTick :seconds="test?.time * 60 || 30 * 60" :onEndTimerTick="onEndTimerTick"></TimerTick>
+        <v-btn @click="scrollToTop" icon="mdi-menu-up" color="success"> </v-btn>
+      </div>
+      <div class="timer-tick" v-if="!preview">
+        <TimerTick :onTimerTick="onTimerTick" :seconds="test?.time * 60 || 30 * 60" :onEndTimerTick="onEndTimerTick"></TimerTick>
+      </div>
     </div>
     <v-dialog v-model="isOpenSubmit" max-width="500px">
       <v-card v-if="isLoadingSubmit">
         <v-card-text class="d-flex justify-center">
-          <v-progress-circular
-            :size="60"
-            :width="6"
-            color="success"
-            indeterminate></v-progress-circular>
+          <v-progress-circular :size="60" :width="6" color="success" indeterminate></v-progress-circular>
         </v-card-text>
       </v-card>
       <v-card v-else>
@@ -74,7 +68,7 @@
       </v-card>
     </v-dialog>
   </div>
-  <div v-else>no test</div>
+  <!-- <div v-else-if="!isLoadingSubmit">no test</div> -->
 </template>
 
 <script>
@@ -86,7 +80,7 @@ import {
   testStore,
   toastStore,
 } from '@/stores';
-import { submitExam } from '@/services';
+import { submitExam, getTest } from '@/services';
 import { mapState } from 'pinia';
 import TimerTick from '@/components/timerTick/TimerTick.vue';
 
@@ -96,6 +90,9 @@ export default {
     Question,
     TimerTick
   },
+  props: {
+    preview: Boolean
+  },
   data: () => ({
     answersForm: {
       score: 0,
@@ -103,8 +100,12 @@ export default {
       time: 0,
       questionResults: [],
     },
+    _test: {},
     isOpenSubmit: false,
     isLoadingSubmit: false,
+    isSubmitted: false,
+    isLoadingExam: false,
+    remainingSeconds: 0
   }),
   computed: {
     ...mapState(authenticationRole, ['authentication']),
@@ -112,8 +113,22 @@ export default {
     ...mapState(studentStore, ['student']),
     ...mapState(toastStore, ['updateToast']),
   },
-  mounted() {
-    window.addEventListener('beforeunload', this.confirmLeave);
+  async mounted() {
+    if (!this.preview) window.addEventListener('beforeunload', this.confirmLeave);
+    if (this.test.testId) {
+      this._test = this.test
+    }
+    else {
+      this.isLoadingExam = true;
+      const res = await getTest(
+        this.authentication.accessToken.token,
+        this.$route.params.id,
+      );
+      if (res.success) {
+        this._test = res.data
+      }
+      this.isLoadingExam = false;
+    }
     this.answersForm.classId = Number(this.student.class.classId);
     this.answersForm.testId = Number(this.$route.params.id);
     this.answersForm.studentId = Number(this.student.studentId);
@@ -133,14 +148,14 @@ export default {
     async confirmSubmit() {
       this.isLoadingSubmit = true;
       this.caculateScore();
-      this.answersForm.time = 10; // timer
+      this.answersForm.time = this.remainingSeconds / 60; // timer
       const res = await submitExam(
         this.authentication.accessToken.token,
         this.answersForm
       );
       if (res.success) {
         this.updateToast('success', 'Nộp bài thành công!');
-        this.$router.replace('/student/test');
+        this.isSubmitted = true
       } else {
         this.updateToast('error', 'Nộp bài không thành công!');
       }
@@ -164,14 +179,33 @@ export default {
     },
     onEndTimerTick() {
       this.confirmSubmit();
+    },
+    onTimerTick(currentSeconds) {
+      this.remainingSeconds = this.test.time * 60 - currentSeconds;
+    },
+    convertTimeText(time) {
+      if (time >= 3600) {
+        const hours = Math.floor(time / 3600);
+        const minutes = Math.floor((time % 3600) / 60);
+        const seconds = time % 60;
+        return `${hours} giờ ${minutes} phút ${seconds} giây`;
+      } else if (time >= 60) {
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        return `${minutes} phút ${seconds} giây`;
+      } else {
+        return `${time} giây`;
+      }
     }
   },
   beforeUnmount() {
-    window.removeEventListener('DOMContentLoaded', this.confirmLeave);
-    window.removeEventListener('beforeunload', this.confirmLeave);
+    if (!this.preview) {
+      window.removeEventListener('DOMContentLoaded', this.confirmLeave);
+      window.removeEventListener('beforeunload', this.confirmLeave);
+    }
   },
   beforeRouteLeave(to, from, next) {
-    if (this.test.testId) {
+    if (this._test.testId && !this.preview) {
       if (
         confirm('Kết quả chưa được lưu, bạn có chắc muốn rời khỏi trang?') ==
         true

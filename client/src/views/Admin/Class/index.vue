@@ -40,10 +40,15 @@
               <v-col cols="12" md="12" sm="6">
                 <v-text-field v-model="formItem.className" :rules="classNameRules" label="Class name*"></v-text-field>
               </v-col>
-              <v-col cols="12" md="12" sm="6">
-                <v-text-field v-model="formItem.avatar" label="Avatar"></v-text-field>
+              <v-col v-if="formItem.avatar" cols="12" md="12">
+                <v-text-field prepend-icon="mdi-paperclip" v-model="formItem.avatar" label="Avatar" clearable
+                  readonly></v-text-field>
               </v-col>
-              <v-col v-if="!isEdit" cols="12" md="12" sm="6">
+              <v-col v-else cols="12" md="12">
+                <v-file-input v-model="selectedFile" label="Avatar" accept="image/png, image/jpeg" hide-no-data
+                  show-size></v-file-input>
+              </v-col>
+              <v-col cols="12" md="12" sm="6">
                 <v-text-field v-model="formItem.description" label="Description"></v-text-field>
               </v-col>
               <v-col cols="12" md="6" sm="6">
@@ -80,19 +85,19 @@
           <v-btn color="blue-darken-1" variant="text" @click="() => isOpenForm = false">
             Cancel
           </v-btn>
-          <v-btn color="blue-darken-1" variant="text" type="submit">
+          <v-btn color="blue-darken-1" variant="text" type="submit" :disabled="isLoadingFile">
             Save
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
   </v-dialog>
-  <PopUpYesNo msg="Bạn có chắc chắn muốn xoas?" :visible="isOpenDelete" :handleClickYes="deleteItem"
+  <PopUpYesNo msg="Bạn có chắc chắn muốn xóa?" :visible="isOpenDelete" :handleClickYes="deleteItem"
     :handleClickNo="() => (isOpenDelete = false)" />
 </template>
 
 <script>
-import { getClasses, searchClasses, getTeachers, createClass, editClass, deleteClass } from '@/services';
+import { getClasses, searchClasses, getTeachers, createClass, editClass, deleteClass, uploadFile } from '@/services';
 import { authenticationRole, toastStore } from '@/stores';
 import { mapState } from 'pinia';
 import ListClasses from './ListClasses.vue';
@@ -151,6 +156,8 @@ export default {
       ],
       isLoadingForm: false,
       teacherSelector: [],
+      selectedFile: null,
+      isLoadingFile: false
     };
   },
   computed: {
@@ -208,11 +215,11 @@ export default {
       const res = await createClass(this.authentication?.accessToken?.token, payload)
       this.isLoadingForm = false
       if (res.success) {
-        this.updateToast('success', "Tạo Student thành công!")
+        this.updateToast('success', "Tạo Class thành công!")
         this.isOpenForm = false
         await this.fetchData()
       } else {
-        this.updateToast('error', "Tạo Student thất bại!")
+        this.updateToast('error', "Tạo Class thất bại!")
       }
     },
     async editItem() {
@@ -228,11 +235,11 @@ export default {
       const res = await editClass(this.authentication?.accessToken?.token, this.formItem.classId, payload)
       this.isLoadingForm = false
       if (res.success) {
-        this.updateToast('success', "Sửa Student thành công!")
+        this.updateToast('success', "Sửa Class thành công!")
         this.isOpenForm = false
         await this.fetchData()
       } else {
-        this.updateToast('error', "Sửa Student thất bại!")
+        this.updateToast('error', "Sửa Class thất bại!")
       }
     },
     async deleteItem() {
@@ -242,10 +249,10 @@ export default {
         this.delettingItem.classId
       );
       if (res.success) {
-        this.updateToast('success', "Xóa Student thành công!")
+        this.updateToast('success', "Xóa Class thành công!")
         await this.fetchData();
       } else {
-        this.updateToast('error', "Xóa Student thất bại!")
+        this.updateToast('error', "Xóa Class thất bại!")
       }
       this.isOpenDelete = false
       this.isLoadingForm = false;
@@ -287,6 +294,32 @@ export default {
     },
     datePicker2(val) {
       this.datePickerComputed2 = val ? new Date(val).toLocaleDateString() : null
+    },
+    async selectedFile(val) {
+      if (val) {
+        try {
+          this.isLoadingFile = true
+          const result = await uploadFile(
+            this.authentication?.accessToken?.token,
+            val[0]
+          )
+          if (result.success) {
+            this.formItem.avatar = result.data.url
+          } else {
+            this.selectedFile = null
+            this.updateToast('error', "Lỗi tải ảnh lên!")
+          }
+        } catch (error) {
+          this.selectedFile = null
+          console.log(error);
+        }
+        this.isLoadingFile = false
+      }
+    },
+    "formItem.avatar": function (val) {
+      if (!val) {
+        this.selectedFile = null
+      }
     }
   },
 };

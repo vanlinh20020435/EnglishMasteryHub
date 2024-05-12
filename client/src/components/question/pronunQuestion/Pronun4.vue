@@ -1,10 +1,10 @@
 <template>
-  <v-card>
-    <v-card-title>
-      {{ question.title }}
-    </v-card-title>
-    <v-card-text>
-      <div v-for="(sub, idx) in question.subQuestions">
+  <div class="d-flex flex-column">
+    <h3 class="font-semi-bold text-lg">
+      Bài {{ indexQuestion + 1 }}: {{ question.title }}
+    </h3>
+    <v-col>
+      <div v-for="(sub, idx) in question.subQuestions" :key="idx">
         <p style="margin-bottom: 4px">{{ idx + 1 }}. {{ sub.content }}</p>
         <v-row v-if="$vuetify.display.smAndDown">
           <v-col cols="12" style="padding-bottom: 0">
@@ -19,7 +19,9 @@
               hide-details
               v-model="sub.selected"
               :label="option.option"
-              :value="option.option"></v-checkbox>
+              :value="option.option"
+              :class="!!this.reviewExam ? !!sub?.studentResult?.rightAnswer ? 'checkboxRight' : 'checkboxWrong' : ''"
+              ></v-checkbox>
           </v-col>
         </v-row>
         <v-row v-else>
@@ -29,7 +31,9 @@
               hide-details
               v-model="sub.selected"
               :label="option.option"
-              :value="option.option"></v-checkbox>
+              :value="option.option"
+              :class="!!this.reviewExam ? !!sub?.studentResult?.rightAnswer ? 'checkboxRight' : 'checkboxWrong' : ''"
+              ></v-checkbox>
           </v-col>
           <v-col cols="6">
             <Audio
@@ -39,8 +43,8 @@
           </v-col>
         </v-row>
       </div>
-    </v-card-text>
-  </v-card>
+    </v-col>
+  </div>
 </template>
 
 <script>
@@ -53,10 +57,15 @@ export default {
   props: {
     question: Object,
     questionResults: Object,
+    indexQuestion: Number,
+    reviewExam: String,
   },
   mounted() {
     this.question.subQuestions.forEach((sub) => {
-      const subquestionResult = {
+      const subquestionResult = !!this.reviewExam ? {
+        questionId: sub.questionId,
+        ...sub.studentResult
+      } : {
         questionId: sub.questionId,
         answers: [],
         rightAnswer: null,
@@ -64,21 +73,27 @@ export default {
         defaultScore: 1,
       };
       this.questionResults.push(subquestionResult);
+      !!this?.reviewExam && this.question?.subQuestions?.forEach((sub) => {
+        sub.selected = sub?.studentResult?.answers?.[0];
+      })
     });
+
   },
   methods: {
     caculatePoint(data) {
       data.forEach((sub) => {
-        const qr = this.questionResults.find(
+        const qr = this.questionResults?.find(
           (q) => q.questionId === sub.questionId
         );
-        qr.answers = [sub.selected];
-        if (sub.selected === sub.answers[0].answer) {
-          qr.rightAnswer = true;
-          qr.score = 1;
-        } else {
-          qr.rightAnswer = false;
-          qr.score = 0;
+        if (!qr?.length && !this.reviewExam) {
+          qr.answers = [sub.selected];
+          if (sub.selected === sub.answers[0].answer) {
+            qr.rightAnswer = true;
+            qr.score = 1;
+          } else {
+            qr.rightAnswer = false;
+            qr.score = 0;
+          }
         }
       });
     },

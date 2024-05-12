@@ -18,14 +18,19 @@
     border-radius: 1rem;
     min-height: 6.5rem;
     position: relative;
+    overflow: visible;
 
     .img_type {
       position: absolute;
       top: 8px;
-      left: -30px;
+      left: -35px;
       border-radius: 50%;
       width: 90px;
       height: 90px;
+
+      img {
+        width: 100%;
+      }
     }
   }
 }

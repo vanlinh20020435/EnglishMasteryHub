@@ -3,95 +3,51 @@
     <v-snackbar color="success" v-model="stateExams.success" location="top">
       Xóa bài kiểm tra thành công!
       <template v-slot:actions>
-        <v-btn
-          color="#EFE841"
-          variant="text"
-          @click="stateExams.success = false"
-        >
+        <v-btn color="#EFE841" variant="text" @click="stateExams.success = false">
           Đóng
         </v-btn>
       </template>
     </v-snackbar>
 
     <v-container class="d-flex flex-column height-100 v-container__full">
-      <HeaderTitle
-        isSearch
-        isCreate
-        title="Quản lý bài kiểm tra"
-        :createNew="createNewExam"
-        @update:searchValue="handleSearchInputChange"
-        :searchValue="searchValue"
-      />
+      <HeaderTitle isSearch isCreate title="Quản lý bài kiểm tra" :createNew="createNewExam"
+        @update:searchValue="handleSearchInputChange" :searchValue="searchValue" />
       <v-divider class="header_divider" :thickness="2"></v-divider>
       <v-row style="height: 90%" class="d-flex justify-center">
         <v-col class="height-100" cols="12" md="11">
-          <v-data-table
-            style="overflow-y: auto"
-            class="height-100 scrollbar-custom v-data-table__exam"
-            fixed-header
-            :headers="headers"
-            :items="filteredStateExams"
-            :sort-by="[{ key: 'testId', order: 'asc' }]"
-            :loading="isLoading"
-            hover
-            @click:row="(a, b) => handleClickItem(b.item)"
-          >
+          <v-data-table style="overflow-y: auto" class="height-100 scrollbar-custom v-data-table__exam" fixed-header
+            :headers="headers" :items="filteredStateExams" :sort-by="[{ key: 'testId', order: 'asc' }]"
+            :loading="isLoading" hover @click:row="(a, b) => handleClickItem(b.item)">
             <template v-slot:top>
-              <PopUpYesNo
-                msg="Bạn có chắc chắn muốn xóa bài kiểm tra này?"
-                :visible="dialogDelete"
-                :handleClickYes="deleteItemConfirm"
-                :handleClickNo="closeDelete"
-                @update:visible="handleVisible"
-              />
+              <PopUpYesNo msg="Bạn có chắc chắn muốn xóa bài kiểm tra này?" :visible="dialogDelete"
+                :handleClickYes="deleteItemConfirm" :handleClickNo="closeDelete" @update:visible="handleVisible" />
             </template>
             <template v-slot:item.actions="{ item }">
-              <v-icon
-                color="#00bd7e"
-                size="default"
-                class="me-2"
-                @click.stop.prevent="editItem(item)"
-              >
+              <v-icon color="#00bd7e" size="default" class="me-2" @click.stop.prevent="editItem(item)">
                 mdi-pencil
               </v-icon>
-              <v-icon
-                color="red"
-                size="default"
-                @click.stop.prevent="deleteItem(item)"
-              >
+              <v-icon color="red" size="default" @click.stop.prevent="deleteItem(item)">
                 mdi-trash-can
               </v-icon>
             </template>
             <template v-slot:no-data>
               <!-- <v-btn color="primary" @click="initialize"> Reset </v-btn> -->
               <div class="exam_empty d-flex flex-column align-center">
-                <img
-                  src="@/assets/images/img_empty_exam.png"
-                  alt="Empty Exam"
-                  class="img_empty"
-                />
+                <img src="@/assets/images/img_empty_exam.png" alt="Empty Exam" class="img_empty" />
                 <h3 class="font-bold">{{ msgEmptyExam }}</h3>
               </div>
             </template>
           </v-data-table>
         </v-col>
       </v-row>
-      <PopUpYesNo
-        msg="Bạn không có quyền chỉnh sửa bài kiểm tra này!"
-        btnYes="Đồng ý"
-        :visible="openPopupEdit"
-        :handleClickYes="
-          () => {
+      <PopUpYesNo msg="Bạn không có quyền chỉnh sửa bài kiểm tra này!" btnYes="Đồng ý" :visible="openPopupEdit"
+        :handleClickYes="() => {
             this.openPopupEdit = false;
           }
-        "
-        hideBtnNo
-        @update:visible="
-          (newValue) => {
+          " hideBtnNo @update:visible="(newValue) => {
             this.openPopupEdit = newValue;
           }
-        "
-      />
+          " />
     </v-container>
   </v-card>
 </template>
@@ -240,8 +196,8 @@ export default {
       let urlFetch = this.isAdmin
         ? "/api/testss"
         : !this.isAll
-        ? "/api/testss/find-by-user/" + this.authentication.user?.userId
-        : "/api/testss";
+          ? "/api/testss/find-by-user/" + this.authentication.user?.userId
+          : "/api/testss";
       const result = await apiCallerGet(urlFetch);
       if (result?.data) {
         this.isLoading = false;
@@ -307,7 +263,7 @@ export default {
     },
 
     handleClickItem(item) {
-      console.log("item ==", item);
+      this.$router.push(`/teacher/exam/preview/${item.testId}`)
     },
   },
 };

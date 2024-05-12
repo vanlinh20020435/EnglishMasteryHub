@@ -102,7 +102,6 @@ export default {
   data() {
     return {
       selectedFileName: [],
-
       fileUpload: {},
       option: "",
       required: [
@@ -112,6 +111,7 @@ export default {
         },
       ],
       questions: [],
+      defaultFile: null,
     };
   },
   props: {
@@ -121,6 +121,7 @@ export default {
   },
   created() {
     this.questions = this.questionSkill.subQuestions;
+    this.defaultFile = this.questions?.files?.[0]?.name;
   },
   methods: {
     updateGroupTitleQuestion(value) {

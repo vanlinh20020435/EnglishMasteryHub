@@ -1,21 +1,34 @@
 <template>
-  <Writing1Question v-if="question?.type === '1'" :dataQuestion="question" :questionResults="questionResults"></Writing1Question>
-  <Writing3Question v-else-if="question?.type === '3'" :dataQuestion="question" :questionResults="questionResults"></Writing3Question>
+  <Writing1Question
+    v-if="question?.type === '1'"
+    :dataQuestion="question"
+    :questionResults="questionResults"
+    :indexQuestion="indexQuestion"
+    :reviewExam="reviewExam"
+  ></Writing1Question>
+  <Writing3Question
+    v-else-if="question?.type === '3'"
+    :dataQuestion="question"
+    :questionResults="questionResults"
+    :indexQuestion="indexQuestion"
+    :reviewExam="reviewExam"
+  ></Writing3Question>
 </template>
 
 <script>
-import Writing1Question from '@/components/question/writingQuestion/Writing1.vue';
-import Writing3Question from '@/components/question/writingQuestion/Writing3.vue';
+import Writing1Question from "@/components/question/writingQuestion/Writing1.vue";
+import Writing3Question from "@/components/question/writingQuestion/Writing3.vue";
 export default {
   components: {
     Writing1Question,
-    Writing3Question
+    Writing3Question,
   },
   props: {
     question: Object,
-		questionResults: Object
+    questionResults: Object,
+    indexQuestion: Number,
+    reviewExam: String,
   },
-  mounted() {
-  },
+  mounted() {},
 };
 </script>

@@ -94,6 +94,42 @@ img {
   color: #000000;
 }
 
+.color-white {
+  color: #FFFFFF;
+}
+
+.color-right {
+  color: #009444 !important;
+  font-weight: 600;
+  font-size: 1.125rem !important;
+  line-height: normal !important;
+}
+.color-right-textfield input,
+.checkboxRight .v-selection-control--dirty .v-label {
+  color: #009444 !important;
+  font-weight: 600;
+  font-size: 1.125rem !important;
+  line-height: normal !important;
+}
+
+.color-wrong {
+  color: #be1e2d !important;
+  font-weight: 600;
+  font-size: 1.125rem !important;
+  line-height: normal !important;
+}
+.color-wrong-textfield input,
+.checkboxWrong .v-selection-control--dirty .v-label {
+  color: #be1e2d !important;
+  font-weight: 600;
+  font-size: 1.125rem !important;
+  line-height: normal !important;
+}
+
+.line-height-normal {
+  line-height: normal !important;
+}
+
 .height-100 {
   height: 100%;
 }
@@ -131,8 +167,12 @@ img {
   color: #484848 !important;
 }
 
+/* Object fit Image */
 .contain_image {
   object-fit: contain;
+}
+.cover_image {
+  object-fit: cover;
 }
 
 .v-data-table__exam .v-data-table__th .v-data-table-header__content span {
@@ -155,6 +195,14 @@ img {
 
 .btn-delete-linear {
   background-image: var(--linear-color) !important;
+}
+
+.btn-warning {
+  background-color: #F8AF36 !important;
+}
+
+.btn-error {
+  background-color: #e77865 !important;
 }
 
 .bg_white {
