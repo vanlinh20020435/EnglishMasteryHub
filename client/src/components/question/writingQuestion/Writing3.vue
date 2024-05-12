@@ -35,7 +35,8 @@
             <h4 class="font-semi-bold color-black ">ĐIỂM</h4>
           </div>
           <div class="mark-writing-input">
-            <input 
+            <input
+              v-if="!!dataQuestion.subQuestions?.[0]?.studentResult" 
               type="number"
               step="0.1" 
               min="0" 
@@ -44,6 +45,12 @@
               @input="(event) => handleChangeScoreDecimal(event)"
               v-model="scoreMark"
               :readonly="reviewExam !== 'teacherMark'"
+            />
+            <input 
+              type="text" 
+              class="font-bold" 
+              readonly v-else
+               value="Chờ chấm" 
             />
           </div>
       </v-col>
@@ -70,6 +77,7 @@ export default {
     reviewExam: String,
   },
   mounted() {
+    console.log('dataQuestion ======', this.dataQuestion);
     this.subquestionResults = this?.dataQuestion?.subQuestions?.map((item) => {
       return (
         !!this.reviewExam ? {

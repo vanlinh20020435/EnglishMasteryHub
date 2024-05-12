@@ -67,6 +67,7 @@ export default {
       isLoading: false,
       examId: this.$route?.params?.examId,
       dataTestInfor: {},
+      indexHistory: this.$route?.params?.historyIdx,
     };
   },
   computed: {
@@ -91,7 +92,7 @@ export default {
       const result = await apiCallerGet(urlAPI);
 
       if (result?.success) {
-        this.dataExamStudent = result.data?.[result.data.length - 1];
+        this.dataExamStudent = result.data?.[this.indexHistory || result.data.length - 1];
         this.dataTestInfor = result.data?.[0]?.test;
       }
       this.isLoading = false;

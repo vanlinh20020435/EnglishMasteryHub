@@ -216,7 +216,7 @@ const routes = [
         component: TestSlug,
       },
       {
-        path: "test/:examId/history",
+        path: "test/:examId/history/:historyIdx",
         component: HistoryTestInfo,
       },
       {

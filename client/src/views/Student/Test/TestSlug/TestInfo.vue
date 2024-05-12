@@ -55,7 +55,7 @@
       <v-card-title>Lịch sử làm bài</v-card-title>
       <v-card-text> <v-list style="padding-top: 0; padding-bottom: 0">
           <v-hover v-for="(testResult, idx) in histories" :key="idx" v-slot="{ isHovering, props }">
-            <v-card  @click="handleNavigateHistory(testResult)" class="cursor-pointer" :elevation="isHovering ? 8 : 4" v-bind="props" style="margin: 0 8px 16px">
+            <v-card  @click="handleNavigateHistory(idx)" class="cursor-pointer" :elevation="isHovering ? 8 : 4" v-bind="props" style="margin: 0 8px 16px">
               <v-list-item height="70" :key="testResult?.id" :title="'Lần thi ' + (idx + 1)"
                 :subtitle="testResult?.created">
                 <template v-slot:prepend>
@@ -187,8 +187,8 @@ export default {
         datetime(start).value < new Date() && new Date() < datetime(end).value
       );
     },
-    handleNavigateHistory(item) {
-      this.$router.push(`/student/test/${this.$route.params.id}/history`)
+    handleNavigateHistory(idx) {
+      this.$router.push(`/student/test/${this.$route.params.id}/history/${idx}`)
     }
   },
 };
