@@ -36,7 +36,7 @@ export default {
     question: Object,
     questionResults: Object,
     indexQuestion: Number,
-    reviewExam: Boolean,
+    reviewExam: String,
   },
   mounted() {},
 };

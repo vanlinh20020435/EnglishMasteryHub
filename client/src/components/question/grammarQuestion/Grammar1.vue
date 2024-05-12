@@ -28,17 +28,23 @@ export default {
     dataQuestion: Object,
     indexQuestion: Number,
     questionResults: Object,
-    reviewExam: Boolean,
+    reviewExam: String,
   },
   mounted() {
-    const subquestionResults = this.dataQuestion.subQuestions.map((item) => ({
-      questionId: item.questionId,
-      answers: [],
-      rightAnswer: false,
-      score: 0,
-      defaultScore: 1,
-    }));
-
+    const subquestionResults = this?.dataQuestion?.subQuestions?.map((item) => {
+      return (
+        !!this.reviewExam ? {
+          questionId: item.questionId,
+          ...item.studentResult
+        } : {
+          questionId: item.questionId,
+          answers: [],
+          rightAnswer: false,
+          score: 0,
+          defaultScore: 1,
+        }
+      )
+    });
     this.questionResults.push(...subquestionResults);
 
     window.handleChange = (event, subQuestionIndex) => {
@@ -86,7 +92,7 @@ export default {
         const placeholder = match[0];
         const inputPlaceholder = match[1];
         const inputHtml = 
-				`<input type="text" ${this.reviewExam &&  'readOnly'} ${this.reviewExam && `value="${subQuestion?.studentResult?.answers?.[0]}"`}  class="input-answer font-semi-bold ${this.reviewExam ? subQuestion?.studentResult?.rightAnswer ? 'color-right' : 'color-wrong' : '' }" onchange="handleChange(event, ${index})" data-index="${index}"  />`;
+				`<input placeholder="Write your answer ..." type="text" ${this.reviewExam &&  'readOnly'} ${this.reviewExam && `value="${subQuestion?.studentResult?.answers?.[0] || ""}"`}  class="input-answer font-semi-bold ${this.reviewExam ? subQuestion?.studentResult?.rightAnswer ? 'color-right' : 'color-wrong' : '' }" onchange="handleChange(event, ${index})" data-index="${index}"  />`;
         replaced = replaced.replace(placeholder, inputHtml);
       }
 

@@ -1,5 +1,5 @@
 <template>
-  <v-card class="height-100 class-container">
+  <v-card style="min-height: 100%;" class="class-container">
     <!-- <v-card v-if="isSubmitted">
       <v-card-title v-if="dataExamStudent?.requiresGrading">Bạn đã nộp bài thành công!</v-card-title>
       <v-card-title v-else>Điểm của bạn: {{ answersForm.score }}/{{ answersForm.testDefaultScore }}.</v-card-title>
@@ -22,11 +22,10 @@
         "
       />
       <v-divider class="header_divider" :thickness="2"></v-divider>
-
       <v-col
         class="pt-0 class-list class-docs class-students align-center do-exam-container do-exam-container-mark"
       >
-        <v-card :elevation="8" style="margin-bottom: 16px" class="pt-3" >
+        <v-card :elevation="8" style="margin-bottom: 16px" class="pt-3">
           <v-card-title
             >{{ dataTestInfor?.testName }} -
             <span style="color: #333; font-size: 14px"
@@ -39,7 +38,7 @@
           <v-card-text class="d-flex">
             <v-spacer></v-spacer>
             <v-btn
-              v-if="dataExamStudent?.some((data) => data?.requiresGrading)"
+              v-if="dataExamStudent?.requiresGrading"
               @click="openSubmit"
               color="success"
               style="margin-right: 8px"
@@ -54,7 +53,7 @@
               <v-row>
                 <v-col
                   md="12"
-                  v-for="(question, index) in dataExamStudent?.[dataExamStudent?.length - 1]?.test.questions"
+                  v-for="(question, index) in dataExamStudent?.test.questions"
                   :key="question?.id"
                 >
                   <Question
@@ -67,6 +66,15 @@
               </v-row>
             </v-card-text>
           </v-form>
+          <div
+            style="
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+            "
+          ></div>
         </v-card>
         <div
           v-if="position?.[1] > 100"
@@ -79,15 +87,9 @@
           <v-btn @click="scrollToTop" icon="mdi-menu-up" color="success">
           </v-btn>
         </div>
-        <!-- <div class="timer-tick timer-tick-mark">
-          <TimerTick
-            :seconds="test?.time * 60 || 30 * 60"
-            :onEndTimerTick="onEndTimerTick"
-          ></TimerTick>
-        </div> -->
       </v-col>
       <v-dialog v-model="isOpenSubmit" max-width="500px">
-        <v-card v-if="isLoadingSubmit">
+        <v-card class="pa-5" v-if="isLoadingSubmit">
           <v-card-text class="d-flex justify-center">
             <v-progress-circular
               :size="60"
@@ -99,7 +101,7 @@
         </v-card>
         <v-card v-else>
           <v-card-title>Xác nhận lưu bài</v-card-title>
-          <v-card-text> Bạn có chắc chắn muốn lưu bài? </v-card-text>
+          <v-card-text> Bạn có chắc chắn muốn lưu bài chấm? </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn variant="tonal" @click="() => (isOpenSubmit = false)">
@@ -125,10 +127,11 @@ import { authenticationRole, toastStore } from "@/stores";
 import { submitExam } from "@/services";
 import { mapState } from "pinia";
 import TimerTick from "@/components/timerTick/TimerTick.vue";
+import { apiCallerPut } from "@/services/teacher";
 
 export default {
   name: "MarkExamDetail",
-  // mixins: [windowScroll("position")],
+  mixins: [windowScroll("position")],
   components: {
     HeaderTitle,
     Question,
@@ -178,10 +181,8 @@ export default {
       const result = await apiCallerGet(urlAPI);
 
       if (result?.success) {
-        this.dataExamStudent = result.data;
+        this.dataExamStudent = result.data?.[result.data.length - 1];
         this.dataTestInfor = result.data?.[0]?.test;
-
-        console.log('dataExamStudent =====', this.dataExamStudent);
       }
       this.isLoading = false;
     },
@@ -200,18 +201,19 @@ export default {
       this.isLoadingSubmit = true;
       this.caculateScore();
       this.answersForm.time = 10; // timer
-      const res = await submitExam(
-        this.authentication.accessToken.token,
-        this.answersForm
-      );
-      if (res.success) {
-        this.updateToast("success", "Nộp bài thành công!");
+      
+      let urlAPI = "/api/test-result/" + this.dataExamStudent.id;
+      const result = await apiCallerPut(urlAPI, this.answersForm);
+
+      if (result.success) {
+        this.updateToast("success", "Chấm bài cho học sinh thành công!");
         this.isSubmitted = true;
       } else {
-        this.updateToast("error", "Nộp bài không thành công!");
+        this.updateToast("error", "Chấm bài cho học sinh không thành công!");
       }
       this.isLoadingSubmit = false;
       this.isOpenSubmit = false;
+      this.$router.go(-1);
     },
     openSubmit() {
       this.isOpenSubmit = true;
@@ -230,6 +232,7 @@ export default {
     },
     onEndTimerTick() {
       this.confirmSubmit();
+      this.$router.go(-1);
     },
   },
   // beforeRouteLeave(to, from, next) {

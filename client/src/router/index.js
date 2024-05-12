@@ -34,6 +34,8 @@ import Docs from "@/views/Student/Docs.vue";
 import TestSlug from "@/views/Student/Test/TestSlug/index.vue";
 import Preview from "@/views/Admin/Exam/Preview.vue";
 import TeacherPreview from "@/views/Teacher/Exam/TeacherPreview.vue";
+import HistoryTestInfo from "@/views/Student/Test/TestSlug/HistoryTestInfo.vue";
+
 const routes = [
   {
     path: "/login",
@@ -212,6 +214,10 @@ const routes = [
       {
         path: "test/:id",
         component: TestSlug,
+      },
+      {
+        path: "test/:examId/history/:historyIdx",
+        component: HistoryTestInfo,
       },
       {
         path: "document",

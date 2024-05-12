@@ -1,49 +1,31 @@
 vv
 <template>
   <v-card class="height-100 class-container">
-    <v-container
-      class="d-flex flex-column height-100 v-container__full"
-      style="height: 91vh"
-    >
-      <HeaderTitle
-        title="Giao bài"
-        textBtn="Quay lại"
-        :handleClickBtn="() => handleGoBack()"
-      />
+    <v-container class="d-flex flex-column height-100 v-container__full" style="height: 91vh">
+      <HeaderTitle title="Giao bài" textBtn="Quay lại" :handleClickBtn="() => handleGoBack()" />
       <v-divider class="header_divider" :thickness="2"></v-divider>
 
-      <v-col
-        class="d-flex flex-column class-list class-docs class-students align-center"
-      >
-        <div
-          v-if="dataExams.length > 0"
-          style="width: 80%; min-width: 28rem; max-width: 70rem; flex: 1"
-          class="d-flex flex-column"
-        >
+      <v-col class="d-flex flex-column class-list class-docs class-students align-center">
+        <div v-if="isLoading" class="d-flex justify-center align-center height-100"
+          style="background-color: transparent;">
+          <v-progress-circular :size="70" :width="7" color="success" indeterminate></v-progress-circular>
+        </div>
+        <div v-if="dataExams.length > 0" style="width: 80%; min-width: 28rem; max-width: 70rem; flex: 1"
+          class="d-flex flex-column">
           <!-- <h3 class="font-bold">Danh sách bài kiểm tra</h3> -->
 
           <v-col class="pa-8 pt-3">
-            <v-card
-              v-for="(exam, index) in dataExams"
-              :key="index"
+            <v-card v-for="(exam, index) in dataExams" :key="index"
               class="cursor-pointer pa-3 pb-7 mb-5 d-flex student-item docs-item box-shadow"
-              @click="handleNavigateDetailAssign(doc)"
-            >
-              <v-row
-                class="pl-4 pr-4 pt-3 d-flex flex-row w-100 justify-space-between"
-              >
+              @click="handleNavigatePreviewExam(exam)">
+              <v-row class="pl-4 pr-4 pt-3 d-flex flex-row w-100 justify-space-between">
                 <div class="d-flex flex-row align-center w-100">
                   <div class="d-flex align-center justify-center">
-                    <img
-                      src="@/assets/images/img_exam.png"
-                      alt="Icon Type Doc"
-                    />
+                    <img src="@/assets/images/img_exam.png" alt="Icon Type Doc" />
                   </div>
                   <div class="d-flex justify-space-between w-100">
                     <div class="d-flex flex-column">
-                      <div
-                        class="font-semi-bold student-name ml-2 mr-2 d-flex align-center"
-                      >
+                      <div class="font-semi-bold student-name ml-2 mr-2 d-flex align-center">
                         {{ exam.testName }}
                       </div>
                       <div class="student-name ml-2 mr-2 d-flex align-center">
@@ -55,11 +37,8 @@ vv
                     </div>
 
                     <div class="d-flex align-center">
-                      <v-btn
-                        @click.stop.prevent="() => handleOpenModalAssign(exam)"
-                        class="btn-delete-linear"
-                        theme="dark"
-                      >
+                      <v-btn @click.stop.prevent="() => handleOpenModalAssign(exam)" class="btn-delete-linear"
+                        theme="dark">
                         <span>Giao bài</span>
                       </v-btn>
                     </div>
@@ -72,32 +51,19 @@ vv
 
         <v-row v-else-if="!isLoading" style="height: 90%" class="w-100">
           <v-col>
-            <div
-              class="d-flex flex-column align-center class-empty class-docs_empty"
-            >
-              <img
-                src="@/assets/images/img_empty_exam.png"
-                alt="Img Empty Exam"
-              />
-              <h3
-                class="d-flex d-flex flex-column font-semi-bold align-center w-100"
-              >
+            <div class="d-flex flex-column align-center class-empty class-docs_empty">
+              <img src="@/assets/images/img_empty_exam.png" alt="Img Empty Exam" />
+              <h3 class="d-flex d-flex flex-column font-semi-bold align-center w-100">
                 Hệ thống chưa có bài kiểm tra nào!
               </h3>
             </div>
-          </v-col></v-row
-        >
+          </v-col></v-row>
       </v-col>
 
       <v-col class="pa-5 pt-8 pb-8" style="flex: 0">
         <v-row class="d-flex align-center justify-end">
-          <v-btn
-            @click="() => handleNavigateCreateExam()"
-            color="#00bd7e"
-            theme="dark"
-            class="btn-add-question"
-            >Thêm bài kiểm tra</v-btn
-          >
+          <v-btn @click="() => handleNavigateCreateExam()" color="#00bd7e" theme="dark" class="btn-add-question">Thêm
+            bài kiểm tra</v-btn>
         </v-row>
       </v-col>
     </v-container>
@@ -113,7 +79,7 @@ vv
                 Tên bài:
                 <span style="font-style: italic">{{
                   examSelected.testName
-                }}</span>
+                  }}</span>
               </h4>
             </v-row>
           </v-col>
@@ -123,15 +89,9 @@ vv
               <h4 class="font-semi-bold">Đặt mật khẩu</h4>
             </v-row>
             <v-row>
-              <v-text-field
-              :append-icon="showPw ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="showPw ? 'text' : 'password'"
-              v-model="examSelected.password"
-              variant="outlined"
-              hide-no-data
-              :rules="required"
-              @click:append="showPw = !showPw"
-            />
+              <v-text-field :append-icon="showPw ? 'mdi-eye' : 'mdi-eye-off'" :type="showPw ? 'text' : 'password'"
+                v-model="examSelected.password" variant="outlined" hide-no-data :rules="required"
+                @click:append="showPw = !showPw" />
             </v-row>
           </v-col>
 
@@ -141,33 +101,15 @@ vv
             </v-row>
 
             <v-row>
-              <v-dialog
-                ref="dialog"
-                v-model="openDatePickerStart"
-                :return-value.sync="dateAssignStart"
-                persistent
-                auto
-                width="290px"
-              >
+              <v-dialog ref="dialog" v-model="openDatePickerStart" :return-value.sync="dateAssignStart" persistent auto
+                width="290px">
                 <template v-slot:activator="{ startDate }">
-                  <v-text-field
-                    v-model="dateAssignStartComputed"
-                    label="Ngày bắt đầu"
-                    readonly
-                    v-bind="startDate"
-                    clearable
-                    @click="() => (openDatePickerStart = true)"
-                    variant="outlined"
-                  ></v-text-field>
+                  <v-text-field v-model="dateAssignStartComputed" label="Ngày bắt đầu" readonly v-bind="startDate"
+                    clearable @click="() => (openDatePickerStart = true)" variant="outlined"></v-text-field>
                 </template>
-                <v-date-picker
-                  v-model="dateAssignStart"
-                  year-icon="mdi-calendar-blank"
-                  prev-icon="mdi-skip-previous"
-                  next-icon="mdi-skip-next"
-                  scrollable
-                  @update:model-value="() => (openDatePickerStart = false)"
-                ></v-date-picker>
+                <v-date-picker v-model="dateAssignStart" year-icon="mdi-calendar-blank" prev-icon="mdi-skip-previous"
+                  next-icon="mdi-skip-next" scrollable
+                  @update:model-value="() => (openDatePickerStart = false)"></v-date-picker>
               </v-dialog>
             </v-row>
           </v-col>
@@ -178,53 +120,24 @@ vv
             </v-row>
 
             <v-row>
-              <v-dialog
-                ref="dialog"
-                v-model="openDatePickerEnd"
-                :return-value.sync="dateAssignEnd"
-                persistent
-                auto
-                width="290px"
-              >
+              <v-dialog ref="dialog" v-model="openDatePickerEnd" :return-value.sync="dateAssignEnd" persistent auto
+                width="290px">
                 <template v-slot:activator="{ endDate }">
-                  <v-text-field
-                    v-model="dateAssignEndComputed"
-                    label="Ngày kết thúc"
-                    readonly
-                    v-bind="endDate"
-                    clearable
-                    @click="() => (openDatePickerEnd = true)"
-                    variant="outlined"
-                  ></v-text-field>
+                  <v-text-field v-model="dateAssignEndComputed" label="Ngày kết thúc" readonly v-bind="endDate"
+                    clearable @click="() => (openDatePickerEnd = true)" variant="outlined"></v-text-field>
                 </template>
-                <v-date-picker
-                  v-model="dateAssignEnd"
-                  year-icon="mdi-calendar-blank"
-                  prev-icon="mdi-skip-previous"
-                  next-icon="mdi-skip-next"
-                  scrollable
-                  @update:model-value="() => (openDatePickerEnd = false)"
-                ></v-date-picker>
+                <v-date-picker v-model="dateAssignEnd" year-icon="mdi-calendar-blank" prev-icon="mdi-skip-previous"
+                  next-icon="mdi-skip-next" scrollable
+                  @update:model-value="() => (openDatePickerEnd = false)"></v-date-picker>
               </v-dialog>
             </v-row>
           </v-col>
 
           <v-col class="pt-10 mt-5" style="flex: 0">
             <v-row class="d-flex align-center justify-space-between">
-              <v-btn
-                @click="() => (this.isOpenForm = false)"
-                color="#F1F2F7"
-                theme="dark"
-                class="btn-action-dialog"
-                >Hủy</v-btn
-              >
-              <v-btn
-                type="submit"
-                color="#00bd7e"
-                theme="dark"
-                class="btn-action-dialog"
-                >Hoàn tất</v-btn
-              >
+              <v-btn @click="() => (this.isOpenForm = false)" color="#F1F2F7" theme="dark"
+                class="btn-action-dialog">Hủy</v-btn>
+              <v-btn type="submit" color="#00bd7e" theme="dark" class="btn-action-dialog">Hoàn tất</v-btn>
             </v-row>
           </v-col>
         </v-form>
@@ -232,18 +145,11 @@ vv
     </v-dialog>
 
     <!-- Popup -->
-    <PopUpYesNo
-      :msg="msgPopup"
-      :visible="!!openPopup"
-      :handleClickYes="
+    <PopUpYesNo :msg="msgPopup" :visible="!!openPopup" :handleClickYes="
         () => {
           this.openPopup = false;
         }
-      "
-      hideBtnNo
-      btnYes="Đóng"
-      @update:visible="handleVisible"
-    />
+      " hideBtnNo btnYes="Đóng" @update:visible="handleVisible" />
   </v-card>
 </template>
 
@@ -425,6 +331,9 @@ export default {
 
       return `${day}/${month}/${year} ${hours}:${minutes}`;
     },
+    handleNavigatePreviewExam(exam) {
+      this.$router.push(`/teacher/exam/preview/${exam.testId}`);
+    }
   },
 };
 </script>

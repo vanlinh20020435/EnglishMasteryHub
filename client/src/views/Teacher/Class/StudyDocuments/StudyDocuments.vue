@@ -1,45 +1,30 @@
 <template>
   <v-card class="height-100 class-container">
     <v-container class="d-flex flex-column height-100 v-container__full">
-      <HeaderTitle
-        title="Tài liệu học tập"
-        textBtn="Quay lại"
-        :handleClickBtn="() => handleGoBack()"
-      />
+      <HeaderTitle title="Tài liệu học tập" textBtn="Quay lại" :handleClickBtn="() => handleGoBack()" />
       <v-divider class="header_divider" :thickness="2"></v-divider>
 
-      <v-col
-        class="d-flex flex-column class-list class-docs class-students align-center"
-      >
-        <div
-          v-if="dataStudyDocs.length > 0"
-          style="width: 80%; min-width: 28rem; max-width: 70rem; flex: 1"
-          class="d-flex flex-column"
-        >
+      <v-col class="d-flex flex-column class-list class-docs class-students align-center">
+        <div v-if="isLoading" class="d-flex justify-center align-center height-100"
+          style="background-color: transparent;">
+          <v-progress-circular :size="70" :width="7" color="success" indeterminate></v-progress-circular>
+        </div>
+        <div v-if="dataStudyDocs.length > 0" style="width: 80%; min-width: 28rem; max-width: 70rem; flex: 1"
+          class="d-flex flex-column">
           <h3 class="font-bold">Danh sách tài liệu</h3>
 
           <v-col class="pa-8">
-            <v-card
-              v-for="(doc, index) in dataStudyDocs"
-              :key="index"
+            <v-card v-for="(doc, index) in dataStudyDocs" :key="index"
               class="cursor-pointer pa-3 pt-5 pb-8 mb-5 pl-12 d-flex student-item docs-item box-shadow"
-              @click="handleOpenDocs(doc.url)"
-            >
-              <v-row
-                class="pl-5 pr-5 pt-3 d-flex flex-row w-100 justify-space-between"
-              >
+              @click="handleOpenDocs(doc.url)">
+              <v-row class="pl-5 pr-5 pt-3 d-flex flex-row w-100 justify-space-between">
                 <div class="d-flex flex-row align-center w-100">
                   <div class="d-flex align-center justify-center img_type">
-                    <img
-                      :src="checkImgTypeDocs(doc.type)"
-                      alt="Icon Type Doc"
-                    />
+                    <img :src="checkImgTypeDocs(doc.type)" alt="Icon Type Doc" />
                   </div>
                   <div class="d-flex justify-space-between w-100">
                     <div class="d-flex flex-column">
-                      <div
-                        class="font-semi-bold text-lg ml-5 mr-5 d-flex align-center"
-                      >
+                      <div class="font-semi-bold text-lg ml-5 mr-5 d-flex align-center">
                         {{ doc.documentName }}
                       </div>
                       <div class="text-base ml-5 mr-5 d-flex align-center">
@@ -48,17 +33,12 @@
                     </div>
 
                     <div class="d-flex align-center">
-                      <v-btn
-                        class="btn-delete-linear"
-                        @click.stop.prevent="
+                      <v-btn class="btn-delete-linear" @click.stop.prevent="
                           () => {
                             this.docSelected = doc;
                           }
-                        "
-                      >
-                        <v-icon color="white" size="large"
-                          >mdi-trash-can</v-icon
-                        >
+                        ">
+                        <v-icon color="white" size="large">mdi-trash-can</v-icon>
                       </v-btn>
                     </div>
                   </div>
@@ -70,13 +50,8 @@
 
         <v-row v-else-if="!isLoading" style="height: 90%" class="w-100">
           <v-col>
-            <div
-              class="d-flex flex-column align-center class-empty class-docs_empty"
-            >
-              <img
-                src="@/assets/images/empty_study_docs.png"
-                alt="Img Empty Class"
-              />
+            <div class="d-flex flex-column align-center class-empty class-docs_empty">
+              <img src="@/assets/images/empty_study_docs.png" alt="Img Empty Class" />
               <h3 class="d-flex d-flex flex-column align-center w-100">
                 Lớp chưa tài liệu học tập nào.
                 <br />
@@ -85,19 +60,12 @@
                 </span>
               </h3>
             </div>
-          </v-col></v-row
-        >
+          </v-col></v-row>
       </v-col>
 
       <v-col class="pa-5 pt-8 pb-8" style="flex: 0">
         <v-row class="d-flex align-center justify-end">
-          <v-btn
-            @click="() => handleAddDocs()"
-            color="#00bd7e"
-            theme="dark"
-            class="btn-add-question"
-            >Thêm mới</v-btn
-          >
+          <v-btn @click="() => handleAddDocs()" color="#00bd7e" theme="dark" class="btn-add-question">Thêm mới</v-btn>
         </v-row>
       </v-col>
     </v-container>
@@ -113,16 +81,9 @@
             </v-row>
 
             <v-row>
-              <v-file-input
-                :rules="rules.rulesSizeFileUpload"
-                @change="(event) => handleFileUpload(event)"
-                label="File upload"
-                accept=".docx,.doc,.xls,.xlsx,.csv,.pdf,.pptx,.ppt,.txt,.zip,image/*"
-                show-size
-                variant="outlined"
-                :model-value="selectedFileName"
-                class="input-file-custom"
-              ></v-file-input>
+              <v-file-input :rules="rules.rulesSizeFileUpload" @change="(event) => handleFileUpload(event)"
+                label="File upload" accept=".docx,.doc,.xls,.xlsx,.csv,.pdf,.pptx,.ppt,.txt,.zip,image/*" show-size
+                variant="outlined" :model-value="selectedFileName" class="input-file-custom"></v-file-input>
             </v-row>
           </v-col>
 
@@ -132,17 +93,8 @@
             </v-row>
 
             <v-row>
-              <v-textarea
-                placeholder="Tên tài liệu"
-                rows="2"
-                max-rows="3"
-                variant="outlined"
-                auto-grow
-                hide-no-data
-                v-model="dataNewDocs.documentName"
-                :rules="rules.required"
-                @change="handleChangeNameDocs"
-              >
+              <v-textarea placeholder="Tên tài liệu" rows="2" max-rows="3" variant="outlined" auto-grow hide-no-data
+                v-model="dataNewDocs.documentName" :rules="rules.required" @change="handleChangeNameDocs">
               </v-textarea>
             </v-row>
           </v-col>
@@ -155,17 +107,12 @@
         </v-form>
       </v-card>
     </v-dialog>
-    <PopUpYesNo
-      msg="Bạn có chắc chắn muốn xóa tài liệu này?"
-      :visible="!!docSelected?.id"
-      :handleClickYes="() => handleDeleteDoc(docSelected)"
-      :handleClickNo="
+    <PopUpYesNo msg="Bạn có chắc chắn muốn xóa tài liệu này?" :visible="!!docSelected?.id"
+      :handleClickYes="() => handleDeleteDoc(docSelected)" :handleClickNo="
         () => {
           this.docSelected = {};
         }
-      "
-      @update:visible="handleVisible"
-    />
+      " @update:visible="handleVisible" />
   </v-card>
 </template>
 
@@ -290,7 +237,7 @@ export default {
           this.dataNewDocs
         );
 
-        console.log("result ====", result.data);
+        // console.log("result ====", result.data);
 
         this.isOpenForm = false;
         this.fetchDataDocuments();

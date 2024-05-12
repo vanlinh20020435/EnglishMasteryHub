@@ -69,16 +69,16 @@ export default {
                         userInfoRes.data.role = userInfoRes.data.role.toLowerCase();
                         userInfoRes.data.avatar = userInfoRes.data.avatar ? userInfoRes.data.avatar : this.getAvtUser(userInfoRes.data);
                         this.updateAuth({ user: userInfoRes.data })
-                        this.updateToast('success', "Login success!")
+                        this.updateToast('success', "Đăng nhập thành công!")
                         this.$router.replace(`/${this.authentication.user.role}`)
                     } else {
                         this.error = true
                         this.loginFailed = true
-                        this.updateToast('error', "User not found!")
+                        this.updateToast('error', "Tài khoản bạn nhập không tồn tại!")
                     }
                 } else {
                     this.error = true
-                    this.updateToast('error', 'Login failed!')
+                    this.updateToast('error', 'Đăng nhập thất bại! Vui lòng kiểm tra lại tài khoản và mật khẩu!')
                     this.loginFailed = true
                 }
             }
