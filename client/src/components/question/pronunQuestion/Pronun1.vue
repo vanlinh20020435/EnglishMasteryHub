@@ -52,11 +52,14 @@ export default {
     question: Object,
     questionResults: Object,
 		indexQuestion: Number,
-    reviewExam: Boolean,
+    reviewExam: String,
   },
   mounted() {
     this.question.subQuestions.forEach((sub) => {
-      const subquestionResult = {
+      const subquestionResult = !!this.reviewExam ? {
+        questionId: sub.questionId,
+        ...sub.studentResult
+      } : {
         questionId: sub.questionId,
         answers: [],
         rightAnswer: null,
@@ -67,7 +70,6 @@ export default {
       !!this?.reviewExam && this.question?.subQuestions?.forEach((sub) => {
         sub.selected = sub?.studentResult?.answers?.[0];
       })
-      console.log('this.question', this.question)
     });
   },
   methods: {
@@ -76,7 +78,8 @@ export default {
         const qr = this.questionResults.find(
           (q) => q.questionId === sub.questionId
         );
-        if (sub.selected) {
+        if(!qr?.length && !this.reviewExam) {
+          if (sub.selected) {
           qr.answers = [sub.selected];
           if (sub.selected === sub.answers[0].answer) {
             qr.rightAnswer = true;
@@ -89,6 +92,7 @@ export default {
           qr.answers = [];
           qr.rightAnswer = false;
           qr.score = 0;
+        }
         }
       });
     },

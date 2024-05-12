@@ -21,8 +21,14 @@
               <v-col cols="3" class="pt-1 pb-1" v-for="(optionSub, indexOption) in subQuestion?.options"
                 :key="indexOption">
                 <span>
-                  <v-radio hide-details @input="handleRadioInput(optionSub?.option, index)" color="#00bd7e"
-                    :label="optionSub?.option" :value="optionSub?.option"></v-radio>
+                  <v-radio 
+                    @input="handleRadioInput(optionSub?.option, index)" 
+                    :color="!!this.reviewExam ? subQuestion?.studentResult?.rightAnswer ? '#009444' : '#be1e2d' : '#00bd7e'"
+                    :label="optionSub?.option" 
+                    :value="optionSub?.option"
+                    :readonly="!!reviewExam"
+                    :class="!!this.reviewExam ? !!subQuestion?.studentResult?.rightAnswer ? 'checkboxRight' : 'checkboxWrong' : ''"
+                  ></v-radio>
                 </span>
               </v-col>
             </div>
@@ -47,17 +53,25 @@ export default {
   props: {
     dataQuestion: Object,
     indexQuestion: Number,
-    questionResults: Object
+    questionResults: Object,
+    reviewExam: String,
   },
   mounted() {
-    const subquestionResults = this.dataQuestion.subQuestions.map(item => ({
-      questionId: item.questionId,
-      answers: [],
-      rightAnswer: false,
-      score: 0,
-      defaultScore: 1,
-    }))
-
+    const subquestionResults = this?.dataQuestion?.subQuestions?.map((item) => {
+      !!this.reviewExam && this.selectedOptions.push(item?.studentResult?.answers?.[0]);
+      return (
+        !!this.reviewExam ? {
+          questionId: item.questionId,
+          ...item.studentResult
+        } : {
+          questionId: item.questionId,
+          answers: [],
+          rightAnswer: false,
+          score: 0,
+          defaultScore: 1,
+        }
+      )
+    });
     this.questionResults.push(...subquestionResults)
   },
   methods: {

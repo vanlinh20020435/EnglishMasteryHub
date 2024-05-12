@@ -1,64 +1,39 @@
 <template>
   <v-card class="height-100 class-container">
-    <v-container
-      class="d-flex flex-column height-100 v-container__full"
-      style="height: 92vh"
-    >
-      <HeaderTitle
-        :title="
+    <v-container class="d-flex flex-column height-100 v-container__full" style="height: 92vh">
+      <HeaderTitle :title="
           'Thống kê bài: ' +
           (!!this.$route.query?.exam ? this.$route.query?.exam : '')
-        "
-        textBtn="Quay lại"
-        :handleClickBtn="() => handleGoBack()"
-      />
+        " textBtn="Quay lại" :handleClickBtn="() => handleGoBack()" />
       <v-divider class="header_divider" :thickness="2"></v-divider>
-      <v-col
-        class="pt-0 d-flex flex-column class-list class-docs class-students align-center"
-      >
-        <v-col
-          class="d-flex flex-column align-center"
-          v-if="dataDashboard?.completed || dataDashboard?.incomplete"
-        >
+      <v-col class="pt-0 d-flex flex-column class-list class-docs class-students align-center">
+        <div v-if="isLoading" class="d-flex justify-center align-center height-100" style="background-color: transparent;">
+          <v-progress-circular :size="70" :width="7" color="success" indeterminate></v-progress-circular>
+        </div>
+        <v-col class="d-flex flex-column align-center" v-if="dataDashboard?.completed || dataDashboard?.incomplete">
           <v-col class="pt-0 pb-5">
-            <div
-              v-if="!!dataChart().datasets[0].data.length"
-              class="d-flex justify-center align-end"
-            >
+            <div v-if="!!dataChart().datasets[0].data.length" class="d-flex justify-center align-end">
               <div class="d-flex flex-column">
                 <Pie :data="dataChart()" :options="chartConfigOptions" />
               </div>
               <div class="d-flex flex-column pl-3">
                 <div>Học sinh làm bài / Tổng số học sinh</div>
                 <div class="text-center" style="font-size: 2.75rem">
-                  <span
-                    class="font-bold"
-                    style="color: #00beb4; font-size: 2.75rem"
-                    >{{ dataDashboard?.completed || 0 }}</span
-                  >
+                  <span class="font-bold" style="color: #00beb4; font-size: 2.75rem">{{ dataDashboard?.completed || 0
+                    }}</span>
                   /
-                  <span
-                    class="font-bold"
-                    style="color: #ff7a00; font-size: 2.75rem"
-                    >{{
-                      dataDashboard?.completed + dataDashboard?.incomplete || 0
-                    }}</span
-                  >
+                  <span class="font-bold" style="color: #ff7a00; font-size: 2.75rem">{{
+                    dataDashboard?.completed + dataDashboard?.incomplete || 0
+                    }}</span>
                 </div>
               </div>
             </div>
           </v-col>
-          <div
-            v-if="dataDashboard?.statistic?.length > 0"
-            style="width: 80%; min-width: 28rem; max-width: 70rem; flex: 1"
-            class="d-flex flex-column"
-          >
+          <div v-if="dataDashboard?.statistic?.length > 0"
+            style="width: 80%; min-width: 28rem; max-width: 70rem; flex: 1" class="d-flex flex-column">
             <v-col class="pa-8 pt-3">
-              <v-card
-                style="overflow: visible"
-                v-for="(studentDashboard, index) in dataDashboard?.statistic"
-                :key="index"
-                class="cursor-pointer pa-3 pb-7 mb-5 pl-12 d-flex student-item docs-item box-shadow"
+              <v-card style="overflow: visible" v-for="(studentDashboard, index) in dataDashboard?.statistic"
+                :key="index" class="cursor-pointer pa-3 pb-7 mb-5 pl-12 d-flex student-item docs-item box-shadow"
                 @click="
                   () => {
                     studentDashboard.result?.id
@@ -73,54 +48,36 @@
                         })
                       : null;
                   }
-                "
-              >
-                <v-row
-                  class="pl-5 pr-5 pt-3 d-flex flex-row w-100 justify-space-between"
-                >
+                ">
+                <v-row class="pl-5 pr-5 pt-3 d-flex flex-row w-100 justify-space-between">
                   <div class="d-flex flex-row align-center w-100">
                     <div class="d-flex align-center justify-center img_type">
-                      <img
-                        :src="
+                      <img :src="
                           getAvtUserMethod(studentDashboard?.student, 'student')
-                        "
-                        alt="Avatar Student"
-                        style="border-radius: 50%"
-                      />
+                        " alt="Avatar Student" style="border-radius: 50%" />
                     </div>
 
-                    <div
-                      class="d-flex justify-space-between w-100 align-center"
-                    >
+                    <div class="d-flex justify-space-between w-100 align-center">
                       <div class="d-flex flex-column">
-                        <div
-                          class="font-semi-bold text-lg ml-5 mr-5 d-flex align-center"
-                        >
+                        <div class="font-semi-bold text-lg ml-5 mr-5 d-flex align-center">
                           {{ studentDashboard?.student?.name }}
                         </div>
-                        <div
-                          v-if="studentDashboard?.result?.created"
-                          class="ml-5 mr-5 d-flex align-center"
-                        >
+                        <div v-if="studentDashboard?.result?.created" class="ml-5 mr-5 d-flex align-center">
                           Nộp bài lúc: {{ studentDashboard?.result?.created }}
                         </div>
                       </div>
 
                       <div class="d-flex align-center">
-                        <v-btn
-                          disabled
-                          :class="
+                        <v-btn disabled :class="
                             !studentDashboard?.result
                               ? 'btn-error'
                               : !!studentDashboard?.result?.requiresGrading
                               ? 'btn-warning'
                               : 'btn-delete-linear'
-                          "
-                          theme="dark"
-                        >
+                          " theme="dark">
                           <span class="color-white font-semi-bold">{{
                             textScore(studentDashboard?.result)
-                          }}</span>
+                            }}</span>
                         </v-btn>
                       </div>
                     </div>
@@ -134,10 +91,7 @@
         <v-row v-else-if="!isLoading" style="height: 90%">
           <v-col>
             <div class="d-flex flex-column align-center class-empty w-100">
-              <img
-                src="@/assets/images/img_empty_students.jpg "
-                alt="Img Empty Class"
-              />
+              <img src="@/assets/images/img_empty_students.jpg " alt="Img Empty Class" />
               <h3 class="d-flex d-flex flex-column align-center">
                 Lớp chưa có thành viên nào.
                 <br />

@@ -54,8 +54,8 @@
     <v-card v-if="!!histories?.length" style="margin-top: 16px;">
       <v-card-title>Lịch sử làm bài</v-card-title>
       <v-card-text> <v-list style="padding-top: 0; padding-bottom: 0">
-          <v-hover v-for="(testResult, idx) in histories" v-slot="{ isHovering, props }">
-            <v-card :elevation="isHovering ? 8 : 4" v-bind="props" style="margin: 0 8px 16px">
+          <v-hover v-for="(testResult, idx) in histories" :key="idx" v-slot="{ isHovering, props }">
+            <v-card  @click="handleNavigateHistory(testResult)" class="cursor-pointer" :elevation="isHovering ? 8 : 4" v-bind="props" style="margin: 0 8px 16px">
               <v-list-item height="70" :key="testResult?.id" :title="'Lần thi ' + (idx + 1)"
                 :subtitle="testResult?.created">
                 <template v-slot:prepend>
@@ -73,6 +73,9 @@
                     <v-list-item-title v-if="!testResult?.requiresGrading">Điểm: {{ testResult?.score }}/{{
                       testResult?.testDefaultScore
                     }}</v-list-item-title>
+                    <v-list-item-title v-else>
+                      Chờ chấm
+                    </v-list-item-title>
                   </div>
                 </template>
               </v-list-item>
@@ -143,7 +146,7 @@ export default {
         this.$route.params.id,
         this.student.studentId)
       if (subres.success && !!subres?.data?.length) this.histories = subres?.data?.some((item) => !!item?.result) ? subres?.data?.map(item => !!item?.result && item?.result) : []
-      console.log("histories ====", this.histories);
+      // console.log("histories ====", this.histories);
     }
     this.isLoading = false;
   },
@@ -155,7 +158,7 @@ export default {
     async submitPassword() {
       const res = await this.doExam();
       if (!res.success) {
-        this.updateToast('error', 'Thất bại!');
+        this.updateToast('error', 'Mật khẩu không chính xác!');
       }
     },
     async clickDoExam() {
@@ -184,6 +187,9 @@ export default {
         datetime(start).value < new Date() && new Date() < datetime(end).value
       );
     },
+    handleNavigateHistory(item) {
+      this.$router.push(`/student/test/${this.$route.params.id}/history`)
+    }
   },
 };
 </script>

@@ -99,11 +99,35 @@ img {
 }
 
 .color-right {
-  color: #009444;
+  color: #009444 !important;
+  font-weight: 600;
+  font-size: 1.125rem !important;
+  line-height: normal !important;
+}
+.color-right-textfield input,
+.checkboxRight .v-selection-control--dirty .v-label {
+  color: #009444 !important;
+  font-weight: 600;
+  font-size: 1.125rem !important;
+  line-height: normal !important;
 }
 
 .color-wrong {
-  color: #be1e2d;
+  color: #be1e2d !important;
+  font-weight: 600;
+  font-size: 1.125rem !important;
+  line-height: normal !important;
+}
+.color-wrong-textfield input,
+.checkboxWrong .v-selection-control--dirty .v-label {
+  color: #be1e2d !important;
+  font-weight: 600;
+  font-size: 1.125rem !important;
+  line-height: normal !important;
+}
+
+.line-height-normal {
+  line-height: normal !important;
 }
 
 .height-100 {

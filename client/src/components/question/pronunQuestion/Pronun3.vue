@@ -9,7 +9,15 @@
         <Audio :file="sub.files[0].url" color="success" :config="{ sound: true }"></Audio>
         <v-row>
           <v-col cols="3" v-for="(option, indexOption) in sub.options" :key="indexOption" >
-            <v-text-field hide-details v-model="option.option"></v-text-field>
+            <v-text-field 
+              hide-details 
+              v-model="option.option" 
+              :model-value="!!reviewExam ? sub?.studentResult?.answers[indexOption] : option.option"
+              :readonly="!!reviewExam"
+              :class="!!this.reviewExam ? sub?.answers?.some((answer) => answer.answer === sub?.studentResult?.answers[indexOption]) ? 'color-right-textfield' : 'color-wrong-textfield' : ''"
+              placeholder="Write  your answer... ..."
+            >
+            </v-text-field>
           </v-col>
         </v-row>
       </div>
@@ -28,10 +36,14 @@ export default {
     question: Object,
     questionResults: Object,
     indexQuestion: Number,
+    reviewExam: String,
   },
   mounted() {
     this.question.subQuestions.forEach((sub) => {
-      const subquestionResult = {
+      const subquestionResult = !!this.reviewExam ? {
+        questionId: sub.questionId,
+        ...sub.studentResult
+      } : {
         questionId: sub.questionId,
         answers: [],
         rightAnswer: null,
@@ -52,15 +64,17 @@ export default {
         const qr = this.questionResults.find(
           (q) => q.questionId === sub.questionId
         );
-        qr.answers = sub.options.map(option => this.normalizeText(option.option));
-        let selected = qr.answers
-        let sc = 0
-        sub.answers.forEach(answer => {
-          let correct = selected.some(s => s === answer.answer)
-          sc += correct ? 1 : 0
-        });
-        qr.score = sc / selected.length
-        qr.rightAnswer = sc === selected.length
+        if(!qr?.length && !this.reviewExam) {
+          qr.answers = sub.options.map(option => this.normalizeText(option.option));
+          let selected = qr.answers
+          let sc = 0
+          sub.answers.forEach(answer => {
+            let correct = selected.some(s => s === answer.answer)
+            sc += correct ? 1 : 0
+          });
+          qr.score = sc / selected.length
+          qr.rightAnswer = sc === selected.length;
+        }
       })
     }
   },

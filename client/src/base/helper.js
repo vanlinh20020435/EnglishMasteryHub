@@ -11,7 +11,6 @@ export const removeVietnameseDiacritics = (str) => {
 
 // Format Original Text
 export const formatOriginalText = (str) => {
-  console.log('str ===', str);
   return str?.trim()?.toLowerCase()?.replace(/\./gi, "")
 }
 

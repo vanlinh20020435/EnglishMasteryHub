@@ -1,26 +1,45 @@
 <template>
   <div class="d-flex flex-column">
-    <h3 class="font-semi-bold text-lg">Bài {{ indexQuestion + 1 }}: {{ dataQuestion.title }}</h3>
+    <h3 class="font-semi-bold text-lg">
+      Bài {{ indexQuestion + 1 }}: {{ dataQuestion.title }}
+    </h3>
     <v-col class="mt-5 mb-5">
-      <h3 class="font-semi-bold text-lg text-center pb-1">{{ dataQuestion.description }}</h3>
+      <h3 class="font-semi-bold text-lg text-center pb-1">
+        {{ dataQuestion.description }}
+      </h3>
       <v-col class="d-flex flex-column align-center pb-10">
-        <div class="w-75 ">{{ dataQuestion.content }}</div>
+        <div class="w-75">{{ dataQuestion.content }}</div>
       </v-col>
 
-      <v-col class="d-flex pt-8" v-for="(subQuestion, index) in dataQuestion?.subQuestions" :key="index">
+      <v-col
+        class="d-flex pt-8"
+        v-for="(subQuestion, index) in dataQuestion?.subQuestions"
+        :key="index"
+      >
         <div class="d-flex flex-column w-100">
           <div class="d-flex align-center pb-2">
             <span class="mr-3 font-semi-bold">{{ index + 1 }}.</span>
             <div>{{ subQuestion?.content }}</div>
           </div>
           <div class="d-flex align-center">
-            <v-icon size="x-large" class="pr-5 pl-3">mdi-pencil-circle-outline</v-icon>
-            <div class="pr-2 font-semi-bold">{{ subQuestion?.description }}</div>
+            <v-icon size="x-large" class="pr-5 pl-3"
+              >mdi-pencil-circle-outline</v-icon
+            >
+            <div class="pr-2 font-semi-bold">
+              {{ subQuestion?.description }}
+            </div>
 
-            <input @change="(event) => handleChangeInputAnswer(index, event)" type="text" placeholder="Trả lời ..."
-              class="flex-1-1 input-answer-reading2 font-semi-bold pt-2 pb-2">
+            <input
+              :readonly="!!reviewExam"
+              :value="
+                !!reviewExam ? subQuestion?.studentResult?.answers[0] : ''
+              "
+              @change="(event) => handleChangeInputAnswer(index, event)"
+              type="text"
+              placeholder="Your answer ..."
+              :class="'flex-1-1 input-answer-reading2 font-semi-bold pt-2 pb-2 ' + (this.reviewExam ? subQuestion?.studentResult?.rightAnswer ? 'color-right' : 'color-wrong' : '' )"
+            />
           </div>
-
         </div>
       </v-col>
     </v-col>
@@ -29,58 +48,70 @@
 
 
 <script>
-import { formatOriginalText } from '@/base/helper.js';
+import { formatOriginalText } from "@/base/helper.js";
 export default {
-  name: 'Reading2Question',
+  name: "Reading2Question",
   data() {
     return {
       selectedOptions: [],
-    }
+    };
   },
   props: {
     dataQuestion: Object,
     indexQuestion: Number,
-    questionResults: Object
+    questionResults: Object,
+    reviewExam: String,
   },
   mounted() {
-    const subquestionResults = this.dataQuestion.subQuestions.map(item => ({
-      questionId: item.questionId,
-      answers: [],
-      rightAnswer: false,
-      score: 0,
-      defaultScore: 1,
-    }))
-
-    this.questionResults.push(...subquestionResults)
+    const subquestionResults = this?.dataQuestion?.subQuestions?.map((item) => {
+      return (
+        !!this.reviewExam ? {
+          questionId: item.questionId,
+          ...item.studentResult
+        } : {
+          questionId: item.questionId,
+          answers: [],
+          rightAnswer: false,
+          score: 0,
+          defaultScore: 1,
+        }
+      )
+    });
+    this.questionResults.push(...subquestionResults);
   },
   methods: {
     handleChangeInputAnswer(subQuestionIndex, event) {
       const newValue = event?.target?.value;
-      let subQuestionSelected = this.dataQuestion.subQuestions?.[subQuestionIndex];
-      let subQuestionInResult = this.questionResults.find(item => item?.questionId == subQuestionSelected?.questionId);
+      let subQuestionSelected =
+        this.dataQuestion.subQuestions?.[subQuestionIndex];
+      let subQuestionInResult = this.questionResults.find(
+        (item) => item?.questionId == subQuestionSelected?.questionId
+      );
 
-      const matchFound = subQuestionSelected.answers.some(answerObj => {
+      const matchFound = subQuestionSelected.answers.some((answerObj) => {
         const answer = formatOriginalText(answerObj?.answer);
         return formatOriginalText(newValue) == answer;
       });
 
       if (matchFound) {
-				subQuestionInResult.rightAnswer = true;
+        subQuestionInResult.rightAnswer = true;
         subQuestionInResult.score = 1;
       } else {
-				subQuestionInResult.rightAnswer = false;
+        subQuestionInResult.rightAnswer = false;
         subQuestionInResult.score = 0;
       }
-			subQuestionInResult.answers[0] =  newValue;
-      const indexToUpdate = this.questionResults.findIndex(item => item.questionId === subQuestionInResult.questionId);
+      subQuestionInResult.answers[0] = newValue;
+      const indexToUpdate = this.questionResults.findIndex(
+        (item) => item.questionId === subQuestionInResult.questionId
+      );
       if (indexToUpdate !== -1) {
         this.questionResults[indexToUpdate] = subQuestionInResult;
       } else {
         this.questionResults.push(subQuestionInResult);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>
@@ -91,5 +122,6 @@ export default {
   color: #8e1c76;
   font-style: italic;
   border-bottom: 1px solid #999;
+  line-height: normal;
 }
 </style>

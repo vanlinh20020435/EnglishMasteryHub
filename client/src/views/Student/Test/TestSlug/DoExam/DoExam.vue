@@ -3,8 +3,8 @@
     <v-card v-if="isSubmitted">
       <v-card-title v-if="_test.requiresGrading">Bạn đã nộp bài thành công!</v-card-title>
       <v-card-title v-else>Điểm của bạn: {{ answersForm.score }}/{{ answersForm.testDefaultScore }}.</v-card-title>
-      <v-card-subtitle>Tổng thời gian: {{ answersForm.time }} phút.</v-card-subtitle>
-      <v-card-text class="d-flex"><v-spacer></v-spacer><v-btn @click="$router.push('/student/news')"
+      <v-card-subtitle>Tổng thời gian: {{ convertTimeText(answersForm.time * 60) }}</v-card-subtitle>
+      <v-card-text class="d-flex"><v-spacer></v-spacer><v-btn @click="this.$router.push('/student/news')"
           color="success">Quay về trang
           chủ</v-btn></v-card-text>
     </v-card>
@@ -44,7 +44,7 @@
         <v-btn @click="scrollToTop" icon="mdi-menu-up" color="success"> </v-btn>
       </div>
       <div class="timer-tick" v-if="!preview">
-        <TimerTick :seconds="test?.time * 60 || 30 * 60" :onEndTimerTick="onEndTimerTick"></TimerTick>
+        <TimerTick :onTimerTick="onTimerTick" :seconds="test?.time * 60 || 30 * 60" :onEndTimerTick="onEndTimerTick"></TimerTick>
       </div>
     </div>
     <v-dialog v-model="isOpenSubmit" max-width="500px">
@@ -68,7 +68,7 @@
       </v-card>
     </v-dialog>
   </div>
-  <div v-else>no test</div>
+  <!-- <div v-else-if="!isLoadingSubmit">no test</div> -->
 </template>
 
 <script>
@@ -103,7 +103,9 @@ export default {
     _test: {},
     isOpenSubmit: false,
     isLoadingSubmit: false,
-    isSubmitted: false
+    isSubmitted: false,
+    isLoadingExam: false,
+    remainingSeconds: 0
   }),
   computed: {
     ...mapState(authenticationRole, ['authentication']),
@@ -117,6 +119,7 @@ export default {
       this._test = this.test
     }
     else {
+      this.isLoadingExam = true;
       const res = await getTest(
         this.authentication.accessToken.token,
         this.$route.params.id,
@@ -124,6 +127,7 @@ export default {
       if (res.success) {
         this._test = res.data
       }
+      this.isLoadingExam = false;
     }
     this.answersForm.classId = Number(this.student.class.classId);
     this.answersForm.testId = Number(this.$route.params.id);
@@ -144,7 +148,7 @@ export default {
     async confirmSubmit() {
       this.isLoadingSubmit = true;
       this.caculateScore();
-      this.answersForm.time = 10; // timer
+      this.answersForm.time = this.remainingSeconds / 60; // timer
       const res = await submitExam(
         this.authentication.accessToken.token,
         this.answersForm
@@ -175,6 +179,23 @@ export default {
     },
     onEndTimerTick() {
       this.confirmSubmit();
+    },
+    onTimerTick(currentSeconds) {
+      this.remainingSeconds = this.test.time * 60 - currentSeconds;
+    },
+    convertTimeText(time) {
+      if (time >= 3600) {
+        const hours = Math.floor(time / 3600);
+        const minutes = Math.floor((time % 3600) / 60);
+        const seconds = time % 60;
+        return `${hours} giờ ${minutes} phút ${seconds} giây`;
+      } else if (time >= 60) {
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        return `${minutes} phút ${seconds} giây`;
+      } else {
+        return `${time} giây`;
+      }
     }
   },
   beforeUnmount() {
