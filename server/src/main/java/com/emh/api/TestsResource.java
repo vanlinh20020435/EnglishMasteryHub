@@ -5,7 +5,11 @@ import com.emh.payload.response.TestsResponse;
 import com.emh.service.TestsService;
 import com.emh.util.ReferencedException;
 import com.emh.util.ReferencedWarning;
+import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
+import org.hibernate.Filter;
+import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +26,9 @@ public class TestsResource
 {
 
 	private final TestsService testsService;
+
+	@Autowired
+	private EntityManager entityManager;
 
 	public TestsResource(final TestsService testsService)
 	{

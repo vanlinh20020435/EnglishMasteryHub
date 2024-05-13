@@ -10,6 +10,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"question_id", "test_result_id"})})
 public class QuestAnswerResult extends BaseEntity
 {
 
@@ -18,7 +19,8 @@ public class QuestAnswerResult extends BaseEntity
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	@ElementCollection(fetch = FetchType.EAGER)
+	@Column(nullable = false, length = 8192)
 	private List<String> answers;
 
 	@Column
@@ -30,11 +32,11 @@ public class QuestAnswerResult extends BaseEntity
 	@Column
 	private Double defaultScore;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "question_id", nullable = false)
 	private Questions question;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "test_result_id", nullable = false)
 	private StudentTestResult studentTestResult;
 }

@@ -43,20 +43,20 @@ public class Questions extends BaseEntity
 	@JoinColumn(name = "test_id", nullable = false)
 	private Tests tests;
 
-	@OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<QuestAnswer> questionQuestAnswers;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_question_id")
 	private Questions parentQuestion;
 
-	@OneToMany(mappedBy = "parentQuestion", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "parentQuestion", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<Questions> questions;
 
-	@OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<QuestOption> questOptions;
 
-	@OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<QuestFile> questFiles;
 
 }

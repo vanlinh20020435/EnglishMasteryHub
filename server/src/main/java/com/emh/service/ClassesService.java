@@ -20,6 +20,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -67,6 +68,7 @@ public class ClassesService
 		return classesRepository.save(classes).getClassId();
 	}
 
+	@Transactional
 	public void update(final Integer classId, final ClassesRequest classRequest)
 	{
 		final Classes classes = classesRepository.findById(classId)
@@ -77,6 +79,7 @@ public class ClassesService
 		classesRepository.save(classes);
 	}
 
+	@Transactional
 	public void delete(final Integer classId)
 	{
 		classesRepository.deleteById(classId);

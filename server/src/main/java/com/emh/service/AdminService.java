@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -66,6 +67,7 @@ public class AdminService
 		return adminRepository.save(admin).getAdminId();
 	}
 
+	@Transactional
 	public void update(final Integer adminId, final AdminRequest adminRequest)
 	{
 		final Admin admin = adminRepository.findById(adminId)
@@ -80,6 +82,7 @@ public class AdminService
 		adminRepository.save(admin);
 	}
 
+	@Transactional
 	public void delete(final Integer adminId)
 	{
 		final Admin admin = adminRepository.findById(adminId)

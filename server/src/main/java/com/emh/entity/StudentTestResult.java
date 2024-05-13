@@ -27,6 +27,9 @@ public class StudentTestResult extends BaseEntity
 	@Column
 	private Integer time;
 
+	@Column
+	private Boolean requiresGrading = false;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "class_id", nullable = false)
 	private Classes classs;
@@ -39,6 +42,6 @@ public class StudentTestResult extends BaseEntity
 	@JoinColumn(name = "student_id", nullable = false)
 	private Student student;
 
-	@OneToMany(mappedBy = "studentTestResult", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "studentTestResult", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<QuestAnswerResult> questAnswerResults;
 }

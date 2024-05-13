@@ -20,6 +20,7 @@ import com.emh.util.NotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -47,6 +48,7 @@ public class UserService
 				.orElseThrow(NotFoundException::new);
 	}
 
+	@Transactional
 	public void update(final Integer userId, final UserRequest userRequest)
 	{
 		User user = userRepository.findById(userId)
@@ -88,6 +90,7 @@ public class UserService
 		}
 	}
 
+	@Transactional
 	public void delete(final Integer studentId)
 	{
 		final Student student = studentRepository.findById(studentId)

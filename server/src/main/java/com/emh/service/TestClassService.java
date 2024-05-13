@@ -10,6 +10,7 @@ import com.emh.util.AppException;
 import com.emh.util.EntityMapper;
 import com.emh.util.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,7 @@ public class TestClassService
 		testClassRepository.save(testClass);
 	}
 
+	@Transactional
 	public void delete(Integer classId, Integer testId)
 	{
 		Classes classes = classesRepository.findById(classId)
@@ -173,6 +175,7 @@ public class TestClassService
 		final Classes classs = classesRepository.findById(classId)
 				.orElseThrow(NotFoundException::new);
 		List<TestClassInfoResponse> responses = new ArrayList<>(classs.getTestClasses().stream()
+				.filter(testClass -> !testClass.getTests().isDeleted())
 				.map(testClass -> EntityMapper.testInfoMapToResponse(testClass, new TestClassInfoResponse()))
 				.toList());
 		responses.sort((o1, o2) -> o1.getTestId().compareTo(o2.getTestId()));
@@ -184,6 +187,7 @@ public class TestClassService
 		Classes classes = classesRepository.findById(classId)
 				.orElseThrow(NotFoundException::new);
 		Tests tests = testsRepository.findById(testId)
+				.filter(t -> !t.isDeleted())
 				.orElseThrow(NotFoundException::new);
 		TestClass testClass = testClassRepository.findOneByClasssAndTests(classes, tests);
 		if (testClass == null)
