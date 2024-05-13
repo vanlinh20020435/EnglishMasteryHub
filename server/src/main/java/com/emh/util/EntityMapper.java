@@ -170,6 +170,31 @@ public class EntityMapper
 		return testInfoResponse;
 	}
 
+	public static TestClassInfoResponse testInfoMapToResponse(final Tests tests, final TestClassInfoResponse response)
+	{
+		response.setTestId(tests.getTestId());
+		response.setTestName(tests.getTestName());
+		response.setTotalQuestions(tests.getTotalQuestions());
+		response.setTime(tests.getTime());
+		response.setDescription(tests.getDescription());
+		response.setStatus(tests.getStatus());
+		response.setCreatedDate(tests.getCreatedDate());
+		return response;
+	}
+
+	public static TestResultResponse testResultMapToResponse(final Tests tests, final TestResultResponse testsResponse)
+	{
+		testsResponse.setTestId(tests.getTestId());
+		testsResponse.setTestName(tests.getTestName());
+		testsResponse.setTotalQuestions(tests.getTotalQuestions());
+		testsResponse.setTime(tests.getTime());
+		testsResponse.setDescription(tests.getDescription());
+		testsResponse.setStatus(tests.getStatus());
+		testsResponse.setCreatedDate(tests.getCreatedDate());
+		testsResponse.setRequiresGrading(tests.getRequiresGrading());
+		return testsResponse;
+	}
+
 	public static Tests testMapToEntity(final TestsRequest testsRequest, final Tests tests)
 	{
 		tests.setTestName(testsRequest.getTestName());
@@ -182,6 +207,18 @@ public class EntityMapper
 	}
 
 	public static QuestionsResponse questionMapToResponse(final Questions questions, final QuestionsResponse questionsResponse)
+	{
+		questionsResponse.setQuestionId(questions.getQuestionId());
+		questionsResponse.setContent(questions.getContent());
+		questionsResponse.setDescription(questions.getDescription());
+		questionsResponse.setTitle(questions.getTitle());
+		questionsResponse.setTime(questions.getTime());
+		questionsResponse.setType(questions.getType());
+		questionsResponse.setSkill(questions.getSkill());
+		return questionsResponse;
+	}
+
+	public static QuestResultResponse questionResultMapToResponse(final Questions questions, final QuestResultResponse questionsResponse)
 	{
 		questionsResponse.setQuestionId(questions.getQuestionId());
 		questionsResponse.setContent(questions.getContent());
@@ -270,7 +307,7 @@ public class EntityMapper
 		testResultResponse.setScore(studentTestResult.getScore());
 		testResultResponse.setTestDefaultScore(studentTestResult.getTestDefaultScore());
 		testResultResponse.setTime(studentTestResult.getTime());
-		testResultResponse.setRequiresGrading(studentTestResult.getTests().getRequiresGrading());
+		testResultResponse.setRequiresGrading(studentTestResult.getRequiresGrading());
 		return testResultResponse;
 	}
 
@@ -285,6 +322,8 @@ public class EntityMapper
 	public static QuestAnswerResultResponse questAnswerResultMapToResponse(final QuestAnswerResult questAnswerResult,
 																		   final QuestAnswerResultResponse questAnswerResultResponse)
 	{
+		if(questAnswerResult.getQuestion().getQuestionId() == 713 || questAnswerResult.getQuestion().getQuestionId() == 714 || questAnswerResult.getQuestion().getQuestionId() == 715)
+			System.out.println(questAnswerResult.getAnswers().size());
 		questAnswerResultResponse.setId(questAnswerResult.getId());
 		questAnswerResultResponse.setScore(questAnswerResult.getScore());
 		questAnswerResultResponse.setRightAnswer(questAnswerResult.getRightAnswer());
@@ -301,6 +340,17 @@ public class EntityMapper
 		questAnswerResult.setRightAnswer(answerResultRequest.getRightAnswer());
 		questAnswerResult.setDefaultScore(answerResultRequest.getDefaultScore());
 		questAnswerResult.setQuestion(questions);
+		questAnswerResult.setStudentTestResult(studentTestResult);
+		return questAnswerResult;
+	}
+
+	public static QuestAnswerResult questAnswerResultMapToEntity(final QuestAnswerResultRequest answerResultRequest, final QuestAnswerResult questAnswerResult,
+																 final StudentTestResult studentTestResult)
+	{
+		questAnswerResult.setScore(answerResultRequest.getScore());
+		questAnswerResult.setAnswers(answerResultRequest.getAnswers());
+		questAnswerResult.setRightAnswer(answerResultRequest.getRightAnswer());
+		questAnswerResult.setDefaultScore(answerResultRequest.getDefaultScore());
 		questAnswerResult.setStudentTestResult(studentTestResult);
 		return questAnswerResult;
 	}

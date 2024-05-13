@@ -10,6 +10,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"question_id", "test_result_id"})})
 public class QuestAnswerResult extends BaseEntity
 {
 
@@ -18,7 +19,8 @@ public class QuestAnswerResult extends BaseEntity
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	@ElementCollection(fetch = FetchType.EAGER)
+	@Column(nullable = false, length = 8192)
 	private List<String> answers;
 
 	@Column

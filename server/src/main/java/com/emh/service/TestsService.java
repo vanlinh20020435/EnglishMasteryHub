@@ -289,6 +289,7 @@ public class TestsService
 				.orElseThrow(NotFoundException::new);
 		final List<Tests> testses = testsRepository.findAllByCreator(user.getUsername(), Sort.by("testId"));
 		return testses.stream()
+				.filter(tests -> !tests.isDeleted())
 				.map(this::exportTest)
 				.toList();
 	}

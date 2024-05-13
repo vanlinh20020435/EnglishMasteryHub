@@ -22,13 +22,10 @@ public class StudentTestResultResponse
 	private Integer time;
 
 	@NotNull
-	private TestsResponse test;
+	private TestResultResponse test;
 
 	@NotNull
 	private StudentResponse student;
 
 	private Boolean requiresGrading = false;
-
-	@NotNull
-	private List<QuestAnswerResultResponse> questionResults;
 }

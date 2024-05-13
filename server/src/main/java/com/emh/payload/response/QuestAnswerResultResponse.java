@@ -21,8 +21,6 @@ public class QuestAnswerResultResponse
 	@NotNull
 	private Double defaultScore;
 
-	private QuestionsResponse question;
-
 	@NotNull
 	private List<String> answers;
 }

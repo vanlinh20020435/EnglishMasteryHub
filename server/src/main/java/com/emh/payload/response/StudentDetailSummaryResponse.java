@@ -12,9 +12,8 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class StudentSummaryResponse
+public class StudentDetailSummaryResponse
 {
-	private StudentInfo student;
 	private Result result;
 
 	@Getter
@@ -38,29 +37,6 @@ public class StudentSummaryResponse
 			this.score = studentTestResult.getScore();
 			this.requiresGrading = studentTestResult.getRequiresGrading();
 			this.createdDate = studentTestResult.getCreatedDate();
-		}
-	};
-
-	@Getter
-	@Setter
-	public static class StudentInfo
-	{
-		Integer studentId;
-		String name;
-		String email;
-		Integer gender;
-		String avatar;
-		String username;
-
-		public StudentInfo() { }
-
-		public StudentInfo(Student student) {
-			this.studentId = student.getStudentId();
-			this.name = student.getName();
-			this.email = student.getEmail();
-			this.gender = student.getGender();
-			this.avatar = student.getAvatar();
-			this.username = student.getUsername();
 		}
 	};
 }
