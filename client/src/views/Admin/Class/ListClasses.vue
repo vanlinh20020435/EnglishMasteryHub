@@ -2,10 +2,8 @@
   <v-data-table hover @click:row="(a, b) => handleClickItem(b.item)" :loading="loading" :headers="headers" :items="data"
     :sort-by="[{ key: 'classId', order: 'asc' }]">
     <template v-slot:item.avatar="{ item }">
-      <v-avatar>
-        <img alt="Avatar" :src="item.avatar ||
-          '/src/assets/images/class.png'
-          "></img>
+      <v-avatar >
+        <img alt="Avatar" :src="item.avatar || 'https://img.freepik.com/premium-vector/empty-school-class-room-blank-classroom-scene-with-empty-chalkboard-doodle-vector-illustration_135595-7227.jpg'"></img>
       </v-avatar>
     </template>
     <template v-slot:item.teacher="{ item }">
@@ -23,6 +21,7 @@
 </template>
 
 <script>
+import imageClass from '@/assets/images/class.png';
 export default {
   props: {
     data: Array,
@@ -49,6 +48,9 @@ export default {
     handleClickItem(item) {
       this.$router.push(`/admin/class/${item.classId}`);
     },
+    getAvtDefaultClass() {
+      return imageClass;
+    }
   },
 };
 </script>

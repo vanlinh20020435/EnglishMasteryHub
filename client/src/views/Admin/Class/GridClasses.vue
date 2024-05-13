@@ -3,7 +3,7 @@
     <v-row>
       <v-col v-for="(cls, idx) in data" :key="idx" :cols="cols">
         <v-card style="width: 100%; height: 100%; background: #efe841;" @click="() => handleClickItem(cls)">
-          <img :src="cls.avatar || `/src/assets/images/class.png`" class="image" alt="lorem" width="100%"
+          <img :src="cls.avatar || getAvtDefaultClass()" class="image" alt="lorem" width="100%"
             height="150" />
           <v-card-title>
             {{ cls.className }}
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import imageClass from '@/assets/images/class.png';
 export default {
   props: {
     data: Array,
@@ -32,6 +33,9 @@ export default {
     handleClickItem(item) {
       this.$router.push(`/admin/class/${item.classId}`);
     },
+    getAvtDefaultClass() {
+      return imageClass;
+    }
   }
 };
 </script>
