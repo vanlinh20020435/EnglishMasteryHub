@@ -34,11 +34,7 @@
                     class="ml-5 mr-5 d-flex align-center justify-center student-avt"
                   >
                     <img
-                      :src="
-                        student?.avatar
-                          ? student?.avatar
-                          : '/src/assets/images/avatar_student_male.jpg'
-                      "
+                      :src=" student?.avatar || getAvtUserMethod(student)"
                       alt="Avatar Student"
                       class="cover_image"
                     />
@@ -54,9 +50,7 @@
                   class="cursor-pointer student-lock d-flex align-center justify-center"
                 >
                   <img
-                    :src="`/src/assets/images/icon/${
-                      student?.status == 1 ? 'ico_lock' : 'ico_unlock'
-                    }.png`"
+                    :src="getIconLock(student.status)"
                     alt="Icon Lock"
                     class="contain_image"
                   />
@@ -96,6 +90,9 @@
 <script>
 import HeaderTitle from "@/components/header/HeaderTitle.vue";
 import { apiCallerGet, apiCallerPut } from "@/services/teacher";
+import iconLock from "@/assets/images/icon/ico_lock.png";
+import iconUnlock from "@/assets/images/icon/ico_unlock.png";
+import { getAvtUser } from "@/base/helper";
 
 import { authenticationRole } from "@/stores";
 import { mapState } from "pinia";
@@ -154,6 +151,15 @@ export default {
 
       this.studentSelected = {};
     },
+    getIconLock(status) {
+      if(status == 1) {
+        return iconLock;
+      }
+      return iconUnlock;
+    },
+    getAvtUserMethod(student) {
+      return getAvtUser(student, 'student');
+    }
   },
 };
 </script>
