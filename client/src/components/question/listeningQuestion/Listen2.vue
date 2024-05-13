@@ -1,17 +1,28 @@
 <template>
-  <v-card>
-    <v-card-title>
-      {{ question.title }}
-    </v-card-title>
-    <v-card-text>
+  <div class="d-flex flex-column">
+    <h3 class="font-semi-bold text-lg">
+      Bài {{ indexQuestion + 1 }}: {{ question.title }}
+    </h3>
+    <v-col>
       <Audio :file="question.files[0].url" color="success"></Audio>
-      <div v-for="(sub, idx) in question.subQuestions" class="d-flex align-center" style="margin-bottom: 8px">
+      <div v-for="(sub, idx) in question.subQuestions" :key="idx" class="d-flex align-center"
+        style="margin-bottom: 8px">
         <p>{{ idx + 1 }}. {{ sub.content.split('{')[0] }}</p>
-        <v-text-field placeholder="Nhập ..." style="max-width: 150px;" flat hide-details tile v-model="sub.selected"></v-text-field>
+        <v-text-field 
+          :readonly="!!reviewExam" 
+          :class="'ml-2 mr-2  ' + (this.reviewExam ? sub?.studentResult?.rightAnswer ? 'color-right-textfield' : 'color-wrong-textfield' : '' )" 
+          placeholder="Write  here ..." 
+          style="max-width: 250px; text-align: center;" 
+          flat
+          hide-details tile 
+          v-model="sub.selected"
+          :model-value="!!reviewExam ? sub?.studentResult?.answers[0] : sub.selected"
+        >
+        </v-text-field>
         <p>{{ sub.content.split('}')[1] }}</p>
       </div>
-    </v-card-text>
-  </v-card>
+    </v-col>
+  </div>
 </template>
 
 <script>
@@ -24,10 +35,15 @@ export default {
   props: {
     question: Object,
     questionResults: Object,
+    indexQuestion: Number,
+    reviewExam: String,
   },
   mounted() {
     this.question.subQuestions.forEach((sub) => {
-      const subquestionResult = {
+      const subquestionResult = !!this.reviewExam ? {
+        questionId: sub.questionId,
+        ...sub.studentResult
+      } : {
         questionId: sub.questionId,
         answers: [],
         rightAnswer: null,
@@ -48,19 +64,21 @@ export default {
         const qr = this.questionResults.find(
           (q) => q.questionId === sub.questionId
         );
-        if (sub.selected) {
-          qr.answers = [sub.selected];
-          if (sub.answers.some(answer => this.normalizeText(answer.answer) === this.normalizeText(sub.selected))) {
-            qr.rightAnswer = true;
-            qr.score = 1;
+        if (!qr?.length && !this.reviewExam) {
+          if (sub.selected) {
+            qr.answers = [sub.selected];
+            if (sub.answers.some(answer => this.normalizeText(answer.answer) === this.normalizeText(sub.selected))) {
+              qr.rightAnswer = true;
+              qr.score = 1;
+            } else {
+              qr.rightAnswer = false;
+              qr.score = 0;
+            }
           } else {
+            qr.answers = [];
             qr.rightAnswer = false;
             qr.score = 0;
           }
-        } else {
-          qr.answers = [];
-          qr.rightAnswer = false;
-          qr.score = 0;
         }
       });
     },

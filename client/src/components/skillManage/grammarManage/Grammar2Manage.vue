@@ -189,13 +189,10 @@ export default {
 
       const regex = /\[(.*?)\]/g;
       let matches = Array.from(valueTitle.matchAll(regex), m => m[1]?.trim());
-      console.log('matches =====', matches);
-      
 
       this.questions[questionIndex]?.options.forEach((option, index) => {
         option.option = matches[index] || '';
       });
-      console.log('this.questions[questionIndex].options ====', this.questions[questionIndex].options);
 
       this.questions[questionIndex].options = 
       this.questions[questionIndex].options.filter((option, index) => matches[index] !== undefined);

@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     handleClickItem(item) {
-      this.$router.replace(`/admin/class/${item.classId}`);
+      this.$router.push(`/admin/class/${item.classId}`);
     },
   }
 };

@@ -366,6 +366,7 @@
       :handleClickYes="
         () => {
           this.$router.go(-1);
+          this.dialogCreateSuccess = false;
         }
       "
     />
@@ -476,12 +477,12 @@ export default {
             title: "Choose the suitable word(s) for each blank",
             option: 4,
           },
-          {
-            id: 4,
-            title:
-              "Read the passage and decide whether the statements are True or False",
-            option: 0,
-          },
+          // {
+          //   id: 4,
+          //   title:
+          //     "Read the passage and decide whether the statements are True or False",
+          //   option: 0,
+          // },
         ],
       },
       {
@@ -498,12 +499,12 @@ export default {
             title: "Listen and fill in the sentences",
             option: 1,
           },
-          {
-            id: 3,
-            title:
-              "Listen and decide whether the following sentences are True or False. ",
-            option: 2,
-          },
+          // {
+          //   id: 3,
+          //   title:
+          //     "Listen and decide whether the following sentences are True or False. ",
+          //   option: 2,
+          // },
           {
             id: 4,
             title: "Listen and choose the best option",
@@ -528,13 +529,12 @@ export default {
           {
             id: 3,
             title:
-              "Write about the advantages and disadvantages of playing sports",
+              "Write a paragraph about a topic",
             option: 1,
           },
         ],
       },
     ],
-
     selectedSkill: "",
     selectedTypeSkill: {
       id: 1,
@@ -669,7 +669,7 @@ export default {
           skill: item?.skill?.trim(),
           time: 0,
           requiresGrading: item?.requiresGrading || false,
-          subQuestions: item.subQuestions.map((question) =>
+          subQuestions: item.subQuestions?.map((question) =>
             convertQuestion(question, item)
           ),
           files: !!item?.files?.type
@@ -689,6 +689,7 @@ export default {
           status: "0",
           description: this.dataExam.description?.trim(),
           questions: convertedData,
+          requiresGrading: this.questionList?.some((item) => item?.requiresGrading),
         };
 
         const result = await apiCallerPost(
@@ -709,4 +710,3 @@ export default {
 <style>
 @import "./Exam.style.scss";
 </style>
-../../../components/skillManage/pronunManage

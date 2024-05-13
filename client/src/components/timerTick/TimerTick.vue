@@ -20,7 +20,8 @@ export default {
     disabled: {
       type: Boolean,
       default: false
-    }
+    },
+    onTimerTick: Function,
   },
   setup(props) {
     let currentSeconds = ref(props.seconds);
@@ -40,6 +41,9 @@ export default {
         if (typeof props.onEndTimerTick === 'function') {
           props.onEndTimerTick();
         }
+      }
+      if (typeof props.onTimerTick === 'function') {
+        props.onTimerTick(currentSeconds.value);
       }
     };
 
@@ -73,7 +77,7 @@ export default {
 
 </script>
 
-<style scoped>
+<style>
 /* Your component styles here */
 .real-timing {
   font-size: 1.125rem;

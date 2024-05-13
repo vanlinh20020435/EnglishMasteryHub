@@ -8,12 +8,17 @@
       />
       <v-divider class="header_divider" :thickness="2"></v-divider>
       <v-col
-        style="max-height: 90%; overflow-y: auto"
-        class="d-flex flex-column class-list class-detail align-center"
+        style="max-height: 90%; overflow-y: auto; margin: 0 auto; overflow-x: hidden;"
+        class="d-flex flex-column class-list class-detail w-100"
       >
         <v-card
           class="pa-4"
-          style="border-radius: 1rem; width: 85%; min-height: 252px"
+          style="
+            border-radius: 1rem;
+            width: 85%;
+            min-height: 252px;
+            margin: 0 auto;
+          "
         >
           <v-row>
             <div class="pa-3 class-detail_img d-flex align-center">
@@ -73,8 +78,8 @@
           </v-row>
         </v-card>
 
-        <div class="d-flex align-center pa-5">
-          <v-row
+        <div class="d-flex flex-row pa-5" style="margin: 0 auto; overflow-x: auto; max-width: 100%;">
+          <div
             class="mt-0 pa-6"
             v-for="(action, index) in dataAction"
             :key="index"
@@ -91,7 +96,7 @@
 
               <div>{{ action?.title }}</div>
             </v-card>
-          </v-row>
+          </div>
         </div>
       </v-col>
     </v-container>

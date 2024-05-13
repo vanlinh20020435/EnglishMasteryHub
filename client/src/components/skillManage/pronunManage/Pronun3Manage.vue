@@ -12,7 +12,19 @@
             <v-list-subheader>File phát âm</v-list-subheader>
           </v-col>
 
-          <v-col cols="8">
+          <v-col v-if="defaultFile" cols="8">
+            <v-text-field
+              prepend-icon="mdi-paperclip"
+              :rule="required"
+              hide-no-data
+              variant="outlined"
+              v-model="defaultFile"
+              clearable
+              readonly
+            ></v-text-field>
+          </v-col>
+
+          <v-col v-else cols="8">
             <v-file-input
               @change="(event) => handleFileUpload(event, 0)"
               :rule="required"
@@ -36,10 +48,11 @@
                 rows="2"
                 max-rows="4"
                 :rules="required"
-                placeholder="Danh sách các từ xuất hiện vd: boost; boot; rain; ..."
+                placeholder="Danh sách các từ xuất hiện vd: boost, boot, rain, ..."
                 hide-no-data
                 clearable
                 auto-grow
+                :model-value="stringAnswers"
                 @input="(event) => handleConvertAnswer(event.target.value, 0)"
               >
               </v-textarea>
@@ -72,6 +85,8 @@ export default {
         },
       ],
       questions: [],
+      stringAnswers: "",
+      defaultFile: null
     };
   },
   props: {
@@ -81,6 +96,9 @@ export default {
   },
   created() {
     this.questions = this.questionSkill.subQuestions;
+    this.stringAnswers = this.questionSkill.subQuestions[0].answers.map(obj => obj?.answer).join(', ');
+  
+    this.defaultFile = this.questionSkill.subQuestions?.[0]?.files?.[0]?.name;
   },
   methods: {
     updateGroupTitleQuestion(value) {

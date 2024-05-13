@@ -49,6 +49,7 @@ export {
   getTestInfoByClass,
   getTestByStudent,
   submitExam,
+  getTestResults
 } from './test';
 
 export const uploadFile = async (token, file) => {

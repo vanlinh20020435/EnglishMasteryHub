@@ -7,7 +7,6 @@ import User from "@/views/Admin/User/index.vue";
 import {
   ManageClass,
   ManageExam,
-  ManageCurriculum,
   CreateExam,
   DetailClassTeacher,
   ClassStudents,
@@ -15,6 +14,8 @@ import {
   AssignExam,
   MarkExam,
   EditExam,
+  MarkExamDashboard,
+  MarkExamDetail
 } from "@/views/Teacher";
 import { authenticationRole } from "@/stores";
 import Login from "@/views/Login.vue";
@@ -31,6 +32,10 @@ import News from "@/views/Student/News.vue";
 import Test from "@/views/Student/Test/index.vue";
 import Docs from "@/views/Student/Docs.vue";
 import TestSlug from "@/views/Student/Test/TestSlug/index.vue";
+import Preview from "@/views/Admin/Exam/Preview.vue";
+import TeacherPreview from "@/views/Teacher/Exam/TeacherPreview.vue";
+import HistoryTestInfo from "@/views/Student/Test/TestSlug/HistoryTestInfo.vue";
+
 const routes = [
   {
     path: "/login",
@@ -63,11 +68,7 @@ const routes = [
     children: [
       {
         path: "",
-        component: ManageExam,
-      },
-      {
-        path: "manager",
-        component: Manager,
+        component: ManageClass,
       },
       {
         path: "class",
@@ -96,6 +97,14 @@ const routes = [
             path: "mark-exam",
             component: MarkExam,
           },
+          {
+            path: "mark-exam/:examId",
+            component: MarkExamDashboard,
+          },
+          {
+            path: "mark-exam/:examId/review/:studentId",
+            component: MarkExamDetail,
+          },
         ],
       },
       {
@@ -114,6 +123,10 @@ const routes = [
             component: EditExam,
           },
           {
+            path: "preview/:id",
+            component: TeacherPreview,
+          },
+          {
             path: "my_exam",
             component: ManageExam,
             props: { isAll: false },
@@ -124,10 +137,6 @@ const routes = [
             props: { isAll: true },
           },
         ],
-      },
-      {
-        path: "curriculum",
-        component: ManageCurriculum,
       },
     ],
   },
@@ -181,6 +190,10 @@ const routes = [
             path: "edit/:id",
             component: EditExamManager,
           },
+          {
+            path: "preview/:id",
+            component: Preview,
+          },
         ],
       },
     ],
@@ -201,6 +214,10 @@ const routes = [
       {
         path: "test/:id",
         component: TestSlug,
+      },
+      {
+        path: "test/:examId/history/:historyIdx",
+        component: HistoryTestInfo,
       },
       {
         path: "document",

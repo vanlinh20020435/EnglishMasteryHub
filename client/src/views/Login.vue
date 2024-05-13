@@ -8,7 +8,7 @@
                             <img src="@/assets/images/logoemh.png" />
                         </v-col>
                         <v-col md="12">
-                            <v-text-field v-model="username" @change="onChange" :error="loginFailed"
+                            <v-text-field autofocus v-model="username" @change="onChange" :error="loginFailed"
                                 :rules="usernameRules" label="Username" hide-details="auto">
                             </v-text-field>
                         </v-col>
@@ -69,16 +69,16 @@ export default {
                         userInfoRes.data.role = userInfoRes.data.role.toLowerCase();
                         userInfoRes.data.avatar = userInfoRes.data.avatar ? userInfoRes.data.avatar : this.getAvtUser(userInfoRes.data);
                         this.updateAuth({ user: userInfoRes.data })
-                        this.updateToast('success', "Login success!")
+                        this.updateToast('success', "Đăng nhập thành công!")
                         this.$router.replace(`/${this.authentication.user.role}`)
                     } else {
                         this.error = true
                         this.loginFailed = true
-                        this.updateToast('error', "User not found!")
+                        this.updateToast('error', "Tài khoản bạn nhập không tồn tại!")
                     }
                 } else {
                     this.error = true
-                    this.updateToast('error', 'Login failed!')
+                    this.updateToast('error', 'Đăng nhập thất bại! Vui lòng kiểm tra lại tài khoản và mật khẩu!')
                     this.loginFailed = true
                 }
             }

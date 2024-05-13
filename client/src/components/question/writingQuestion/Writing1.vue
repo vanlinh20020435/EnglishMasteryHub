@@ -1,63 +1,105 @@
 <template>
-	<div class="d-flex flex-column">
-		<h3 class="font-semi-bold">{{ dataQuestion.title }}</h3>
-		<v-col>
-			<v-col v-for="(subQuestion, index) in dataQuestion.subQuestions" :key="index">
-				<div class="font-weight-medium"><span class="font-weight-medium mr-3">{{ index + 1 }}.</span>{{ subQuestion?.content }}</div>
-				<v-text-field density="compact" variant="underlined" @input="(event) => handleChange(event, index)" hide-details></v-text-field>
-			</v-col>
-		</v-col>
-	</div>
+  <div class="d-flex flex-column" style="z-index: 2; position: relative;">
+    <h3 class="font-semi-bold">
+      Bài {{ indexQuestion + 1 }}: {{ dataQuestion.title }}
+    </h3>
+    <v-col>
+      <v-col
+        v-for="(subQuestion, index) in dataQuestion.subQuestions"
+        :key="index"
+      >
+        <div>
+          <span class="mr-3">{{ index + 1 }}.</span>{{ subQuestion?.content }}
+        </div>
+        <v-text-field
+          :model-value="!!reviewExam ? subQuestion?.studentResult?.answers[0] : ''"
+          :class="'field-writting ' + (this.reviewExam ? subQuestion?.studentResult?.rightAnswer ? 'color-right-textfield' : 'color-wrong-textfield' : '' )"
+          density="compact"
+          variant="underlined"
+          placeholder="Write  your answer... ..."
+          @input="(event) => handleChange(event, index)"
+          hide-details
+          :readonly="!!reviewExam"  
+        ></v-text-field>
+      </v-col>
+    </v-col>
+  </div>
 </template>
 
 <script>
+import { formatOriginalText } from "@/base/helper.js";
 export default {
-	name: "Writing1Question",
-	data() {
-		return {
-		};
-	},
-	props: {
-		dataQuestion: Object,
-		questionResults: Object
-	},
-	mounted() {
-		const subquestionResults = this.question.subQuestions.map(item => ({
-			questionId: item.questionId,
-			answers: [],
-			rightAnswer: null,
-			score: 0,
-			defaultScore: 1,
-		}))
-		this.questionResults.push(...subquestionResults)
-	},
-	watch: {
-	},
-	methods: {
-		normalizeText(text) {
-			if(!text)
-				return '';
-			return text.toLowerCase().trim().replace(/\s+/g, ' ');
-		},
-		handleChange(event, key) {
-			let isMatching = false;
-			let subQuestion = this.dataQuestion.subQuestions[key];
-			let answers = subQuestion.answers;
-			let newValue = event.target.value;
-			newValue = this.normalizeText(newValue);
-			for (let i = 0; i < answers.length; i++) {
-				if (this.normalizeText(answers[i].answer) === newValue) {
-					isMatching = true;
-					break;
-				}
-			}
+  name: "Writing1Question",
+  data() {
+    return {};
+  },
+  props: {
+    dataQuestion: Object,
+    questionResults: Object,
+    indexQuestion: Number,
+    reviewExam: String,
+  },
+  mounted() {
+    const subquestionResults = this?.dataQuestion?.subQuestions?.map((item) => {
+      return (
+        !!this.reviewExam ? {
+          questionId: item.questionId,
+          ...item.studentResult
+        } : {
+          questionId: item.questionId,
 
-			let questionResult = this.questionResults.find(q => q.questionId === subQuestion.id);
-			questionResult.answers = [newValue];
-			questionResult.rightAnswer = isMatching;
-			questionResult.score = isMatching ? 1 : 0;
+          answers: [],
+          rightAnswer: false,
+          score: 0,
+          defaultScore: 1,
+        }
+      )
+    });
+    this.questionResults.push(...subquestionResults);
+  },
+  watch: {},
+  methods: {
+    normalizeText(text) {
+      if (!text) return "";
+      return text.toLowerCase().trim().replace(/\s+/g, " ");
+    },
+    handleChange(event, subQuestionIndex) {
+      let newValue = event.target.value;
+      let subQuestionSelected =
+        this.dataQuestion.subQuestions?.[subQuestionIndex];
+      let subQuestionInResult = this.questionResults.find(
+        (item) => item?.questionId == subQuestionSelected?.questionId
+      );
 
-		}
-	},
+      const matchFound = subQuestionSelected.answers.some((answerObj) => {
+        const answer = formatOriginalText(answerObj?.answer);
+        return formatOriginalText(newValue) == answer;
+      });
+
+      if (matchFound) {
+        subQuestionInResult.rightAnswer = true;
+        subQuestionInResult.score = 1;
+      } else {
+        subQuestionInResult.rightAnswer = false;
+        subQuestionInResult.score = 0;
+      }
+      subQuestionInResult.answers[0] = newValue;
+      const indexToUpdate = this.questionResults.findIndex(
+        (item) => item.questionId === subQuestionInResult.questionId
+      );
+      if (indexToUpdate !== -1) {
+        this.questionResults[indexToUpdate] = subQuestionInResult;
+      } else {
+        this.questionResults.push(subQuestionInResult);
+      }
+    },
+  },
 };
 </script>
+
+<style>
+.field-writting input {
+  font-weight: 600 !important;
+  color: #8e1c76;
+}
+</style>
