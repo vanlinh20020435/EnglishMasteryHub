@@ -1,4 +1,4 @@
-describe('template spec', () => {
+describe('login', () => {
   beforeEach(() => {
     cy.visit("http://englishmasteryhub.online/login");
   });
