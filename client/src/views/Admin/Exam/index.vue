@@ -78,7 +78,7 @@ export default {
             },
             { title: "Mô tả", key: "description", sortable: false },
             {
-                title: "Actions",
+                title: "Hành động",
                 key: "actions",
                 sortable: false,
             }

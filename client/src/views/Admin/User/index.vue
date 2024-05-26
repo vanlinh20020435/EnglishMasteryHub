@@ -57,7 +57,7 @@
     <v-form v-model="formValid" @submit.prevent="submitForm">
       <v-card>
         <v-card-title>
-          {{ isEdit ? `Chỉnh sửa ${formItem.name}` : "Tạo mới" }}
+          {{ isEdit ? `Chỉnh sửa ${formItem.name}` : "Tạo mới quản trị viên" }}
         </v-card-title>
         <v-card-text>
           <v-row>
@@ -101,9 +101,9 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn variant="tonal" @click="() => (isOpenForm = false)">
-            Cancel
+            Hủy
           </v-btn>
-          <v-btn color="success" variant="flat" type="submit" :disabled="isLoadingFile"> Save </v-btn>
+          <v-btn color="success" variant="flat" type="submit" :disabled="isLoadingFile"> Lưu </v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
@@ -127,9 +127,9 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn variant="tonal" @click="() => (isOpenChangePassword = false)">
-            Cancel
+            Hủy
           </v-btn>
-          <v-btn color="success" variant="flat" type="submit"> Save </v-btn>
+          <v-btn color="success" variant="flat" type="submit"> Lưu </v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
