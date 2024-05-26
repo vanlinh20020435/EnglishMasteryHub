@@ -32,7 +32,7 @@
     <v-form v-model="formValid" @submit.prevent="submitForm">
       <v-card>
         <v-card-title>
-          {{ isEdit ? `Chỉnh sửa ${formItem.className}` : 'Tạo mới' }}
+          {{ isEdit ? `Chỉnh sửa ${formItem.className}` : 'Tạo mới lớp học' }}
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -83,16 +83,16 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue-darken-1" variant="text" @click="() => isOpenForm = false">
-            Cancel
+            Hủy
           </v-btn>
           <v-btn color="blue-darken-1" variant="text" type="submit" :disabled="isLoadingFile">
-            Save
+            Lưu
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
   </v-dialog>
-  <PopUpYesNo msg="Bạn có chắc chắn muốn xóa?" :visible="isOpenDelete" :handleClickYes="deleteItem"
+  <PopUpYesNo msg="Bạn có chắc chắn muốn xóa lớp học này?" :visible="isOpenDelete" :handleClickYes="deleteItem"
     :handleClickNo="() => (isOpenDelete = false)" />
 </template>
 

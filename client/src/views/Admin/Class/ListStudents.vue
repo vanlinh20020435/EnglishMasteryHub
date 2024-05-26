@@ -61,7 +61,7 @@
     <v-form v-model="formValid" @submit.prevent="submitForm">
       <v-card>
         <v-card-title>
-          <span class="text-h5">hihi</span>
+          <span class="text-h5">Học sinh</span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -108,10 +108,10 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn variant="tonal" @click="() => (isOpenForm = false)">
-            Cancel
+            Hủy
           </v-btn>
           <v-btn color="success" variant="flat" type="submit" :disabled="isLoadingFile">
-            Save
+            Lưu
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -138,10 +138,10 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn variant="tonal" @click="() => (isOpenChangePassword = false)">
-            Cancel
+            Hủy
           </v-btn>
           <v-btn color="success" variant="flat" type="submit">
-            Save
+            Lưu
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -173,7 +173,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn variant="tonal" @click="() => (isOpenImport = false)">
-            Cancel
+            Hủy
           </v-btn>
           <v-btn color="success" variant="flat" type="submit">
             Upload
