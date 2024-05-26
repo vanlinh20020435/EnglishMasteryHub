@@ -9,12 +9,12 @@
                         </v-col>
                         <v-col md="12">
                             <v-text-field autofocus v-model="username" @change="onChange" :error="loginFailed"
-                                :rules="usernameRules" label="Username" hide-details="auto">
+                                :rules="usernameRules" label="Tên đăng nhập" hide-details="auto">
                             </v-text-field>
                         </v-col>
                         <v-col md="12">
                             <v-text-field type="password" v-model="password" @change="onChange" :error="loginFailed"
-                                :rules="passwordRules" label="Password" hide-details="auto">
+                                :rules="passwordRules" label="Mật khẩu" hide-details="auto">
                             </v-text-field>
                         </v-col>
                         <v-col md="12">
@@ -46,11 +46,11 @@ export default {
         password: null,
         usernameRules: [value => {
             if (value) return true
-            return 'Name is required.'
+            return 'Tên đăng nhập là bắt buộc.'
         }],
         passwordRules: [value => {
             if (value) return true
-            return 'Name is required.'
+            return 'Mật khẩu là bắt buộc.'
         }],
     }),
     computed: {
